@@ -1,0 +1,1049 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Policy Radar — Search Lender Policies</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --green: #2ECC85;
+      --green-dark: #1FAD73;
+      --purple: #6B4C9A;
+      --purple-light: #9B59B6;
+      --bg: #1A1A2E;
+      --card: #252540;
+      --card2: #2D2D4A;
+      --border: #3D3D5C;
+      --text: #e2e2e2;
+      --muted: #a3a3b8;
+      --white: #ffffff;
+      --warn: #f39c12;
+      --danger: #e74c3c;
+      --success: #2ECC85;
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+    }
+
+    /* NAV */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 32px;
+      background: rgba(26,26,46,0.95);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-left { display: flex; align-items: center; gap: 12px; }
+    .nav-logo { display: flex; align-items: center; gap: 8px; text-decoration: none; }
+    .nav-logo svg { height: 32px; width: auto; }
+    .nav-badge {
+      font-size: 11px; font-weight: 600; color: var(--green);
+      background: rgba(46,204,133,0.12); border: 1px solid rgba(46,204,133,0.25);
+      border-radius: 20px; padding: 3px 10px; letter-spacing: 0.5px; text-transform: uppercase;
+    }
+    .nav-divider { color: var(--border); font-size: 20px; }
+    .nav-title { font-size: 15px; font-weight: 600; color: var(--text); }
+    .nav-right { display: flex; align-items: center; gap: 12px; }
+    .nav-tag {
+      font-size: 11px; font-weight: 500; color: var(--muted);
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 6px; padding: 4px 10px;
+    }
+    .nav-tag span { color: var(--green); }
+
+    /* LAYOUT */
+    .app { display: flex; min-height: calc(100vh - 57px); }
+
+    /* SIDEBAR */
+    .sidebar {
+      width: 320px;
+      flex-shrink: 0;
+      background: var(--card);
+      border-right: 1px solid var(--border);
+      padding: 24px 20px;
+      overflow-y: auto;
+      position: sticky;
+      top: 57px;
+      height: calc(100vh - 57px);
+    }
+    .sidebar-section { margin-bottom: 28px; }
+    .sidebar-label {
+      font-size: 11px; font-weight: 600; color: var(--muted);
+      text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px;
+    }
+    .filter-group { display: flex; flex-direction: column; gap: 8px; }
+    .filter-row { display: flex; gap: 8px; }
+
+    select, input[type="number"], input[type="text"] {
+      width: 100%;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      font-size: 14px;
+      font-family: inherit;
+      padding: 10px 12px;
+      outline: none;
+      transition: border-color 0.2s;
+      -webkit-appearance: none;
+    }
+    select:focus, input:focus { border-color: var(--green); }
+    select option { background: var(--card); }
+
+    .lvr-input-wrap { position: relative; }
+    .lvr-input-wrap input { padding-right: 36px; }
+    .lvr-input-wrap::after {
+      content: '%';
+      position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+      color: var(--muted); font-size: 14px; pointer-events: none;
+    }
+
+    .checkbox-group { display: flex; flex-direction: column; gap: 8px; }
+    .checkbox-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 8px 10px;
+      background: var(--bg); border: 1px solid var(--border);
+      border-radius: 8px; cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+      font-size: 13px;
+    }
+    .checkbox-item:hover { border-color: var(--green); }
+    .checkbox-item input[type="checkbox"] { accent-color: var(--green); width: 15px; height: 15px; flex-shrink: 0; }
+    .checkbox-item.checked { border-color: rgba(46,204,133,0.4); background: rgba(46,204,133,0.05); }
+
+    .search-btn {
+      width: 100%;
+      background: linear-gradient(135deg, var(--green), var(--green-dark));
+      color: #0f1a0f;
+      border: none; border-radius: 10px;
+      padding: 13px;
+      font-size: 15px; font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-top: 4px;
+    }
+    .search-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(46,204,133,0.3); }
+
+    .reset-link {
+      display: block; text-align: center; margin-top: 10px;
+      font-size: 13px; color: var(--muted); cursor: pointer;
+      text-decoration: none; transition: color 0.2s;
+    }
+    .reset-link:hover { color: var(--text); }
+
+    /* MAIN */
+    .main {
+      flex: 1;
+      padding: 28px 32px;
+      overflow-y: auto;
+    }
+
+    .results-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 20px;
+    }
+    .results-title { font-size: 18px; font-weight: 700; }
+    .results-count {
+      font-size: 13px; color: var(--muted);
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 6px; padding: 4px 10px;
+    }
+
+    /* SCENARIO SUMMARY */
+    .scenario-bar {
+      background: rgba(46,204,133,0.08);
+      border: 1px solid rgba(46,204,133,0.2);
+      border-radius: 10px;
+      padding: 12px 16px;
+      margin-bottom: 20px;
+      font-size: 13px;
+      display: flex; align-items: center; gap: 8px;
+      flex-wrap: wrap;
+    }
+    .scenario-bar .tag {
+      background: rgba(46,204,133,0.15); color: var(--green);
+      border-radius: 6px; padding: 3px 8px; font-weight: 600; font-size: 12px;
+    }
+    .scenario-bar .hidden { display: none; }
+
+    /* LENDER CARDS */
+    .lender-grid { display: flex; flex-direction: column; gap: 16px; }
+
+    .lender-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 22px 24px;
+      transition: border-color 0.2s, transform 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+    .lender-card::before {
+      content: '';
+      position: absolute; left: 0; top: 0; bottom: 0;
+      width: 3px;
+      background: linear-gradient(135deg, var(--green), var(--green-dark));
+      border-radius: 3px 0 0 3px;
+    }
+    .lender-card.partial::before { background: linear-gradient(135deg, var(--warn), #e67e22); }
+    .lender-card:hover { border-color: rgba(46,204,133,0.3); transform: translateY(-2px); }
+
+    .card-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 16px; gap: 16px; }
+    .card-left { display: flex; align-items: center; gap: 14px; }
+    .lender-icon {
+      width: 44px; height: 44px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; flex-shrink: 0;
+    }
+    .lender-name { font-size: 17px; font-weight: 700; margin-bottom: 3px; }
+    .lender-meta { display: flex; gap: 6px; flex-wrap: wrap; }
+    .meta-tag {
+      font-size: 11px; font-weight: 500;
+      border-radius: 5px; padding: 2px 8px;
+    }
+    .meta-tag.tier1 { background: rgba(107,76,154,0.2); color: var(--purple-light); }
+    .meta-tag.tier2 { background: rgba(46,204,133,0.1); color: var(--green); }
+    .meta-tag.nonbank { background: rgba(46,204,133,0.1); color: var(--green); }
+    .meta-tag.partial { background: rgba(243,156,18,0.15); color: var(--warn); }
+
+    .card-badges { display: flex; gap: 8px; flex-wrap: wrap; align-items: flex-start; }
+    .badge {
+      font-size: 12px; font-weight: 600;
+      border-radius: 8px; padding: 5px 10px;
+      white-space: nowrap;
+    }
+    .badge.pass { background: rgba(46,204,133,0.15); color: var(--green); border: 1px solid rgba(46,204,133,0.2); }
+    .badge.warn { background: rgba(243,156,18,0.15); color: var(--warn); border: 1px solid rgba(243,156,18,0.2); }
+    .badge.fail { background: rgba(231,76,60,0.15); color: var(--danger); border: 1px solid rgba(231,76,60,0.2); }
+
+    /* POLICY GRID */
+    .policy-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .policy-cell {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 12px;
+    }
+    .cell-label { font-size: 11px; color: var(--muted); margin-bottom: 4px; font-weight: 500; }
+    .cell-value { font-size: 14px; font-weight: 600; color: var(--text); }
+    .cell-value.green { color: var(--green); }
+    .cell-value.warn { color: var(--warn); }
+    .cell-value.muted { color: var(--muted); font-weight: 400; font-size: 12px; }
+
+    /* MODIFIERS */
+    .modifiers-section { margin-bottom: 16px; }
+    .modifiers-title { font-size: 12px; font-weight: 600; color: var(--muted); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .modifier-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+    .modifier-tag {
+      font-size: 11px; border-radius: 5px; padding: 3px 8px;
+    }
+    .modifier-tag.active { background: rgba(231,76,60,0.15); color: #e74c3c; border: 1px solid rgba(231,76,60,0.2); }
+    .modifier-tag.inactive { background: var(--bg); color: var(--muted); border: 1px solid var(--border); }
+
+    /* SPECIAL POLICIES */
+    .specials { display: flex; gap: 8px; flex-wrap: wrap; }
+    .special-pill {
+      font-size: 12px; font-weight: 500;
+      border-radius: 20px; padding: 4px 12px;
+      background: rgba(107,76,154,0.15); color: var(--purple-light);
+      border: 1px solid rgba(107,76,154,0.2);
+    }
+
+    /* DATA NOTE */
+    .data-note {
+      font-size: 11px; color: var(--muted);
+      padding-top: 12px; border-top: 1px solid var(--border);
+      display: flex; align-items: center; gap: 6px;
+    }
+    .data-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+    .data-dot.full { background: var(--green); }
+    .data-dot.partial { background: var(--warn); }
+
+    /* COMPARE */
+    .compare-bar {
+      position: fixed;
+      bottom: 0; left: 320px; right: 0;
+      background: var(--card);
+      border-top: 1px solid var(--green);
+      padding: 14px 32px;
+      display: flex; align-items: center; gap: 16px;
+      transform: translateY(100%);
+      transition: transform 0.3s;
+      z-index: 50;
+    }
+    .compare-bar.show { transform: translateY(0); }
+    .compare-slots { display: flex; gap: 10px; flex: 1; }
+    .compare-slot {
+      background: var(--bg); border: 1px solid var(--border);
+      border-radius: 8px; padding: 8px 14px;
+      font-size: 13px; font-weight: 600;
+      display: flex; align-items: center; gap: 8px; min-width: 140px;
+    }
+    .compare-slot .remove { cursor: pointer; color: var(--muted); font-size: 16px; margin-left: auto; }
+    .compare-slot .remove:hover { color: var(--danger); }
+    .compare-btn {
+      background: linear-gradient(135deg, var(--green), var(--green-dark));
+      color: #0f1a0f; border: none; border-radius: 8px;
+      padding: 10px 20px; font-size: 14px; font-weight: 700;
+      cursor: pointer; white-space: nowrap;
+    }
+
+    /* COMPARE TABLE */
+    .compare-overlay {
+      position: fixed; inset: 0;
+      background: rgba(10,10,20,0.9);
+      z-index: 200; display: none;
+      padding: 24px;
+      overflow-y: auto;
+    }
+    .compare-overlay.show { display: block; }
+    .compare-inner {
+      max-width: 900px; margin: 0 auto;
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 16px; overflow: hidden;
+    }
+    .compare-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 20px 24px; border-bottom: 1px solid var(--border);
+    }
+    .compare-header h2 { font-size: 18px; font-weight: 700; }
+    .close-btn {
+      width: 32px; height: 32px; border-radius: 8px;
+      background: var(--bg); border: 1px solid var(--border);
+      color: var(--text); font-size: 18px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .compare-table { width: 100%; border-collapse: collapse; }
+    .compare-table th, .compare-table td {
+      padding: 12px 16px; text-align: left;
+      border-bottom: 1px solid var(--border);
+      font-size: 13px;
+    }
+    .compare-table th { background: var(--bg); font-weight: 600; font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
+    .compare-table th:first-child { color: var(--muted); }
+    .compare-table th:not(:first-child) { color: var(--text); font-size: 14px; text-transform: none; letter-spacing: 0; }
+    .compare-table tr:last-child td { border-bottom: none; }
+    .compare-table td:first-child { color: var(--muted); font-weight: 500; }
+    .val-good { color: var(--green); font-weight: 600; }
+    .val-warn { color: var(--warn); font-weight: 600; }
+    .val-na { color: var(--muted); font-style: italic; }
+
+    /* EMPTY STATE */
+    .empty-state {
+      text-align: center; padding: 80px 24px;
+      color: var(--muted);
+    }
+    .empty-state .icon { font-size: 48px; margin-bottom: 16px; }
+    .empty-state h3 { font-size: 20px; font-weight: 700; color: var(--text); margin-bottom: 8px; }
+
+    /* ADD TO COMPARE checkbox on card */
+    .compare-checkbox-wrap {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 12px; color: var(--muted); cursor: pointer;
+      margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border);
+    }
+    .compare-checkbox-wrap input { accent-color: var(--green); }
+    .compare-checkbox-wrap:hover { color: var(--text); }
+
+    .mobile-filter-btn {
+      display: none;
+      align-items: center; gap: 8px;
+      background: var(--card); border: 1px solid var(--border);
+      color: var(--text); border-radius: 8px; padding: 10px 16px;
+      font-size: 14px; font-weight: 600; cursor: pointer;
+      margin-bottom: 16px; width: 100%;
+    }
+    .mobile-filter-btn:hover { border-color: var(--green); }
+    @media (max-width: 768px) {
+      .sidebar {
+        display: none;
+        position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+        z-index: 200; overflow-y: auto;
+        background: var(--bg);
+        padding: 20px 16px 80px;
+      }
+      .sidebar.open { display: block; }
+      .sidebar-close-btn {
+        display: flex; align-items: center; justify-content: space-between;
+        margin-bottom: 20px;
+      }
+      .mobile-filter-btn { display: flex; }
+      .main { padding: 20px 16px; }
+      .compare-bar { left: 0; }
+    }
+    .sidebar-close-btn { display: none; }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-left">
+    <a href="index.html" class="nav-logo">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 210 90">
+        <defs>
+          <linearGradient id="fg" x1="0%" y1="100%" x2="0%" y2="0%">
+            <stop offset="0%" style="stop-color:#1FAD73"/><stop offset="55%" style="stop-color:#2ECC85"/>
+            <stop offset="55%" style="stop-color:transparent"/><stop offset="100%" style="stop-color:transparent"/>
+          </linearGradient>
+          <linearGradient id="sg" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#2ECC85"/><stop offset="100%" style="stop-color:#1FAD73"/>
+          </linearGradient>
+        </defs>
+        <g transform="translate(40,45)">
+          <circle cx="0" cy="0" r="32" fill="none" stroke="url(#sg)" stroke-width="7"/>
+          <circle cx="0" cy="0" r="24" fill="url(#fg)"/>
+        </g>
+        <text x="82" y="52" font-family="Inter,system-ui,sans-serif" font-size="28" font-weight="600" fill="#e2e2e2" letter-spacing="-0.5">ney</text>
+        <text x="129" y="52" font-family="Inter,system-ui,sans-serif" font-size="21" font-weight="500" fill="url(#sg)">&amp;</text>
+        <text x="148" y="52" font-family="Inter,system-ui,sans-serif" font-size="28" font-weight="600" fill="#e2e2e2" letter-spacing="-0.5">co</text>
+        <circle cx="182" cy="48" r="4" fill="#6B4C9A"/>
+      </svg>
+    </a>
+    <span class="nav-divider">/</span>
+    <span class="nav-title">Policy Radar</span>
+    <span class="nav-badge">Beta</span>
+  </div>
+  <div class="nav-right">
+    <span class="nav-tag"><span id="lenderCountNav">2</span> lenders loaded</span>
+  </div>
+</nav>
+
+<div class="app">
+  <!-- MOBILE FILTER BUTTON -->
+  <div class="main" style="padding-bottom:0;display:none" id="mobileFilterRow">
+    <button class="mobile-filter-btn" onclick="toggleMobileFilters()">
+      <span>⚙️</span> <span>Filters</span>
+    </button>
+  </div>
+
+  <!-- SIDEBAR FILTERS -->
+  <aside class="sidebar" id="sidebarEl">
+    <div class="sidebar-close-btn">
+      <span style="font-size:16px;font-weight:700;">Filters</span>
+      <button onclick="toggleMobileFilters()" style="background:none;border:none;color:var(--muted);font-size:22px;cursor:pointer;">✕</button>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Loan Type</div>
+      <div class="filter-group">
+        <select id="loanType">
+          <option value="">All loan types</option>
+          <option value="oo_pi">Owner Occupied — P&I</option>
+          <option value="oo_io">Owner Occupied — IO</option>
+          <option value="inv_pi">Investment — P&I</option>
+          <option value="inv_io">Investment — IO</option>
+          <option value="refinance">Refinance</option>
+          <option value="construction">Construction</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">Client LVR</div>
+      <div class="filter-group">
+        <div class="lvr-input-wrap">
+          <input type="number" id="lvrInput" placeholder="e.g. 88" min="1" max="100" step="1">
+        </div>
+      </div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">Borrower Type</div>
+      <div class="filter-group">
+        <select id="borrowerType">
+          <option value="">Any borrower</option>
+          <option value="individual">Individual (PAYG)</option>
+          <option value="self_employed">Self-Employed</option>
+          <option value="company">Company / Trust</option>
+          <option value="smsf">SMSF</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">Scenario Flags</div>
+      <div class="checkbox-group">
+        <label class="checkbox-item" id="chk-io-wrap">
+          <input type="checkbox" id="chk-io"> Interest Only portion
+        </label>
+        <label class="checkbox-item" id="chk-dti-wrap">
+          <input type="checkbox" id="chk-dti"> DTI likely above 6×
+        </label>
+        <label class="checkbox-item" id="chk-hd-wrap">
+          <input type="checkbox" id="chk-hd"> High density apartment
+        </label>
+        <label class="checkbox-item" id="chk-casual-wrap">
+          <input type="checkbox" id="chk-casual"> Casual income
+        </label>
+      </div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">Special Needs</div>
+      <div class="checkbox-group">
+        <label class="checkbox-item" id="chk-medico-wrap">
+          <input type="checkbox" id="chk-medico"> Medico / LMI Waiver
+        </label>
+        <label class="checkbox-item" id="chk-bridge-wrap">
+          <input type="checkbox" id="chk-bridge"> Bridging Loan
+        </label>
+        <label class="checkbox-item" id="chk-construction-wrap">
+          <input type="checkbox" id="chk-construction"> Construction Loan
+        </label>
+        <label class="checkbox-item" id="chk-famguarantee-wrap">
+          <input type="checkbox" id="chk-famguarantee"> Family Guarantee
+        </label>
+      </div>
+    </div>
+
+    <button class="search-btn" onclick="runSearch()">🔍 Search Policies</button>
+    <a class="reset-link" onclick="resetFilters()">Reset all filters</a>
+  </aside>
+
+  <!-- MAIN RESULTS -->
+  <main class="main">
+    <div class="results-header">
+      <div class="results-title">Lender Policy Results</div>
+      <div class="results-count" id="resultsCount">2 lenders</div>
+    </div>
+
+    <div class="scenario-bar hidden" id="scenarioBar">
+      <span style="color:var(--muted);font-size:12px;">Showing results for:</span>
+    </div>
+
+    <div class="lender-grid" id="lenderGrid">
+      <!-- populated by JS -->
+    </div>
+  </main>
+</div>
+
+<!-- COMPARE BAR -->
+<div class="compare-bar" id="compareBar">
+  <div style="font-size:13px;font-weight:600;white-space:nowrap;">Compare:</div>
+  <div class="compare-slots" id="compareSlots"></div>
+  <button class="compare-btn" onclick="openCompare()">Compare Side-by-Side →</button>
+</div>
+
+<!-- COMPARE OVERLAY -->
+<div class="compare-overlay" id="compareOverlay">
+  <div class="compare-inner">
+    <div class="compare-header">
+      <h2>Side-by-Side Comparison</h2>
+      <button class="close-btn" onclick="closeCompare()">✕</button>
+    </div>
+    <table class="compare-table" id="compareTable"></table>
+  </div>
+</div>
+
+<script>
+// ── MOBILE FILTER TOGGLE ─────────────────────────────────────────────────────
+function toggleMobileFilters() {
+  const sidebar = document.getElementById('sidebarEl');
+  sidebar.classList.toggle('open');
+  document.body.style.overflow = sidebar.classList.contains('open') ? 'hidden' : '';
+}
+// Show mobile filter button on small screens
+if (window.innerWidth <= 768) {
+  document.getElementById('mobileFilterRow').style.display = 'block';
+}
+window.addEventListener('resize', () => {
+  const row = document.getElementById('mobileFilterRow');
+  if (row) row.style.display = window.innerWidth <= 768 ? 'block' : 'none';
+});
+
+// ── LENDER DATA ──────────────────────────────────────────────────────────────
+const LENDERS = [
+  {
+    id: "macquarie",
+    name: "Macquarie Bank",
+    icon: "🏦",
+    type: "non_major_bank",
+    tier: "tier2",
+    completeness: "full",
+    source: "Public PDF v13.1 · Verified 23 Mar 2026",
+    lvr: {
+      oo_pi: 0.95, oo_io: 0.80, inv_pi: 0.90, inv_io: 0.80,
+      refinance: 0.90, equity_release: 0.80, construction: 0.90,
+      off_the_plan: 0.90, lmi_required_above: 0.80,
+      lmi_waiver: false
+    },
+    modifiers: [
+      { id: "dti_above_6x", label: "DTI > 6×", max_lvr: 0.80 },
+      { id: "interest_only_any_portion", label: "Any IO", max_lvr: 0.80 },
+      { id: "high_density_io", label: "High density + IO", max_lvr: 0.70 },
+      { id: "high_density_pi", label: "High density + PI", max_lvr: 0.80 },
+      { id: "valuation_red_flag", label: "Valuation red flag", max_lvr: 0.75 }
+    ],
+    servicing: {
+      assessment_floor: "5.30%",
+      buffer: "3.00%",
+      dti_max: "8×",
+      min_surplus: "$500/yr"
+    },
+    income: {
+      payg_base: "100%",
+      casual: "100%",
+      overtime_other: "80%",
+      commission: "80%",
+      self_employed_yrs: 2,
+      rental: "80%"
+    },
+    special: {
+      medico: true, medico_lvr: "95% (Tier 1)", lmi_waiver: false,
+      bridging: false, construction: true, family_guarantee: false, smsf: false
+    },
+    docs: { payslips: 2, self_emp: "2yr financials or ATO NOA", alt_doc: false }
+  },
+  {
+    id: "westpac",
+    name: "Westpac",
+    icon: "🏦",
+    type: "major_bank",
+    tier: "tier1",
+    completeness: "partial",
+    source: "Public Niche PDF · Verified 23 Mar 2026",
+    lvr: {
+      oo_pi: 0.95, oo_io: null, inv_pi: 0.90, inv_io: 0.90,
+      refinance: null, construction_oo: 0.95, construction_inv: 0.90,
+      lmi_required_above: 0.80,
+      lmi_waiver: true,
+      lmi_waiver_note: "Medico Tier 1 (GP/Dentist/Specialist): 95% no LMI\nAllied Health (min $90k): 90% no LMI\nAccountant/Lawyer: 90% no LMI"
+    },
+    modifiers: [
+      { id: "interest_only_inv", label: "Investor IO", max_lvr: 0.90, note: "Includes LMI" }
+    ],
+    servicing: {
+      assessment_floor: null,
+      buffer: "3.00%",
+      dti_max: null,
+      min_surplus: null
+    },
+    income: {
+      payg_base: "100%",
+      casual: "100%",
+      overtime_other: null,
+      commission: null,
+      self_employed_yrs: 2,
+      rental: null,
+      self_emp_fast_track: "2yr ATO NOA (up to 80% LVR)"
+    },
+    special: {
+      medico: true, medico_lvr: "95% no LMI (Tier 1)", lmi_waiver: true,
+      allied_health: true, industry_specialist: true,
+      bridging: true, bridging_months: 12,
+      construction: true, family_guarantee: true, smsf: null
+    },
+    docs: { payslips: null, self_emp: "2yr ATO NOA (Fast Track) or financials", alt_doc: true }
+  }
+];
+
+// ── STATE ────────────────────────────────────────────────────────────────────
+let compareList = [];
+let currentResults = [...LENDERS];
+
+// ── RENDER ───────────────────────────────────────────────────────────────────
+function render(results) {
+  currentResults = results;
+  const grid = document.getElementById('lenderGrid');
+  document.getElementById('resultsCount').textContent = results.length + ' lender' + (results.length !== 1 ? 's' : '');
+
+  if (results.length === 0) {
+    grid.innerHTML = `<div class="empty-state">
+      <div class="icon">🔍</div>
+      <h3>No lenders match this scenario</h3>
+      <p>Try relaxing some filters, or this client may need a specialist lender not yet in our database.</p>
+    </div>`;
+    return;
+  }
+
+  grid.innerHTML = results.map(l => renderCard(l)).join('');
+
+  // Re-bind checkboxes
+  results.forEach(l => {
+    const cb = document.getElementById('compare-' + l.id);
+    if (cb) {
+      cb.checked = compareList.includes(l.id);
+      cb.addEventListener('change', () => toggleCompare(l.id, cb.checked, l.name));
+    }
+  });
+}
+
+function renderCard(l) {
+  const filters = getFilters();
+  const effectiveLvr = getEffectiveLvr(l, filters);
+  const lvrPass = filters.lvr ? (effectiveLvr !== null && effectiveLvr * 100 >= filters.lvr) : true;
+  const lvrBadge = filters.lvr
+    ? (lvrPass
+        ? `<span class="badge pass">✓ LVR ${filters.lvr}% OK → max ${(effectiveLvr*100).toFixed(0)}%</span>`
+        : `<span class="badge fail">✗ LVR ${filters.lvr}% exceeds max ${effectiveLvr !== null ? (effectiveLvr*100).toFixed(0)+'%' : 'N/A'}</span>`)
+    : '';
+
+  const medicoBadge = filters.medico && l.special.medico
+    ? `<span class="badge pass">✓ Medico LMI Waiver</span>` : '';
+  const bridgeBadge = filters.bridge && l.special.bridging
+    ? `<span class="badge pass">✓ Bridging Loan</span>` : '';
+  const famBadge = filters.famguarantee && l.special.family_guarantee
+    ? `<span class="badge pass">✓ Family Guarantee</span>` : '';
+  const smsf = filters.borrower === 'smsf'
+    ? (l.special.smsf === true ? `<span class="badge pass">✓ SMSF</span>` : l.special.smsf === false ? `<span class="badge fail">✗ No SMSF</span>` : `<span class="badge warn">? SMSF — check portal</span>`)
+    : '';
+
+  const activeModifiers = getActiveModifiers(l, filters);
+
+  const specialPills = [];
+  if (l.special.medico) specialPills.push(`<span class="special-pill">Medico waiver</span>`);
+  if (l.special.lmi_waiver) specialPills.push(`<span class="special-pill">LMI waiver</span>`);
+  if (l.special.allied_health) specialPills.push(`<span class="special-pill">Allied Health</span>`);
+  if (l.special.industry_specialist) specialPills.push(`<span class="special-pill">Accountant/Lawyer waiver</span>`);
+  if (l.special.bridging) specialPills.push(`<span class="special-pill">Bridging</span>`);
+  if (l.special.construction) specialPills.push(`<span class="special-pill">Construction</span>`);
+  if (l.special.family_guarantee) specialPills.push(`<span class="special-pill">Family Guarantee</span>`);
+
+  const isCompared = compareList.includes(l.id);
+
+  return `
+  <div class="lender-card ${l.completeness === 'partial' ? 'partial' : ''}" id="card-${l.id}">
+    <div class="card-top">
+      <div class="card-left">
+        <div class="lender-icon">${l.icon}</div>
+        <div>
+          <div class="lender-name">${l.name}</div>
+          <div class="lender-meta">
+            <span class="meta-tag ${l.tier}">${l.tier === 'tier1' ? 'Major Bank' : 'Non-Major'}</span>
+            ${l.completeness === 'partial' ? '<span class="meta-tag partial">⚠ Partial data</span>' : '<span class="meta-tag tier2">✓ Full data</span>'}
+          </div>
+        </div>
+      </div>
+      <div class="card-badges">
+        ${lvrBadge}${medicoBadge}${bridgeBadge}${famBadge}${smsf}
+      </div>
+    </div>
+
+    <div class="policy-grid">
+      <div class="policy-cell">
+        <div class="cell-label">OO P&I Max LVR</div>
+        <div class="cell-value green">${l.lvr.oo_pi ? (l.lvr.oo_pi*100).toFixed(0)+'%' : '—'}</div>
+      </div>
+      <div class="policy-cell">
+        <div class="cell-label">Investor P&I Max LVR</div>
+        <div class="cell-value green">${l.lvr.inv_pi ? (l.lvr.inv_pi*100).toFixed(0)+'%' : '—'}</div>
+      </div>
+      <div class="policy-cell">
+        <div class="cell-label">IO Max LVR</div>
+        <div class="cell-value">${l.lvr.oo_io ? (l.lvr.oo_io*100).toFixed(0)+'%' : '—'}</div>
+      </div>
+      <div class="policy-cell">
+        <div class="cell-label">Assessment Buffer</div>
+        <div class="cell-value">${l.servicing.buffer || '—'}</div>
+      </div>
+      <div class="policy-cell">
+        <div class="cell-label">Assessment Floor</div>
+        <div class="cell-value">${l.servicing.assessment_floor || <span class="muted">See portal</span>}</div>
+      </div>
+      <div class="policy-cell">
+        <div class="cell-label">Max DTI</div>
+        <div class="cell-value">${l.servicing.dti_max || <span class="muted">See portal</span>}</div>
+      </div>
+      <div class="policy-cell">
+        <div class="cell-label">Commission Income</div>
+        <div class="cell-value">${l.income.commission || '—'}</div>
+      </div>
+      <div class="policy-cell">
+        <div class="cell-label">Self-Employed</div>
+        <div class="cell-value">${l.income.self_employed_yrs} yr${l.income.self_employed_yrs > 1 ? 's' : ''}</div>
+      </div>
+    </div>
+
+    ${activeModifiers.length ? `
+    <div class="modifiers-section">
+      <div class="modifiers-title">LVR Modifiers</div>
+      <div class="modifier-tags">
+        ${l.modifiers.map(m => {
+          const active = activeModifiers.includes(m.id);
+          return `<span class="modifier-tag ${active ? 'active' : 'inactive'}">${active ? '⚠ ' : ''}${m.label}: max ${(m.max_lvr*100).toFixed(0)}%</span>`;
+        }).join('')}
+      </div>
+    </div>` : ''}
+
+    ${specialPills.length ? `
+    <div class="specials" style="margin-bottom:12px">
+      ${specialPills.join('')}
+    </div>` : ''}
+
+    <div class="data-note">
+      <span class="data-dot ${l.completeness}"></span>
+      ${l.completeness === 'full' ? 'Complete data' : 'Partial data — specialist segments only'} · ${l.source}
+    </div>
+
+    <label class="compare-checkbox-wrap">
+      <input type="checkbox" id="compare-${l.id}" ${isCompared ? 'checked' : ''}>
+      Add to comparison
+    </label>
+  </div>`;
+}
+
+// ── FILTERS ──────────────────────────────────────────────────────────────────
+function getFilters() {
+  return {
+    loanType: document.getElementById('loanType').value,
+    lvr: parseFloat(document.getElementById('lvrInput').value) || null,
+    borrower: document.getElementById('borrowerType').value,
+    io: document.getElementById('chk-io').checked,
+    dti: document.getElementById('chk-dti').checked,
+    hd: document.getElementById('chk-hd').checked,
+    casual: document.getElementById('chk-casual').checked,
+    medico: document.getElementById('chk-medico').checked,
+    bridge: document.getElementById('chk-bridge').checked,
+    construction: document.getElementById('chk-construction').checked,
+    famguarantee: document.getElementById('chk-famguarantee').checked,
+  };
+}
+
+function getEffectiveLvr(lender, filters) {
+  const loanType = filters.loanType;
+  let baseLvr = null;
+
+  if (loanType === 'oo_pi') baseLvr = lender.lvr.oo_pi;
+  else if (loanType === 'oo_io') baseLvr = lender.lvr.oo_io;
+  else if (loanType === 'inv_pi') baseLvr = lender.lvr.inv_pi;
+  else if (loanType === 'inv_io') baseLvr = lender.lvr.inv_io;
+  else if (loanType === 'refinance') baseLvr = lender.lvr.refinance;
+  else if (loanType === 'construction') baseLvr = lender.lvr.construction || lender.lvr.construction_oo;
+  else baseLvr = lender.lvr.oo_pi; // default
+
+  if (baseLvr === null || baseLvr === undefined) return null;
+
+  let effective = baseLvr;
+
+  // Apply modifiers
+  if (filters.io) {
+    const m = lender.modifiers.find(x => x.id === 'interest_only_any_portion');
+    if (m) effective = Math.min(effective, m.max_lvr);
+  }
+  if (filters.dti) {
+    const m = lender.modifiers.find(x => x.id === 'dti_above_6x');
+    if (m) effective = Math.min(effective, m.max_lvr);
+  }
+  if (filters.hd && filters.io) {
+    const m = lender.modifiers.find(x => x.id === 'high_density_io');
+    if (m) effective = Math.min(effective, m.max_lvr);
+  } else if (filters.hd) {
+    const m = lender.modifiers.find(x => x.id === 'high_density_pi');
+    if (m) effective = Math.min(effective, m.max_lvr);
+  }
+
+  return effective;
+}
+
+function getActiveModifiers(lender, filters) {
+  const active = [];
+  if (filters.io) active.push('interest_only_any_portion');
+  if (filters.dti) active.push('dti_above_6x');
+  if (filters.hd && filters.io) active.push('high_density_io');
+  else if (filters.hd) active.push('high_density_pi');
+  return active;
+}
+
+// ── SEARCH ───────────────────────────────────────────────────────────────────
+function runSearch() {
+  const filters = getFilters();
+  let results = [...LENDERS];
+
+  // Filter: medico required
+  if (filters.medico) {
+    results = results.filter(l => l.special.medico);
+  }
+  // Filter: bridge required
+  if (filters.bridge) {
+    results = results.filter(l => l.special.bridging);
+  }
+  // Filter: construction
+  if (filters.construction) {
+    results = results.filter(l => l.special.construction);
+  }
+  // Filter: family guarantee
+  if (filters.famguarantee) {
+    results = results.filter(l => l.special.family_guarantee);
+  }
+  // Filter: SMSF
+  if (filters.borrower === 'smsf') {
+    results = results.filter(l => l.special.smsf !== false);
+  }
+
+  // Sort: pass LVR check first
+  if (filters.lvr) {
+    results.sort((a, b) => {
+      const aLvr = getEffectiveLvr(a, filters);
+      const bLvr = getEffectiveLvr(b, filters);
+      const aPass = aLvr !== null && aLvr * 100 >= filters.lvr;
+      const bPass = bLvr !== null && bLvr * 100 >= filters.lvr;
+      if (aPass && !bPass) return -1;
+      if (!aPass && bPass) return 1;
+      return (bLvr || 0) - (aLvr || 0);
+    });
+  }
+
+  // Update scenario bar
+  updateScenarioBar(filters);
+
+  render(results);
+}
+
+function updateScenarioBar(filters) {
+  const bar = document.getElementById('scenarioBar');
+  const tags = [];
+  if (filters.loanType) tags.push(document.getElementById('loanType').options[document.getElementById('loanType').selectedIndex].text);
+  if (filters.lvr) tags.push(`LVR ${filters.lvr}%`);
+  if (filters.borrower) tags.push(document.getElementById('borrowerType').options[document.getElementById('borrowerType').selectedIndex].text);
+  if (filters.io) tags.push('Interest Only');
+  if (filters.dti) tags.push('DTI > 6×');
+  if (filters.hd) tags.push('High Density');
+  if (filters.medico) tags.push('Medico LMI Waiver');
+  if (filters.bridge) tags.push('Bridging');
+  if (tags.length > 0) {
+    bar.classList.remove('hidden');
+    bar.innerHTML = '<span style="color:var(--muted);font-size:12px;">Scenario:</span> ' + tags.map(t => `<span class="tag">${t}</span>`).join('');
+  } else {
+    bar.classList.add('hidden');
+  }
+}
+
+function resetFilters() {
+  document.getElementById('loanType').value = '';
+  document.getElementById('lvrInput').value = '';
+  document.getElementById('borrowerType').value = '';
+  ['chk-io','chk-dti','chk-hd','chk-casual','chk-medico','chk-bridge','chk-construction','chk-famguarantee']
+    .forEach(id => document.getElementById(id).checked = false);
+  document.getElementById('scenarioBar').classList.add('hidden');
+  render([...LENDERS]);
+}
+
+// ── COMPARE ──────────────────────────────────────────────────────────────────
+function toggleCompare(id, checked, name) {
+  if (checked && compareList.length >= 3) {
+    alert('You can compare up to 3 lenders at a time.');
+    document.getElementById('compare-' + id).checked = false;
+    return;
+  }
+  if (checked) {
+    compareList.push(id);
+  } else {
+    compareList = compareList.filter(x => x !== id);
+  }
+  updateCompareBar();
+}
+
+function updateCompareBar() {
+  const bar = document.getElementById('compareBar');
+  const slots = document.getElementById('compareSlots');
+  if (compareList.length === 0) {
+    bar.classList.remove('show');
+    return;
+  }
+  bar.classList.add('show');
+  slots.innerHTML = compareList.map(id => {
+    const l = LENDERS.find(x => x.id === id);
+    return `<div class="compare-slot">${l.name}<span class="remove" onclick="removeCompare('${id}')">×</span></div>`;
+  }).join('');
+}
+
+function removeCompare(id) {
+  compareList = compareList.filter(x => x !== id);
+  const cb = document.getElementById('compare-' + id);
+  if (cb) cb.checked = false;
+  updateCompareBar();
+  if (compareList.length === 0) closeCompare();
+  else openCompare();
+}
+
+function openCompare() {
+  const overlay = document.getElementById('compareOverlay');
+  overlay.classList.add('show');
+  buildCompareTable();
+}
+
+function closeCompare() {
+  document.getElementById('compareOverlay').classList.remove('show');
+}
+
+function buildCompareTable() {
+  const lenders = compareList.map(id => LENDERS.find(x => x.id === id));
+  const table = document.getElementById('compareTable');
+
+  const rows = [
+    { label: 'Type', fn: l => l.tier === 'tier1' ? 'Major Bank' : 'Non-Major Bank' },
+    { label: 'OO P&I Max LVR', fn: l => l.lvr.oo_pi ? `<span class="val-good">${(l.lvr.oo_pi*100).toFixed(0)}%</span>` : '<span class="val-na">—</span>' },
+    { label: 'OO IO Max LVR', fn: l => l.lvr.oo_io ? `${(l.lvr.oo_io*100).toFixed(0)}%` : '<span class="val-na">—</span>' },
+    { label: 'Investor P&I Max LVR', fn: l => l.lvr.inv_pi ? `<span class="val-good">${(l.lvr.inv_pi*100).toFixed(0)}%</span>` : '<span class="val-na">—</span>' },
+    { label: 'Investor IO Max LVR', fn: l => l.lvr.inv_io ? `${(l.lvr.inv_io*100).toFixed(0)}%` : '<span class="val-na">—</span>' },
+    { label: 'LMI Required Above', fn: l => l.lvr.lmi_required_above ? `${(l.lvr.lmi_required_above*100).toFixed(0)}%` : '<span class="val-na">—</span>' },
+    { label: 'LMI Waiver Available', fn: l => l.lvr.lmi_waiver ? `<span class="val-good">✓ Yes</span>` : '✗ No' },
+    { label: 'Assessment Buffer', fn: l => l.servicing.buffer || '<span class="val-na">—</span>' },
+    { label: 'Assessment Floor Rate', fn: l => l.servicing.assessment_floor || '<span class="val-na">See portal</span>' },
+    { label: 'Max DTI', fn: l => l.servicing.dti_max || '<span class="val-na">See portal</span>' },
+    { label: 'Commission Income', fn: l => l.income.commission || '<span class="val-na">—</span>' },
+    { label: 'Casual Income', fn: l => l.income.casual || '<span class="val-na">—</span>' },
+    { label: 'Self-Employed Docs', fn: l => l.docs.self_emp },
+    { label: 'Medico / LMI Waiver', fn: l => l.special.medico ? `<span class="val-good">✓ ${l.special.medico_lvr}</span>` : '✗ No' },
+    { label: 'Bridging Loan', fn: l => l.special.bridging ? (l.special.bridging_months ? `<span class="val-good">✓ Up to ${l.special.bridging_months}mo</span>` : '<span class="val-good">✓ Available</span>') : '✗ No' },
+    { label: 'Family Guarantee', fn: l => l.special.family_guarantee ? '<span class="val-good">✓ Available</span>' : (l.special.family_guarantee === null ? '<span class="val-na">See portal</span>' : '✗ No') },
+    { label: 'Construction Loan', fn: l => l.special.construction ? '<span class="val-good">✓ Available</span>' : '✗ No' },
+    { label: 'Data Source', fn: l => `<span style="font-size:11px;color:var(--muted)">${l.source}</span>` },
+  ];
+
+  const headerRow = `<tr><th>Policy</th>${lenders.map(l => `<th>${l.icon} ${l.name}</th>`).join('')}</tr>`;
+  const bodyRows = rows.map(r => {
+    return `<tr><td>${r.label}</td>${lenders.map(l => `<td>${r.fn(l)}</td>`).join('')}</tr>`;
+  }).join('');
+
+  table.innerHTML = `<thead>${headerRow}</thead><tbody>${bodyRows}</tbody>`;
+}
+
+// ── INIT ─────────────────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('lenderCountNav').textContent = LENDERS.length;
+  render([...LENDERS]);
+
+  // Checkbox styling
+  document.querySelectorAll('.checkbox-item input').forEach(cb => {
+    cb.addEventListener('change', () => {
+      cb.closest('.checkbox-item').classList.toggle('checked', cb.checked);
+    });
+  });
+
+  // Enter key on inputs triggers search
+  ['lvrInput'].forEach(id => {
+    document.getElementById(id).addEventListener('keydown', e => {
+      if (e.key === 'Enter') runSearch();
+    });
+  });
+
+  // Close overlay on background click
+  document.getElementById('compareOverlay').addEventListener('click', e => {
+    if (e.target === document.getElementById('compareOverlay')) closeCompare();
+  });
+});
+</script>
+</body>
+</html>

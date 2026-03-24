@@ -1,0 +1,222 @@
+{
+  "meta": {
+    "source_type": "public_pdf",
+    "source_url": "https://www.westpac.com.au/content/dam/public/brokers/documents/other-resources/Broker_Niche_Booklet.pdf",
+    "source_version": null,
+    "effective_date": "2025-07-01",
+    "last_verified": "2026-03-23",
+    "confidence": "high",
+    "notes": "Niche/specialist policy booklet (public). Full credit policy in BrokerHub portal only."
+  },
+  "lender": {
+    "id": "westpac",
+    "name": "Westpac",
+    "type": "major_bank",
+    "tier": "tier1",
+    "broker_accreditation": true,
+    "aggregators": ["connective", "afg", "fast", "finsure", "aussie"]
+  },
+  "residential": {
+    "loan_params": {
+      "min_loan": null,
+      "min_increase": null,
+      "max_loan": null,
+      "max_exposure": null,
+      "min_term_years": null,
+      "max_term_years": 30,
+      "acceptable_purposes": [
+        "purchase",
+        "construction",
+        "refinance",
+        "equity_release",
+        "renovation",
+        "bridging"
+      ],
+      "unacceptable_purposes": [],
+      "notes": "Full list in broker portal. Niche booklet covers specialist segments only."
+    },
+    "lvr": {
+      "oo_pi": 0.95,
+      "oo_io": null,
+      "inv_pi": 0.90,
+      "inv_io": 0.90,
+      "refinance": null,
+      "equity_release": null,
+      "construction_oo": 0.95,
+      "construction_inv": 0.90,
+      "no_lmi_standard": 0.80,
+      "off_the_plan": null,
+      "lmi_required_above": 0.80,
+      "lmi_waiver_available": true,
+      "lmi_waiver_conditions": "Eligible Medico and Allied Health professions; also Industry specialists (Accounting, Legal)",
+      "modifiers": [
+        {
+          "trigger": "medico_tier1_no_lmi",
+          "max_lvr": 0.95,
+          "min_income": null,
+          "eligible": ["dentist", "general_practitioner", "medical_specialist", "hospital_employed_doctor"],
+          "notes": "No minimum income required"
+        },
+        {
+          "trigger": "allied_health_no_lmi",
+          "max_lvr": 0.90,
+          "min_income": 90000,
+          "eligible": [
+            "audiologist", "chiropractor", "midwife", "occupational_therapist",
+            "osteopath", "physiotherapist", "podiatrist", "psychologist",
+            "radiographer", "registered_nurse", "sonographer", "speech_pathologist",
+            "optometrist", "pharmacist", "veterinary_practitioner"
+          ],
+          "notes": "Cannot combine with Fast Track"
+        },
+        {
+          "trigger": "industry_specialist_no_lmi",
+          "max_lvr": 0.90,
+          "min_income": null,
+          "eligible": ["accountant", "lawyer"],
+          "notes": "Subject to approved accreditation and income criteria"
+        }
+      ]
+    },
+    "interest_only": {
+      "max_initial_period_years": null,
+      "inv_io_max_lvr": 0.90,
+      "notes": "Investment IO up to 90% LVR (incl. LMI). Interest in Advance option available (discount for 12mo upfront)."
+    },
+    "servicing": {
+      "assessment_rate_floor": null,
+      "assessment_buffer": 0.03,
+      "buffer_applies_to": null,
+      "repayment_type": "PI_remaining_term",
+      "dti_max": null,
+      "dti_trigger_lower_lvr": null,
+      "min_surplus_pa": null,
+      "nsr_min": null,
+      "hem_basis": null,
+      "living_expenses": null,
+      "notes": "Full serviceability criteria in BrokerHub. Bridging loans assessed on end debt."
+    },
+    "income": {
+      "payg_base": 1.0,
+      "payg_casual": 1.0,
+      "payg_casual_annualisation_weeks": 48,
+      "payg_second_job": null,
+      "payg_overtime_essential": 1.0,
+      "payg_overtime_other": null,
+      "payg_commission": null,
+      "payg_bonus": null,
+      "payg_car_allowance": null,
+      "payg_shift_allowance": null,
+      "self_employed_years_required": 2,
+      "self_employed_fast_track": true,
+      "self_employed_fast_track_docs": "Latest 2 years ATO NOA",
+      "self_employed_fast_track_max_lvr": 0.80,
+      "self_employed_1yr_assessment": true,
+      "rental_income": null,
+      "rental_income_basis": null,
+      "foreign_income": null,
+      "government_benefits": null,
+      "parental_leave": "Return-to-work income accepted; repayment pause/reduce options available",
+      "emergency_services_overtime": 1.0,
+      "emergency_services_eligible": ["fire officer", "police officer", "ambulance officer/paramedic", "hospital nurses/doctors/surgeons/specialists"],
+      "employment_min_months": null,
+      "same_industry_exception": null
+    },
+    "docs": {
+      "payslips_required": null,
+      "payslip_max_age_days": null,
+      "tax_returns_required": 2,
+      "financials_required": null,
+      "bank_statements_months": null,
+      "accountant_letter_accepted": null,
+      "alt_doc_available": true,
+      "alt_doc_notes": "Fast Track: 2yr ATO NOA for self-employed up to 80% LVR",
+      "low_doc_available": null
+    },
+    "property": {
+      "residential_house": true,
+      "apartment_standard": true,
+      "apartment_high_density": null,
+      "new_construction": true,
+      "off_the_plan": null,
+      "dual_occupancy": null,
+      "rural_residential": null,
+      "renovation_cashout_no_progress_draws": 250000,
+      "notes": "Portability available; upfront valuations available before lodgement"
+    },
+    "borrower": {
+      "individual": true,
+      "joint": true,
+      "company": null,
+      "trust_discretionary": null,
+      "smsf": null,
+      "non_resident": null,
+      "temporary_resident": null,
+      "family_guarantee": true,
+      "family_guarantee_notes": "Family Security Guarantee — OO and Investment; no serviceability on guarantor"
+    },
+    "genuine_savings": {
+      "required": null,
+      "required_above_lvr": null,
+      "min_pct_purchase": null,
+      "min_hold_months": null,
+      "gifts_accepted": null,
+      "fhog_accepted": true,
+      "equity_accepted": null,
+      "notes": "FHOG accepted at land settlement and for land+construction. Full genuine savings policy in BrokerHub."
+    },
+    "credit_history": {
+      "defaults_accepted": null,
+      "default_max_amount": null,
+      "default_max_age_years": null,
+      "bankruptcy_accepted": null,
+      "bankruptcy_discharged_years": null,
+      "part9_accepted": null,
+      "arrears_accepted": null,
+      "min_credit_score": null,
+      "notes": "Not in public document"
+    },
+    "special_policies": {
+      "medico": {
+        "available": true,
+        "lmi_waiver_lvr_tier1": 0.95,
+        "lmi_waiver_lvr_tier2": 0.90,
+        "max_loan": 5000000,
+        "max_total_lending": 7500000,
+        "eligible_tier1": ["dentist", "gp", "medical_specialist", "hospital_doctor"],
+        "eligible_tier2_min_income": 90000
+      },
+      "allied_health": {
+        "available": true,
+        "lmi_waiver_lvr": 0.90,
+        "min_income": 90000
+      },
+      "industry_specialist": {
+        "available": true,
+        "lmi_waiver_lvr": 0.90,
+        "eligible": ["accountant", "lawyer"]
+      },
+      "first_home_buyer": {
+        "fhog_accepted": true,
+        "family_guarantee": true,
+        "lmi_waiver": false
+      },
+      "bridging_loan": {
+        "available": true,
+        "max_term_months": 12,
+        "servicing_basis": "end_debt"
+      },
+      "construction_loan": {
+        "available": true,
+        "oo_max_lvr": 0.95,
+        "inv_max_lvr": 0.90,
+        "no_lmi_max_lvr": 0.80
+      },
+      "priority_refinance": true,
+      "investor_only_lender": false,
+      "green_loan": null,
+      "reverse_mortgage": null,
+      "smsf_lending": null
+    }
+  }
+}

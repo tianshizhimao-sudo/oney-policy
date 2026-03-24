@@ -1,0 +1,215 @@
+{
+  "meta": {
+    "source_type": "public_pdf",
+    "source_url": "https://www.macquarie.com.au/assets/bfs/documents/broker/mortgages/macquarie_broker-credit-guidelines.pdf",
+    "source_version": "v13.1",
+    "effective_date": null,
+    "last_verified": "2026-03-23",
+    "confidence": "high",
+    "notes": "Publicly available broker credit guidelines from Macquarie website"
+  },
+  "lender": {
+    "id": "macquarie",
+    "name": "Macquarie Bank",
+    "type": "non_major_bank",
+    "tier": "tier2",
+    "broker_accreditation": true,
+    "aggregators": []
+  },
+  "residential": {
+    "loan_params": {
+      "min_loan": 150000,
+      "min_increase": 25000,
+      "max_loan": null,
+      "max_exposure": 10000000,
+      "min_term_years": 5,
+      "max_term_years": 30,
+      "acceptable_purposes": [
+        "purchase",
+        "construction",
+        "refinance",
+        "equity_release",
+        "home_improvements",
+        "business_under_50pct"
+      ],
+      "unacceptable_purposes": [
+        "development_finance_over_2_dwellings",
+        "vendor_finance",
+        "tax_liabilities",
+        "working_capital",
+        "business_over_50pct",
+        "shared_equity_schemes",
+        "standalone_second_mortgage"
+      ]
+    },
+    "lvr": {
+      "oo_pi": 0.95,
+      "oo_io": 0.80,
+      "inv_pi": 0.90,
+      "inv_io": 0.80,
+      "refinance": 0.90,
+      "equity_release": 0.80,
+      "construction": 0.90,
+      "off_the_plan": 0.90,
+      "lmi_required_above": 0.80,
+      "lmi_waiver_available": false,
+      "lmi_waiver_conditions": null,
+      "modifiers": [
+        { "trigger": "dti_above_6x", "max_lvr": 0.80, "notes": "DTI > 6× gross income caps LVR at 80%" },
+        { "trigger": "interest_only_any_portion", "max_lvr": 0.80 },
+        { "trigger": "high_density_apartment_pi", "max_lvr": 0.80 },
+        { "trigger": "high_density_apartment_io", "max_lvr": 0.70 },
+        { "trigger": "high_risk_postcode", "max_lvr": 0.80 },
+        { "trigger": "valuation_red_flag", "max_lvr": 0.75, "notes": "Market Segment Conditions Risk Rating 4/5 or selling period >6mo" },
+        { "trigger": "multiple_security", "max_lvr": 0.80 },
+        { "trigger": "stratum_title_vic", "max_lvr": 0.85 },
+        { "trigger": "land_4_to_10ha", "max_lvr": 0.80 },
+        { "trigger": "land_10_to_20ha", "max_lvr": 0.70 },
+        { "trigger": "land_20_to_40ha", "max_lvr": 0.60 },
+        { "trigger": "land_over_40ha", "max_lvr": 0, "notes": "Unacceptable" }
+      ]
+    },
+    "interest_only": {
+      "max_initial_period_years": 5,
+      "rollover_available": true,
+      "max_rollover_years": 5,
+      "not_permitted_in_last_years": 20,
+      "rollover_conditions": [
+        "satisfactory repayment history 6 months prior to rollover",
+        "P&I servicing capacity over remaining term at assessment rate"
+      ]
+    },
+    "servicing": {
+      "assessment_rate_floor": 0.053,
+      "assessment_buffer": 0.03,
+      "buffer_applies_to": "higher_of_carded_revert",
+      "repayment_type": "PI_remaining_term",
+      "dti_max": 8,
+      "dti_trigger_lower_lvr": 6,
+      "min_surplus_pa": 500,
+      "nsr_min": 1.00,
+      "hem_basis": "ABS_HEM",
+      "living_expenses": "Higher of declared expenses or HEM; if declared ≥ 120% HEM or savings ≥ $10k, min surplus requirement waived (NSR 1.00 applies instead)"
+    },
+    "income": {
+      "payg_base": 1.0,
+      "payg_casual": 1.0,
+      "payg_second_job": 1.0,
+      "payg_overtime_essential": 1.0,
+      "payg_overtime_other": 0.8,
+      "payg_commission": 0.8,
+      "payg_bonus": 0.8,
+      "payg_car_allowance": 1.0,
+      "payg_shift_allowance": 1.0,
+      "salary_sacrifice": 1.0,
+      "self_employed_years_required": 2,
+      "self_employed_income_basis": "lower_of_2yr_avg_or_latest",
+      "rental_income": 0.8,
+      "rental_income_basis": "gross",
+      "foreign_income": null,
+      "foreign_income_accepted": null,
+      "government_benefits": null,
+      "parental_leave": "100% with return-to-work letter (≤60 days old)",
+      "super_pension": 1.0,
+      "dividends": 0.8,
+      "trust_distributions": 0.8,
+      "employment_min_months": 6,
+      "same_industry_exception": true,
+      "notes": "Essential services overtime 100%: public transport, fire fighters, health, garbage/sewerage, prison officers, police, power technicians"
+    },
+    "docs": {
+      "payslips_required": 2,
+      "payslip_max_age_days": 60,
+      "payslip_oldest_max_months": 4,
+      "tax_returns_required": 2,
+      "financials_required": 2,
+      "bank_statements_months": 3,
+      "accountant_letter_accepted": true,
+      "alt_doc_available": false,
+      "low_doc_available": false,
+      "notes": "Single payslip (≤60 days) + employment contract acceptable for base income only"
+    },
+    "property": {
+      "residential_house": true,
+      "apartment_standard": true,
+      "apartment_high_density": true,
+      "high_density_max_lvr": 0.80,
+      "studio_min_sqm": null,
+      "serviced_apartment": false,
+      "student_accommodation": false,
+      "dual_occupancy": true,
+      "granny_flat": true,
+      "rural_residential": true,
+      "rural_max_ha": 40,
+      "commercial_residential_mixed": false,
+      "new_construction": true,
+      "off_the_plan": true,
+      "company_title": null,
+      "strata_title": true,
+      "leasehold": "case_by_case"
+    },
+    "borrower": {
+      "individual": true,
+      "joint": true,
+      "company": true,
+      "company_notes": "Australian domiciled Pty Ltd only; directors must provide joint & several guarantees; turnover < $75m; own < 5 properties",
+      "trust_discretionary": true,
+      "trust_unit": true,
+      "trust_hybrid": false,
+      "smsf": false,
+      "non_resident": null,
+      "temporary_resident": null,
+      "foreign_national": null
+    },
+    "genuine_savings": {
+      "required": true,
+      "required_above_lvr": 0.85,
+      "min_pct_purchase": 0.05,
+      "min_hold_months": 3,
+      "gifts_accepted": false,
+      "fhog_accepted": false,
+      "equity_accepted": true,
+      "acceptable": [
+        "personal savings / term deposits (≥3 months)",
+        "shares or managed funds (≥3 months)",
+        "proceeds from sale of shares/funds held ≥3 months",
+        "equity in real estate",
+        "off-the-plan deposit paid >3 months ago"
+      ],
+      "unacceptable": [
+        "First Home Owners Grant",
+        "gifts",
+        "borrowed funds"
+      ]
+    },
+    "credit_history": {
+      "defaults_accepted": null,
+      "default_max_amount": null,
+      "default_max_age_years": null,
+      "bankruptcy_accepted": null,
+      "bankruptcy_discharged_years": null,
+      "part9_accepted": null,
+      "arrears_accepted": null,
+      "min_credit_score": null,
+      "notes": "Not detailed in public PDF; refer broker portal"
+    },
+    "special_policies": {
+      "medico": {
+        "available": true,
+        "lmi_waiver_lvr": null,
+        "max_loan_with_waiver": 5000000,
+        "max_total_lending_with_waiver": 7500000,
+        "eligible_professions": ["doctor", "dentist", "specialist", "vet"]
+      },
+      "first_home_buyer": {
+        "lmi_waiver": false,
+        "fhog_top_up": false
+      },
+      "bridging_loan": false,
+      "construction_loan": true,
+      "investor_only_lender": false,
+      "green_loan": false,
+      "reverse_mortgage": false
+    }
+  }
+}
