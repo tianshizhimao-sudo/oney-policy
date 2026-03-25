@@ -144,6 +144,39 @@
     }
     .reset-link:hover { color: var(--text); }
 
+    /* KEYWORD SEARCH */
+    .keyword-search-wrap {
+      margin-bottom: 18px;
+    }
+    .keyword-search-inner {
+      display: flex; align-items: center; gap: 10px;
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 10px; padding: 10px 16px;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .keyword-search-inner:focus-within {
+      border-color: var(--green);
+      box-shadow: 0 0 0 3px rgba(46,204,133,0.12);
+    }
+    .keyword-icon { font-size: 16px; flex-shrink: 0; opacity: 0.6; }
+    #keywordInput {
+      flex: 1; background: none; border: none; outline: none;
+      color: var(--text); font-size: 14px; font-family: inherit;
+    }
+    #keywordInput::placeholder { color: var(--muted); }
+    .keyword-clear {
+      background: none; border: none; cursor: pointer;
+      color: var(--muted); font-size: 16px; padding: 0 2px;
+      transition: color 0.2s; line-height: 1;
+    }
+    .keyword-clear:hover { color: var(--text); }
+    .keyword-highlight {
+      background: rgba(46,204,133,0.2);
+      color: var(--green);
+      border-radius: 3px;
+      padding: 0 2px;
+    }
+
     /* MAIN */
     .main {
       flex: 1;
@@ -528,6 +561,21 @@
       <div class="results-count" id="resultsCount">2 lenders</div>
     </div>
 
+    <!-- KEYWORD SEARCH BAR -->
+    <div class="keyword-search-wrap">
+      <div class="keyword-search-inner">
+        <span class="keyword-icon">🔍</span>
+        <input
+          type="text"
+          id="keywordInput"
+          placeholder="Search policies… e.g. &quot;casual income&quot;, &quot;bridging&quot;, &quot;95%&quot;, &quot;medico&quot;"
+          autocomplete="off"
+          oninput="runSearch()"
+        />
+        <button class="keyword-clear" id="keywordClear" onclick="clearKeyword()" style="display:none">✕</button>
+      </div>
+    </div>
+
     <div class="scenario-bar hidden" id="scenarioBar">
       <span style="color:var(--muted);font-size:12px;">Showing results for:</span>
     </div>
@@ -806,6 +854,7 @@ function renderCard(l) {
 // ── FILTERS ──────────────────────────────────────────────────────────────────
 function getFilters() {
   return {
+    keyword: (document.getElementById('keywordInput').value || '').trim().toLowerCase(),
     loanType: document.getElementById('loanType').value,
     lvr: parseFloat(document.getElementById('lvrInput').value) || null,
     borrower: document.getElementById('borrowerType').value,
@@ -865,10 +914,70 @@ function getActiveModifiers(lender, filters) {
   return active;
 }
 
+// ── KEYWORD MATCH ─────────────────────────────────────────────────────────────
+function lenderMatchesKeyword(l, kw) {
+  if (!kw) return true;
+  // Build a searchable text blob from all relevant fields
+  const parts = [
+    l.name,
+    l.id,
+    l.type,
+    l.tier === 'tier1' ? 'major bank' : 'non-major bank',
+    l.source,
+    // LVR numbers
+    l.lvr.oo_pi ? `${(l.lvr.oo_pi*100).toFixed(0)}% oo pi owner occupied` : '',
+    l.lvr.oo_io ? `${(l.lvr.oo_io*100).toFixed(0)}% io interest only` : '',
+    l.lvr.inv_pi ? `${(l.lvr.inv_pi*100).toFixed(0)}% investor investment` : '',
+    l.lvr.inv_io ? `${(l.lvr.inv_io*100).toFixed(0)}% investor io` : '',
+    l.lvr.lmi_waiver ? 'lmi waiver no lmi' : '',
+    l.lvr.lmi_waiver_note || '',
+    // Servicing
+    l.servicing.assessment_floor ? `floor ${l.servicing.assessment_floor}` : '',
+    l.servicing.buffer ? `buffer ${l.servicing.buffer} serviceability` : '',
+    l.servicing.dti_max ? `dti debt income ${l.servicing.dti_max}` : '',
+    // Income
+    l.income.casual ? `casual ${l.income.casual}` : '',
+    l.income.commission ? `commission ${l.income.commission}` : '',
+    l.income.overtime_other ? `overtime ${l.income.overtime_other}` : '',
+    l.income.rental ? `rental ${l.income.rental}` : '',
+    l.income.self_employed_yrs ? `self employed self-employed ${l.income.self_employed_yrs} year` : '',
+    l.income.self_emp_fast_track || '',
+    // Special
+    l.special.medico ? 'medico doctor gp dentist specialist lmi waiver' : '',
+    l.special.allied_health ? 'allied health nurse physio' : '',
+    l.special.industry_specialist ? 'accountant lawyer solicitor' : '',
+    l.special.bridging ? `bridging loan ${l.special.bridging_months ? l.special.bridging_months+'mo' : ''}` : '',
+    l.special.construction ? 'construction loan build' : '',
+    l.special.family_guarantee ? 'family guarantee guarantor' : '',
+    l.special.smsf ? 'smsf self managed super' : '',
+    // Docs
+    l.docs.alt_doc ? 'alt doc low doc alternative documentation' : '',
+    l.docs.self_emp || '',
+    // Modifiers
+    l.modifiers.map(m => m.label).join(' '),
+  ];
+  const blob = parts.join(' ').toLowerCase();
+
+  // Support multi-word: all words must match
+  const words = kw.split(/\s+/).filter(Boolean);
+  return words.every(w => blob.includes(w));
+}
+
 // ── SEARCH ───────────────────────────────────────────────────────────────────
 function runSearch() {
   const filters = getFilters();
   let results = [...LENDERS];
+
+  // Filter: keyword text search
+  if (filters.keyword) {
+    results = results.filter(l => lenderMatchesKeyword(l, filters.keyword));
+    // Show/hide clear button
+    const clr = document.getElementById('keywordClear');
+    if (clr) clr.style.display = 'block';
+  } else {
+    const clr = document.getElementById('keywordClear');
+    if (clr) clr.style.display = 'none';
+  }
 
   // Filter: medico required
   if (filters.medico) {
@@ -929,7 +1038,16 @@ function updateScenarioBar(filters) {
   }
 }
 
+function clearKeyword() {
+  document.getElementById('keywordInput').value = '';
+  document.getElementById('keywordClear').style.display = 'none';
+  runSearch();
+}
+
 function resetFilters() {
+  document.getElementById('keywordInput').value = '';
+  const clr = document.getElementById('keywordClear');
+  if (clr) clr.style.display = 'none';
   document.getElementById('loanType').value = '';
   document.getElementById('lvrInput').value = '';
   document.getElementById('borrowerType').value = '';
@@ -1033,7 +1151,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // Enter key on inputs triggers search
-  ['lvrInput'].forEach(id => {
+  ['lvrInput', 'keywordInput'].forEach(id => {
     document.getElementById(id).addEventListener('keydown', e => {
       if (e.key === 'Enter') runSearch();
     });
