@@ -935,12 +935,14 @@ function lenderMatchesKeyword(l, kw) {
     l.servicing.assessment_floor ? `floor ${l.servicing.assessment_floor}` : '',
     l.servicing.buffer ? `buffer ${l.servicing.buffer} serviceability` : '',
     l.servicing.dti_max ? `dti debt income ${l.servicing.dti_max}` : '',
-    // Income
-    l.income.casual ? `casual ${l.income.casual}` : '',
-    l.income.commission ? `commission ${l.income.commission}` : '',
-    l.income.overtime_other ? `overtime ${l.income.overtime_other}` : '',
-    l.income.rental ? `rental ${l.income.rental}` : '',
-    l.income.self_employed_yrs ? `self employed self-employed ${l.income.self_employed_yrs} year` : '',
+    // Income — include "income" as a generic keyword so "casual income" matches
+    'income policy shading',
+    l.income.casual ? `casual income ${l.income.casual}` : '',
+    l.income.commission ? `commission income ${l.income.commission}` : '',
+    l.income.overtime_other ? `overtime income other ${l.income.overtime_other}` : '',
+    l.income.rental ? `rental income ${l.income.rental}` : '',
+    l.income.payg_base ? `payg base salary income ${l.income.payg_base}` : '',
+    l.income.self_employed_yrs ? `self employed self-employed income ${l.income.self_employed_yrs} year` : '',
     l.income.self_emp_fast_track || '',
     // Special
     l.special.medico ? 'medico doctor gp dentist specialist lmi waiver' : '',
