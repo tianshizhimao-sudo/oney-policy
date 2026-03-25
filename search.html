@@ -459,7 +459,7 @@
     <span class="nav-badge">Beta</span>
   </div>
   <div class="nav-right">
-    <span class="nav-tag"><span id="lenderCountNav">2</span> lenders loaded</span>
+    <span class="nav-tag"><span id="lenderCountNav">6</span> lenders loaded</span>
   </div>
 </nav>
 
@@ -558,7 +558,7 @@
   <main class="main">
     <div class="results-header">
       <div class="results-title">Lender Policy Results</div>
-      <div class="results-count" id="resultsCount">2 lenders</div>
+      <div class="results-count" id="resultsCount">6 lenders</div>
     </div>
 
     <!-- KEYWORD SEARCH BAR -->
@@ -662,6 +662,175 @@ const LENDERS = [
       bridging: false, construction: true, family_guarantee: false, smsf: false
     },
     docs: { payslips: 2, self_emp: "2yr financials or ATO NOA", alt_doc: false }
+  },
+  {
+    id: "cba",
+    name: "Commonwealth Bank (CBA)",
+    icon: "🏦",
+    type: "major_bank",
+    tier: "tier1",
+    completeness: "partial",
+    source: "Public sources: Finder, lmiwaiver.com.au · Verified Mar 2026",
+    lvr: {
+      oo_pi: 0.95, oo_io: 0.80, inv_pi: 0.90, inv_io: 0.80,
+      refinance: 0.90, construction_oo: 0.95, construction_inv: 0.90,
+      lmi_required_above: 0.80,
+      lmi_waiver: true,
+      lmi_waiver_note: "Doctors, dentists, lawyers, accountants (CPA/CA), engineers, vets, optometrists, pharmacists, physios, chiropractors: up to 90–95% no LMI. Income threshold varies by profession."
+    },
+    modifiers: [
+      { id: "interest_only_any_portion", label: "Any IO", max_lvr: 0.80 }
+    ],
+    servicing: {
+      assessment_floor: "5.40%",
+      buffer: "3.00%",
+      dti_max: null,
+      min_surplus: null
+    },
+    income: {
+      payg_base: "100%",
+      casual: "100%",
+      overtime_other: "80%",
+      commission: "80%",
+      self_employed_yrs: 2,
+      rental: "80%"
+    },
+    special: {
+      medico: true, medico_lvr: "90–95% no LMI",
+      allied_health: true,
+      industry_specialist: true,
+      lmi_waiver: true,
+      bridging: true, bridging_months: null,
+      construction: true, family_guarantee: true, smsf: null
+    },
+    docs: { payslips: 2, self_emp: "2yr tax returns or financials", alt_doc: false }
+  },
+  {
+    id: "anz",
+    name: "ANZ Bank",
+    icon: "🏦",
+    type: "major_bank",
+    tier: "tier1",
+    completeness: "partial",
+    source: "Public sources: theadviser.com.au, lmiwaiver.com.au · Verified Mar 2026",
+    lvr: {
+      oo_pi: 0.95, oo_io: 0.80, inv_pi: 0.90, inv_io: 0.80,
+      refinance: 0.90, construction_oo: 0.95, construction_inv: 0.90,
+      lmi_required_above: 0.80,
+      lmi_waiver: true,
+      lmi_waiver_note: "Doctors, dentists, optometrists, lawyers, accountants, vets: up to 90–95% no LMI."
+    },
+    modifiers: [
+      { id: "interest_only_any_portion", label: "Any IO", max_lvr: 0.80 }
+    ],
+    servicing: {
+      assessment_floor: null,
+      buffer: "3.00%",
+      dti_max: null,
+      min_surplus: null
+    },
+    income: {
+      payg_base: "100%",
+      casual: "100%",
+      overtime_other: "80%",
+      commission: "80%",
+      self_employed_yrs: 2,
+      rental: "80%"
+    },
+    special: {
+      medico: true, medico_lvr: "90–95% no LMI",
+      allied_health: false,
+      industry_specialist: true,
+      lmi_waiver: true,
+      bridging: true, bridging_months: null,
+      construction: true, family_guarantee: true, smsf: null
+    },
+    docs: { payslips: 2, self_emp: "2yr tax returns + financials", alt_doc: false }
+  },
+  {
+    id: "nab",
+    name: "NAB",
+    icon: "🏦",
+    type: "major_bank",
+    tier: "tier1",
+    completeness: "partial",
+    source: "Public sources: theadviser.com.au, lmiwaiver.com.au · Verified Mar 2026",
+    lvr: {
+      oo_pi: 0.95, oo_io: 0.80, inv_pi: 0.90, inv_io: 0.80,
+      refinance: 0.90, construction_oo: 0.95, construction_inv: 0.90,
+      lmi_required_above: 0.80,
+      lmi_waiver: true,
+      lmi_waiver_note: "Doctors, dentists, vets, lawyers, accountants (CPA/CA), engineers, actuaries: up to 90% no LMI. Min income $150K for most professions."
+    },
+    modifiers: [
+      { id: "interest_only_any_portion", label: "Any IO", max_lvr: 0.80 }
+    ],
+    servicing: {
+      assessment_floor: null,
+      buffer: "3.00%",
+      dti_max: null,
+      min_surplus: null
+    },
+    income: {
+      payg_base: "100%",
+      casual: "100%",
+      overtime_other: "80%",
+      commission: "80%",
+      self_employed_yrs: 2,
+      rental: "80%"
+    },
+    special: {
+      medico: true, medico_lvr: "90% no LMI",
+      allied_health: false,
+      industry_specialist: true,
+      lmi_waiver: true,
+      bridging: true, bridging_months: null,
+      construction: true, family_guarantee: true, smsf: null
+    },
+    docs: { payslips: 2, self_emp: "2yr tax returns or financials", alt_doc: false }
+  },
+  {
+    id: "stgeorge",
+    name: "St.George Bank",
+    icon: "🏦",
+    type: "major_bank",
+    tier: "tier1",
+    completeness: "partial",
+    source: "Westpac Group policy, lmiwaiver.com.au · Verified Mar 2026",
+    lvr: {
+      oo_pi: 0.95, oo_io: 0.80, inv_pi: 0.90, inv_io: 0.90,
+      refinance: null, construction_oo: 0.95, construction_inv: 0.90,
+      lmi_required_above: 0.80,
+      lmi_waiver: true,
+      lmi_waiver_note: "Same as Westpac Group. Doctors, dentists, lawyers, accountants, nurses/midwives (AHPRA), vets, pharmacists, physios: up to 90–95% no LMI. Nurses min $90K."
+    },
+    modifiers: [
+      { id: "interest_only_inv", label: "Investor IO", max_lvr: 0.90, note: "Includes LMI" }
+    ],
+    servicing: {
+      assessment_floor: null,
+      buffer: "3.00%",
+      dti_max: null,
+      min_surplus: null
+    },
+    income: {
+      payg_base: "100%",
+      casual: "100%",
+      overtime_other: null,
+      commission: null,
+      self_employed_yrs: 2,
+      rental: null,
+      self_emp_fast_track: "2yr ATO NOA (up to 80% LVR)"
+    },
+    special: {
+      medico: true, medico_lvr: "95% no LMI (Tier 1)",
+      allied_health: true,
+      industry_specialist: true,
+      lmi_waiver: true,
+      bridging: true, bridging_months: 12,
+      construction: true, family_guarantee: true, smsf: null
+    },
+    docs: { payslips: null, self_emp: "2yr ATO NOA (Fast Track) or financials", alt_doc: true }
   },
   {
     id: "westpac",
