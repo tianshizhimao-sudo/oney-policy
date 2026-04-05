@@ -574,6 +574,15 @@
     }
     .empty-state .icon { font-size: 48px; margin-bottom: 16px; }
     .empty-state h3 { font-size: 20px; font-weight: 700; color: var(--text); margin-bottom: 8px; }
+    .empty-suggestion {
+      margin-top: 20px; padding: 16px 20px;
+      background: rgba(46,204,133,0.06);
+      border: 1px solid rgba(46,204,133,0.2);
+      border-radius: 12px;
+      text-align: left; font-size: 13px; line-height: 1.7;
+      color: var(--text); max-width: 560px; margin-left: auto; margin-right: auto;
+    }
+    .empty-suggestion .green { color: var(--green); font-weight: 600; }
 
     /* ADD TO COMPARE checkbox on card */
     .compare-checkbox-wrap {
@@ -715,7 +724,8 @@
           <option value="">Any borrower</option>
           <option value="individual">Individual (PAYG)</option>
           <option value="self_employed">Self-Employed</option>
-          <option value="company">Company / Trust</option>
+          <option value="company">Company</option>
+          <option value="trust">Trust</option>
           <option value="smsf">SMSF</option>
         </select>
       </div>
@@ -833,6 +843,11 @@
           <span class="toggle-switch"></span>
           SMSF Lending
         </label>
+        <label class="toggle-item" id="chk-2ndmortgage-wrap">
+          <input type="checkbox" id="chk-2ndmortgage">
+          <span class="toggle-switch"></span>
+          Second Mortgage
+        </label>
       </div>
     </div>
 
@@ -934,7 +949,7 @@ function updateActiveFilterCount() {
   if (document.getElementById('minLoanInput').value) count++;
   const activeTier = document.querySelector('#tierPills .pill-option.active');
   if (activeTier && activeTier.dataset.tier) count++;
-  ['chk-io','chk-dti','chk-hd','chk-casual','chk-medico','chk-bridge','chk-construction','chk-famguarantee','chk-altdoc','chk-smsf','chk-selfempl1','chk-foreignincome','chk-nogs']
+  ['chk-io','chk-dti','chk-hd','chk-casual','chk-medico','chk-bridge','chk-construction','chk-famguarantee','chk-altdoc','chk-smsf','chk-selfempl1','chk-foreignincome','chk-nogs','chk-2ndmortgage']
     .forEach(id => { if (document.getElementById(id)?.checked) count++; });
   // Desktop badge
   const badge = document.getElementById('activeFilterCount');
@@ -987,6 +1002,8 @@ let LENDERS = [
       medico: true, medico_lvr: "95% (Tier 1)", lmi_waiver: false,
       bridging: false, construction: true, family_guarantee: false, smsf: false
     },
+    entity: { company: false, trust: false, note: "Paused all company/trust applications since Oct 2025" },
+    second_mortgage: { allowed: false, note: "Not available" },
     docs: { payslips: 2, self_emp: "2yr financials or ATO NOA", alt_doc: false }
   },
   {
@@ -1032,6 +1049,8 @@ let LENDERS = [
       lmi_waiver: true,
       bridging: true, construction: true, family_guarantee: true, smsf: false
     },
+    entity: { company: true, trust: true, max_lvr: 0.80, note: "Restricted — requires existing CBA lending facility 6+ months" },
+    second_mortgage: { allowed: true, max_combined_lvr: 0.95, note: "Same lender only (guarantor structure)" },
     docs: { payslips: 2, self_emp: "2yr tax returns or financials", alt_doc: false }
   },
   {
@@ -1076,6 +1095,8 @@ let LENDERS = [
       lmi_waiver: true,
       bridging: true, construction: true, family_guarantee: true, smsf: false
     },
+    entity: { company: true, trust: true, max_lvr: 0.70, note: "Tightened Jan 2026 — requires 6-month existing relationship" },
+    second_mortgage: { allowed: false, note: "Not generally available" },
     docs: { payslips: 2, self_emp: "2yr tax returns or financials", alt_doc: false }
   },
   {
@@ -1120,6 +1141,8 @@ let LENDERS = [
       lmi_waiver: true,
       bridging: true, construction: true, family_guarantee: true, smsf: false
     },
+    entity: { company: true, trust: true, max_lvr: 0.80, note: "Reviewing — cautious on high-risk investors" },
+    second_mortgage: { allowed: false, note: "Not generally available" },
     docs: { payslips: 2, self_emp: "2yr tax returns or financials", alt_doc: false }
   },
   {
@@ -1163,6 +1186,8 @@ let LENDERS = [
       bridging: true, bridging_months: 12,
       construction: true, family_guarantee: true, smsf: null
     },
+    entity: { company: true, trust: true, max_lvr: 0.80, note: "Westpac Group — same policy as Westpac" },
+    second_mortgage: { allowed: false, note: "Not generally available" },
     docs: { payslips: null, self_emp: "2yr ATO NOA (Fast Track) or financials", alt_doc: true }
   },
   {
@@ -1204,6 +1229,8 @@ let LENDERS = [
       bridging: true, bridging_months: 12,
       construction: true, family_guarantee: true, smsf: null
     },
+    entity: { company: false, trust: false, note: "Stopped residential channel — business banking only" },
+    second_mortgage: { allowed: false, note: "Not generally available" },
     docs: { payslips: null, self_emp: "2yr ATO NOA (Fast Track) or financials", alt_doc: true }
   },
   {
@@ -1248,6 +1275,8 @@ let LENDERS = [
       bridging: true, construction: true, construction_strength: "Strong",
       family_guarantee: true, smsf: false
     },
+    entity: { company: true, trust: true, max_lvr: 0.80, note: "CBA Group — same restrictions as CBA" },
+    second_mortgage: { allowed: true, max_combined_lvr: 0.95, note: "Guarantor structure only" },
     docs: { payslips: 2, self_emp: "2yr financials or ATO NOA", alt_doc: false }
   },
   {
@@ -1295,6 +1324,8 @@ let LENDERS = [
       family_guarantee: false, smsf: false,
       note: "Individuals & joints only, no companies/trusts"
     },
+    entity: { company: false, trust: false, note: "Individuals & joints only" },
+    second_mortgage: { allowed: false, note: "Not available" },
     docs: { payslips: 2, payslip_max_age: "30 days", self_emp: "2yr financials", alt_doc: false }
   },
   {
@@ -1313,6 +1344,8 @@ let LENDERS = [
     servicing: { assessment_floor: null, buffer: "3.00%", dti_max: "7×", min_surplus: null },
     income: { payg_base: "100%", casual: "80%", overtime_other: "80%", commission: "80%", self_employed_yrs: 1, rental: "80%" },
     special: { medico: false, bridging: false, construction: true, family_guarantee: false, smsf: true, foreign_income: false, no_genuine_savings: false },
+    entity: { company: true, trust: true, max_lvr: 0.80, note: "Commercial specialist — accepts company/trust" },
+    second_mortgage: { allowed: true, max_combined_lvr: 0.75, note: "Accepted — combined LVR 75% max" },
     docs: { payslips: null, self_emp: "1yr accountant's letter", alt_doc: true }
   },
   {
@@ -1331,6 +1364,8 @@ let LENDERS = [
     servicing: { assessment_floor: null, buffer: "3.00%", dti_max: "7.5×", min_surplus: null },
     income: { payg_base: "100%", casual: "100%", overtime_other: "80%", commission: "80%", self_employed_yrs: 1, rental: "80%" },
     special: { medico: false, bridging: false, construction: false, family_guarantee: false, smsf: false, foreign_income: false, no_genuine_savings: true },
+    entity: { company: true, trust: true, max_lvr: 0.90, note: "Accepts company/discretionary/unit/family trust — directors must guarantee" },
+    second_mortgage: { allowed: true, max_combined_lvr: 0.80, note: "Accepted — combined LVR 80% max" },
     docs: { payslips: 2, self_emp: "1yr accountant's letter or ATO", alt_doc: true }
   },
   {
@@ -1349,6 +1384,8 @@ let LENDERS = [
     servicing: { assessment_floor: null, buffer: "3.00%", dti_max: null, min_surplus: null },
     income: { payg_base: "100%", casual: "80%", overtime_other: "80%", commission: "70%", self_employed_yrs: 2, rental: "75%" },
     special: { medico: false, bridging: false, construction: false, family_guarantee: false, smsf: false, foreign_income: false, no_genuine_savings: false },
+    entity: { company: true, trust: true, max_lvr: 0.80, note: "White-label funder — accepts company/trust" },
+    second_mortgage: { allowed: false, note: "Not available" },
     docs: { payslips: 2, self_emp: "2yr tax returns", alt_doc: false }
   },
   {
@@ -1367,6 +1404,8 @@ let LENDERS = [
     servicing: { assessment_floor: null, buffer: "3.00%", dti_max: "7×", min_surplus: null },
     income: { payg_base: "100%", casual: "100%", overtime_other: "80%", commission: "80%", self_employed_yrs: 2, rental: "80%", foreign: "100%" },
     special: { medico: false, bridging: false, construction: false, family_guarantee: false, smsf: false, foreign_income: true, no_genuine_savings: false },
+    entity: { company: true, trust: true, max_lvr: 0.85, note: "Foreign income specialist — accepts company/trust" },
+    second_mortgage: { allowed: false, note: "Not available" },
     docs: { payslips: 2, self_emp: "2yr financials", alt_doc: true }
   },
   {
@@ -1385,6 +1424,8 @@ let LENDERS = [
     servicing: { assessment_floor: null, buffer: "3.00%", dti_max: null, min_surplus: null },
     income: { payg_base: "100%", casual: "80%", overtime_other: "80%", commission: "70%", self_employed_yrs: 2, rental: "75%" },
     special: { medico: false, bridging: false, construction: false, family_guarantee: false, smsf: false, foreign_income: false, no_genuine_savings: false },
+    entity: { company: true, trust: true, max_lvr: 0.75, note: "White-label funder — accepts company/trust" },
+    second_mortgage: { allowed: false, note: "Not available" },
     docs: { payslips: 2, self_emp: "2yr tax returns", alt_doc: false }
   },
   {
@@ -1403,6 +1444,8 @@ let LENDERS = [
     servicing: { assessment_floor: "5.40%", buffer: "3.00%", dti_max: "8×", min_surplus: null },
     income: { payg_base: "100%", casual: "100%", overtime_other: "80%", commission: "80%", self_employed_yrs: 2, rental: "80%" },
     special: { medico: false, bridging: true, construction: false, family_guarantee: false, smsf: false, foreign_income: false, no_genuine_savings: false },
+    entity: { company: false, trust: false, note: "Individuals only — regional bank" },
+    second_mortgage: { allowed: false, note: "Not available" },
     docs: { payslips: 2, self_emp: "2yr tax returns", alt_doc: false }
   },
   {
@@ -1421,6 +1464,8 @@ let LENDERS = [
     servicing: { assessment_floor: "5.40%", buffer: "3.00%", dti_max: "8×", min_surplus: null },
     income: { payg_base: "100%", casual: "100%", overtime_other: "80%", commission: "80%", self_employed_yrs: 2, rental: "80%" },
     special: { medico: false, bridging: false, construction: false, family_guarantee: false, smsf: false, foreign_income: false, no_genuine_savings: false },
+    entity: { company: false, trust: false, note: "Individuals only — regional bank" },
+    second_mortgage: { allowed: false, note: "Not available" },
     docs: { payslips: 2, self_emp: "2yr tax returns", alt_doc: false }
   },
   {
@@ -1439,6 +1484,8 @@ let LENDERS = [
     servicing: { assessment_floor: "5.40%", buffer: "3.00%", dti_max: "8×", min_surplus: "$500/yr" },
     income: { payg_base: "100%", casual: "100%", overtime_other: "80%", commission: "80%", self_employed_yrs: 2, rental: "80%" },
     special: { medico: true, medico_lvr: "90% no LMI", lmi_waiver: true, bridging: true, construction: true, family_guarantee: true, smsf: false, foreign_income: false, no_genuine_savings: false },
+    entity: { company: true, trust: true, max_lvr: 0.80, note: "Westpac subsidiary — same policy" },
+    second_mortgage: { allowed: false, note: "Not available" },
     docs: { payslips: 2, self_emp: "2yr tax returns", alt_doc: false }
   },
   {
@@ -1457,6 +1504,8 @@ let LENDERS = [
     servicing: { assessment_floor: "5.40%", buffer: "3.00%", dti_max: "8×", min_surplus: null },
     income: { payg_base: "100%", casual: "100%", overtime_other: "80%", commission: "80%", self_employed_yrs: 2, rental: "80%" },
     special: { medico: false, bridging: false, construction: false, family_guarantee: false, smsf: false, foreign_income: false, no_genuine_savings: false },
+    entity: { company: false, trust: false, note: "Individuals only — regional bank" },
+    second_mortgage: { allowed: false, note: "Not available" },
     docs: { payslips: 2, self_emp: "2yr tax returns", alt_doc: false }
   },
   {
@@ -1475,6 +1524,8 @@ let LENDERS = [
     servicing: { assessment_floor: "5.40%", buffer: "3.00%", dti_max: "8×", min_surplus: null },
     income: { payg_base: "100%", casual: "100%", overtime_other: "80%", commission: "80%", self_employed_yrs: 2, rental: "80%" },
     special: { medico: false, bridging: false, construction: false, family_guarantee: false, smsf: false, foreign_income: false, no_genuine_savings: false },
+    entity: { company: false, trust: false, note: "Individuals only — regional bank" },
+    second_mortgage: { allowed: false, note: "Not available" },
     docs: { payslips: 2, self_emp: "2yr tax returns", alt_doc: false }
   },
   {
@@ -1493,6 +1544,8 @@ let LENDERS = [
     servicing: { assessment_floor: null, buffer: "3.00%", dti_max: null, min_surplus: null },
     income: { payg_base: "100%", casual: "80%", overtime_other: "80%", commission: "70%", self_employed_yrs: 2, rental: "75%" },
     special: { medico: false, bridging: false, construction: false, family_guarantee: false, smsf: false, foreign_income: false, no_genuine_savings: false },
+    entity: { company: false, trust: false, note: "Individuals only — digital bank" },
+    second_mortgage: { allowed: false, note: "Not available" },
     docs: { payslips: 2, self_emp: "2yr tax returns", alt_doc: false }
   },
   {
@@ -1511,6 +1564,8 @@ let LENDERS = [
     servicing: { assessment_floor: null, buffer: "3.00%", dti_max: "7×", min_surplus: null },
     income: { payg_base: "100%", casual: "80%", overtime_other: "80%", commission: "75%", self_employed_yrs: 2, rental: "75%" },
     special: { medico: false, bridging: false, construction: false, family_guarantee: false, smsf: false, foreign_income: false, no_genuine_savings: false },
+    entity: { company: false, trust: false, note: "Individuals only — digital lender" },
+    second_mortgage: { allowed: false, note: "Not available" },
     docs: { payslips: 2, self_emp: "2yr financials", alt_doc: true }
   },
   {
@@ -1529,6 +1584,8 @@ let LENDERS = [
     servicing: { assessment_floor: null, buffer: "3.00%", dti_max: null, min_surplus: null },
     income: { payg_base: "100%", casual: "80%", overtime_other: "80%", commission: "75%", self_employed_yrs: 2, rental: "75%" },
     special: { medico: false, bridging: false, construction: false, family_guarantee: false, smsf: false, foreign_income: false, no_genuine_savings: false },
+    entity: { company: false, trust: false, note: "Individuals only" },
+    second_mortgage: { allowed: false, note: "Not available" },
     docs: { payslips: null, self_emp: "2yr financials", alt_doc: true }
   },
   {
@@ -1547,6 +1604,8 @@ let LENDERS = [
     servicing: { assessment_floor: null, buffer: "3.00%", dti_max: null, min_surplus: null },
     income: { payg_base: "100%", casual: "80%", overtime_other: "80%", commission: "75%", self_employed_yrs: 2, rental: "75%" },
     special: { medico: false, bridging: false, construction: false, family_guarantee: false, smsf: false, foreign_income: false, no_genuine_savings: false },
+    entity: { company: false, trust: false, note: "Individuals only" },
+    second_mortgage: { allowed: false, note: "Not available" },
     docs: { payslips: 2, self_emp: "2yr accountant's letter", alt_doc: false }
   }
 ];
@@ -1735,6 +1794,17 @@ async function loadFromSupabase() {
           foreign_income: r.accepts_foreign_income || false,
           no_genuine_savings: r.no_genuine_savings_required || false
         },
+        entity: {
+          company: r.accepts_company || false,
+          trust: r.accepts_trust || false,
+          max_lvr: r.entity_max_lvr || null,
+          note: r.entity_note || null
+        },
+        second_mortgage: {
+          allowed: r.accepts_second_mortgage || false,
+          max_combined_lvr: r.second_mortgage_max_clvr || null,
+          note: r.second_mortgage_note || null
+        },
         docs: {
           payslips: r.documentation?.payslips_required || null,
           self_emp: r.documentation?.notes || '2yr tax returns or financials',
@@ -1789,10 +1859,38 @@ function render(results) {
   document.getElementById('resultsCount').textContent = results.length + ' lender' + (results.length !== 1 ? 's' : '');
 
   if (results.length === 0) {
+    const filters = getFilters();
+    let suggestion = '';
+    if (filters.noGenuineSavings) {
+      suggestion = `<div class="empty-suggestion">
+        <strong>💡 Tip:</strong> Most major banks require genuine savings for LVR above 80%.
+        Consider <strong>non-bank lenders</strong> like <span class="green">Bluestone</span>, <span class="green">Pepper Money</span>, or <span class="green">La Trobe Financial</span> — they often accept gifted deposits and no genuine savings at up to 90% LVR.
+      </div>`;
+    } else if (filters.secondMortgage) {
+      suggestion = `<div class="empty-suggestion">
+        <strong>💡 Tip:</strong> Second mortgages are uncommon with major banks.
+        Consider specialist funders like <span class="green">Thinktank</span>, <span class="green">Bluestone</span>, or private funders (Dark Horse Financial, Max Funding) who offer second mortgages up to 75-80% combined LVR. Speak with your broker for specific options.
+      </div>`;
+    } else if (filters.borrower === 'company' || filters.borrower === 'trust') {
+      suggestion = `<div class="empty-suggestion">
+        <strong>💡 Tip:</strong> Major banks have been tightening company/trust lending since late 2025 (Macquarie paused entirely, ANZ capped at 70% LVR).
+        <strong>Non-bank lenders</strong> like <span class="green">Bluestone</span> (up to 90%), <span class="green">Thinktank</span>, and <span class="green">Columbus Capital</span> still accept company/trust borrowers. Try selecting "Non-Bank" in the Lender Tier filter.
+      </div>`;
+    } else if (filters.foreignIncome) {
+      suggestion = `<div class="empty-suggestion">
+        <strong>💡 Tip:</strong> Foreign income is restrictive with most banks.
+        Consider <span class="green">Brighten Home Loans</span> (specialist in foreign income, up to 90% LVR) or <span class="green">Pepper Money</span> for flexible income assessment.
+      </div>`;
+    } else {
+      suggestion = `<div class="empty-suggestion">
+        <strong>💡 Tip:</strong> Try relaxing some filters, or this client may need a specialist non-bank lender not yet in our database. <a href="https://oneyco.com.au" target="_blank" style="color:var(--green);">Contact Oney & Co</a> for a tailored recommendation.
+      </div>`;
+    }
     grid.innerHTML = `<div class="empty-state">
       <div class="icon">🔍</div>
       <h3>No lenders match this scenario</h3>
-      <p>Try relaxing some filters, or this client may need a specialist lender not yet in our database.</p>
+      <p>Your current filter combination returned zero results.</p>
+      ${suggestion}
     </div>`;
     return;
   }
@@ -1822,6 +1920,9 @@ function renderTile(l) {
   if (l.special.bridging) pills.push('Bridging');
   if (l.special.smsf) pills.push('SMSF');
   if (l.docs && l.docs.alt_doc) pills.push('Alt Doc');
+  if (l.entity && l.entity.company) pills.push('Company');
+  if (l.entity && l.entity.trust) pills.push('Trust');
+  if (l.second_mortgage && l.second_mortgage.allowed) pills.push('2nd Mtg');
   const visiblePills = pills.slice(0, 2);
   const extraCount = pills.length - 2;
 
@@ -1907,6 +2008,9 @@ function openDetailPanel(id) {
       <div class="policy-cell"><div class="cell-label">Self-Employed</div><div class="cell-value">${l.income.self_employed_yrs} yr${l.income.self_employed_yrs > 1 ? 's' : ''}</div></div>
       <div class="policy-cell"><div class="cell-label">Casual Income</div><div class="cell-value">${l.income.casual || '—'}</div></div>
       <div class="policy-cell"><div class="cell-label">Alt Doc</div><div class="cell-value">${l.docs && l.docs.alt_doc ? '<span class="green">Yes</span>' : 'No'}</div></div>
+      <div class="policy-cell"><div class="cell-label">Company</div><div class="cell-value">${l.entity && l.entity.company ? '<span class="green">Yes</span>' + (l.entity.max_lvr ? ' ('+Math.round(l.entity.max_lvr*100)+'%)' : '') : '<span class="muted">No</span>'}</div></div>
+      <div class="policy-cell"><div class="cell-label">Trust</div><div class="cell-value">${l.entity && l.entity.trust ? '<span class="green">Yes</span>' + (l.entity.max_lvr ? ' ('+Math.round(l.entity.max_lvr*100)+'%)' : '') : '<span class="muted">No</span>'}</div></div>
+      <div class="policy-cell"><div class="cell-label">2nd Mortgage</div><div class="cell-value">${l.second_mortgage && l.second_mortgage.allowed ? '<span class="green">Yes</span>' + (l.second_mortgage.max_combined_lvr ? ' ('+Math.round(l.second_mortgage.max_combined_lvr*100)+'% CLVR)' : '') : '<span class="muted">No</span>'}</div></div>
     </div>
     ${activeModifiers.length ? `
     <div class="modifiers-section">
@@ -1969,6 +2073,7 @@ function getFilters() {
     selfEmpl1: document.getElementById('chk-selfempl1').checked,
     foreignIncome: document.getElementById('chk-foreignincome').checked,
     noGenuineSavings: document.getElementById('chk-nogs').checked,
+    secondMortgage: document.getElementById('chk-2ndmortgage').checked,
   };
 }
 
@@ -1987,6 +2092,14 @@ function getEffectiveLvr(lender, filters) {
   if (baseLvr === null || baseLvr === undefined) return null;
 
   let effective = baseLvr;
+
+  // Apply company/trust entity LVR cap
+  if ((filters.borrower === 'company' || filters.borrower === 'trust') && lender.entity) {
+    const entityKey = filters.borrower === 'company' ? 'company' : 'trust';
+    if (lender.entity[entityKey] && lender.entity.max_lvr) {
+      effective = Math.min(effective, lender.entity.max_lvr);
+    }
+  }
 
   // Apply modifiers
   if (filters.io) {
@@ -2064,6 +2177,18 @@ function runSearch() {
   if (filters.smsf || filters.borrower === 'smsf') {
     results = results.filter(l => l.special.smsf !== false);
   }
+  // Filter: Company borrower
+  if (filters.borrower === 'company') {
+    results = results.filter(l => l.entity && l.entity.company === true);
+  }
+  // Filter: Trust borrower
+  if (filters.borrower === 'trust') {
+    results = results.filter(l => l.entity && l.entity.trust === true);
+  }
+  // Filter: Second mortgage
+  if (filters.secondMortgage) {
+    results = results.filter(l => l.second_mortgage && l.second_mortgage.allowed === true);
+  }
   // Filter: Self-employed < 2 years
   if (filters.selfEmpl1) {
     results = results.filter(l => l.income.self_employed_yrs <= 1);
@@ -2121,6 +2246,7 @@ function updateScenarioBar(filters) {
   if (filters.selfEmpl1) tags.push('Self-Employed <2yr');
   if (filters.foreignIncome) tags.push('Foreign Income');
   if (filters.noGenuineSavings) tags.push('No Genuine Savings');
+  if (filters.secondMortgage) tags.push('Second Mortgage');
   if (tags.length > 0) {
     bar.classList.remove('hidden');
     bar.innerHTML = '<span style="color:var(--muted);font-size:12px;">Scenario:</span> ' + tags.map(t => `<span class="tag">${t}</span>`).join('');
@@ -2138,7 +2264,7 @@ function resetFilters() {
   document.querySelectorAll('#tierPills .pill-option').forEach(p => p.classList.remove('active'));
   document.querySelector('#tierPills .pill-option[data-tier=""]').classList.add('active');
   // Reset all checkboxes + toggle switches
-  ['chk-io','chk-dti','chk-hd','chk-casual','chk-medico','chk-bridge','chk-construction','chk-famguarantee','chk-altdoc','chk-smsf','chk-selfempl1','chk-foreignincome','chk-nogs']
+  ['chk-io','chk-dti','chk-hd','chk-casual','chk-medico','chk-bridge','chk-construction','chk-famguarantee','chk-altdoc','chk-smsf','chk-selfempl1','chk-foreignincome','chk-nogs','chk-2ndmortgage']
     .forEach(id => {
       const el = document.getElementById(id);
       if (el) {
