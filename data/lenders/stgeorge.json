@@ -1,0 +1,62 @@
+{
+  "meta": {
+    "source_type": "public_aggregated",
+    "sources": ["lmiwaiver.com.au", "westpac-niche-booklet.pdf"],
+    "last_verified": "2026-03-25",
+    "confidence": "partial",
+    "notes": "Westpac Group subsidiary. Same LMI waiver and niche policies as Westpac. Nurse waiver min $90K income."
+  },
+  "lender": {
+    "id": "stgeorge",
+    "name": "St.George Bank",
+    "type": "major_bank",
+    "tier": "tier1",
+    "broker_accreditation": true,
+    "parent_group": "Westpac Group"
+  },
+  "residential": {
+    "loan_params": {
+      "max_lvr": {
+        "oo_pi": 0.95,
+        "oo_io": 0.80,
+        "inv_pi": 0.90,
+        "inv_io": 0.90,
+        "construction_oo": 0.95,
+        "construction_inv": 0.90
+      },
+      "lmi_required_above": 0.80,
+      "lmi_waiver": true,
+      "lmi_waiver_note": "Same as Westpac Group. Doctors, dentists, lawyers, accountants, nurses/midwives (AHPRA), vets, pharmacists, physios: up to 90-95% no LMI. Nurses min $90K."
+    },
+    "servicing": {
+      "assessment_floor": null,
+      "buffer": "3.00%",
+      "dti_max": null,
+      "min_surplus": null
+    },
+    "income_policy": {
+      "payg_base": "100%",
+      "casual": "100%",
+      "overtime": null,
+      "commission": null,
+      "self_employed_years": 2,
+      "rental": null,
+      "self_emp_fast_track": "2yr ATO NOA (up to 80% LVR)"
+    },
+    "special_programs": {
+      "medico": true,
+      "medico_lvr": "95% no LMI (Tier 1)",
+      "allied_health": true,
+      "industry_specialist": true,
+      "bridging": true,
+      "bridging_months": 12,
+      "construction": true,
+      "family_guarantee": true,
+      "smsf": null
+    },
+    "documentation": {
+      "self_employed": "2yr ATO NOA (Fast Track) or financials",
+      "alt_doc": true
+    }
+  }
+}

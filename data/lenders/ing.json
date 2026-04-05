@@ -1,0 +1,200 @@
+{
+  "meta": {
+    "source_type": "public_aggregated",
+    "sources": ["ING public resources", "broker guides", "lmiwaiver.com.au"],
+    "source_version": "2026-Q1",
+    "effective_date": null,
+    "last_verified": "2026-04-05",
+    "confidence": "high",
+    "notes": "ING is a tier2 non-major bank known for competitive rates. 3% buffer standard. No company/trust borrowers - individuals and joint customers only. Living expenses use actual declared expenses, not just HEM."
+  },
+  "lender": {
+    "id": "ing",
+    "name": "ING Australia",
+    "type": "non_major_bank",
+    "tier": "tier2",
+    "broker_accreditation": true,
+    "aggregators": ["Lendi", "Canstar"]
+  },
+  "residential": {
+    "loan_params": {
+      "min_loan": 50000,
+      "max_loan": null,
+      "max_exposure": null,
+      "min_term_years": 1,
+      "max_term_years": 30,
+      "acceptable_purposes": [
+        "purchase",
+        "refinance",
+        "equity_release",
+        "home_improvements",
+        "debt_consolidation"
+      ],
+      "unacceptable_purposes": [
+        "construction",
+        "investment_property",
+        "business_purposes",
+        "commercial_activities"
+      ]
+    },
+    "lvr": {
+      "oo_pi": 0.95,
+      "oo_io": 0.80,
+      "inv_pi": null,
+      "inv_io": null,
+      "refinance": 0.90,
+      "equity_release": 0.80,
+      "construction": null,
+      "off_the_plan": null,
+      "lmi_required_above": 0.80,
+      "lmi_waiver_available": true,
+      "lmi_waiver_conditions": "Medical professionals (doctors, dentists, specialists, vets). LMI waiver available for eligible professions up to 95% LVR.",
+      "modifiers": [
+        { "trigger": "interest_only_any_portion", "max_lvr": 0.80 },
+        { "trigger": "dti_above_7x", "max_lvr": 0.80 }
+      ]
+    },
+    "interest_only": {
+      "max_initial_period_years": 5,
+      "rollover_available": true,
+      "max_rollover_years": null,
+      "not_permitted_in_last_years": 20,
+      "rollover_conditions": ["satisfactory repayment history", "capable of repaying on PI terms"]
+    },
+    "servicing": {
+      "assessment_rate_floor": 0.055,
+      "assessment_buffer": 0.03,
+      "buffer_applies_to": "carded_rate",
+      "repayment_type": "PI_remaining_term",
+      "dti_max": 7.5,
+      "dti_trigger_lower_lvr": 7,
+      "min_surplus_pa": 1000,
+      "nsr_min": 1.25,
+      "hem_basis": "ABS_HEM",
+      "living_expenses": "Uses actual declared living expenses rather than HEM; borrower provided expenses must be verified. More flexible than using HEM baseline."
+    },
+    "income": {
+      "payg_base": 1.0,
+      "payg_casual": 1.0,
+      "payg_second_job": 1.0,
+      "payg_overtime_essential": 1.0,
+      "payg_overtime_other": 0.8,
+      "payg_commission": 0.8,
+      "payg_bonus": 0.8,
+      "payg_car_allowance": 1.0,
+      "payg_shift_allowance": 1.0,
+      "salary_sacrifice": 1.0,
+      "self_employed_years_required": 2,
+      "self_employed_income_basis": "lower_of_2yr_avg_or_latest",
+      "rental_income": null,
+      "rental_income_basis": null,
+      "foreign_income": 0.8,
+      "foreign_income_accepted": true,
+      "government_benefits": false,
+      "parental_leave": "100% with return-to-work letter",
+      "super_pension": 1.0,
+      "dividends": 0.8,
+      "trust_distributions": null,
+      "employment_min_months": 3,
+      "same_industry_exception": true,
+      "notes": "Commission and overtime 80%; essential services overtime 100%. No investment income accepted (rental, dividends minimal)."
+    },
+    "docs": {
+      "payslips_required": 2,
+      "payslip_max_age_days": 30,
+      "payslip_oldest_max_months": 3,
+      "tax_returns_required": 2,
+      "financials_required": 2,
+      "bank_statements_months": 3,
+      "accountant_letter_accepted": true,
+      "alt_doc_available": false,
+      "low_doc_available": false,
+      "notes": "Recent payslips preferred (<=30 days). Self-employed: 2 years financials or tax returns required."
+    },
+    "property": {
+      "residential_house": true,
+      "apartment_standard": true,
+      "apartment_high_density": true,
+      "high_density_max_lvr": 0.80,
+      "studio_min_sqm": 30,
+      "serviced_apartment": false,
+      "student_accommodation": false,
+      "dual_occupancy": false,
+      "granny_flat": false,
+      "rural_residential": false,
+      "rural_max_ha": null,
+      "commercial_residential_mixed": false,
+      "new_construction": false,
+      "off_the_plan": false,
+      "company_title": false,
+      "strata_title": true,
+      "leasehold": "case_by_case"
+    },
+    "borrower": {
+      "individual": true,
+      "joint": true,
+      "company": false,
+      "company_notes": "Not available",
+      "trust_discretionary": false,
+      "trust_unit": false,
+      "trust_hybrid": false,
+      "smsf": false,
+      "non_resident": false,
+      "temporary_resident": false,
+      "foreign_national": false,
+      "notes": "Individuals and joint borrowers only; no company, trust, or non-resident lending"
+    },
+    "genuine_savings": {
+      "required": true,
+      "required_above_lvr": 0.85,
+      "min_pct_purchase": 0.05,
+      "min_hold_months": 3,
+      "gifts_accepted": false,
+      "fhog_accepted": true,
+      "equity_accepted": true,
+      "acceptable": [
+        "personal savings",
+        "term deposits (>=3 months)",
+        "shares/managed funds (>=3 months)",
+        "equity from owned property",
+        "FHOG funds"
+      ],
+      "unacceptable": [
+        "borrowed funds",
+        "gifts",
+        "recent credit card advance"
+      ]
+    },
+    "credit_history": {
+      "defaults_accepted": true,
+      "default_max_amount": null,
+      "default_max_age_years": 5,
+      "bankruptcy_accepted": true,
+      "bankruptcy_discharged_years": 1,
+      "part9_accepted": true,
+      "arrears_accepted": false,
+      "min_credit_score": null,
+      "notes": "More flexible credit policy than some peers; assessed case-by-case"
+    },
+    "special_policies": {
+      "medico": {
+        "available": true,
+        "lmi_waiver_lvr": 0.95,
+        "max_loan_with_waiver": null,
+        "max_total_lending_with_waiver": null,
+        "eligible_professions": ["doctor", "dentist", "specialist", "vet"]
+      },
+      "first_home_buyer": {
+        "lmi_waiver": false,
+        "fhog_top_up": false
+      },
+      "bridging_loan": false,
+      "construction_loan": false,
+      "investor_only_lender": false,
+      "green_loan": false,
+      "reverse_mortgage": false,
+      "owner_occupier_only": true,
+      "notes": "ING focuses on owner-occupier residential lending only. No investment properties, no construction, no business lending."
+    }
+  }
+}

@@ -1,0 +1,202 @@
+{
+  "meta": {
+    "source_type": "public_aggregated",
+    "sources": ["ANZ public resources", "broker guides", "lmiwaiver.com.au"],
+    "source_version": "2026-Q1",
+    "effective_date": null,
+    "last_verified": "2026-04-05",
+    "confidence": "high",
+    "notes": "ANZ is one of Big 4 with standard 3% buffer. LMI waivers for medical and legal professions. Assessment floor similar to CBA around 5.40%."
+  },
+  "lender": {
+    "id": "anz",
+    "name": "ANZ Bank",
+    "type": "major_bank",
+    "tier": "tier1",
+    "broker_accreditation": true,
+    "aggregators": ["Lendi", "Canstar", "Finder"]
+  },
+  "residential": {
+    "loan_params": {
+      "min_loan": 100000,
+      "max_loan": null,
+      "max_exposure": null,
+      "min_term_years": 1,
+      "max_term_years": 30,
+      "acceptable_purposes": [
+        "purchase",
+        "construction",
+        "refinance",
+        "equity_release",
+        "home_improvements",
+        "debt_consolidation",
+        "investment_property"
+      ],
+      "unacceptable_purposes": [
+        "speculative_development",
+        "business_working_capital"
+      ]
+    },
+    "lvr": {
+      "oo_pi": 0.95,
+      "oo_io": 0.80,
+      "inv_pi": 0.90,
+      "inv_io": 0.80,
+      "refinance": 0.90,
+      "equity_release": 0.80,
+      "construction": 0.95,
+      "off_the_plan": 0.90,
+      "lmi_required_above": 0.80,
+      "lmi_waiver_available": true,
+      "lmi_waiver_conditions": "Medical professionals (doctors, dentists, specialists, optometrists, vets), legal (lawyers), accounting (CPA/CA). Income thresholds and qualification criteria apply.",
+      "modifiers": [
+        { "trigger": "interest_only_any_portion", "max_lvr": 0.80 },
+        { "trigger": "high_density_apartment_io", "max_lvr": 0.70 },
+        { "trigger": "dti_above_7x", "max_lvr": 0.80 }
+      ]
+    },
+    "interest_only": {
+      "max_initial_period_years": 5,
+      "rollover_available": true,
+      "max_rollover_years": null,
+      "not_permitted_in_last_years": null,
+      "rollover_conditions": []
+    },
+    "servicing": {
+      "assessment_rate_floor": 0.054,
+      "assessment_buffer": 0.03,
+      "buffer_applies_to": "carded_rate",
+      "repayment_type": "PI_remaining_term",
+      "dti_max": 8,
+      "dti_trigger_lower_lvr": 7,
+      "min_surplus_pa": 500,
+      "nsr_min": 1.00,
+      "hem_basis": "ABS_HEM",
+      "living_expenses": "ABS HEM standard; can be higher based on declared expenses"
+    },
+    "income": {
+      "payg_base": 1.0,
+      "payg_casual": 1.0,
+      "payg_second_job": 1.0,
+      "payg_overtime_essential": 1.0,
+      "payg_overtime_other": 0.8,
+      "payg_commission": 0.8,
+      "payg_bonus": 0.8,
+      "payg_car_allowance": 1.0,
+      "payg_shift_allowance": 1.0,
+      "salary_sacrifice": 1.0,
+      "self_employed_years_required": 2,
+      "self_employed_income_basis": "lower_of_2yr_avg_or_latest",
+      "rental_income": 0.8,
+      "rental_income_basis": "gross",
+      "foreign_income": 0.8,
+      "foreign_income_accepted": true,
+      "government_benefits": false,
+      "parental_leave": "100% with return-to-work letter",
+      "super_pension": 1.0,
+      "dividends": 0.8,
+      "trust_distributions": 0.8,
+      "employment_min_months": 6,
+      "same_industry_exception": true,
+      "notes": "Commission and overtime outside essential services typically 80%. Essential services overtime 100%."
+    },
+    "docs": {
+      "payslips_required": 2,
+      "payslip_max_age_days": 60,
+      "payslip_oldest_max_months": 4,
+      "tax_returns_required": 2,
+      "financials_required": 2,
+      "bank_statements_months": 3,
+      "accountant_letter_accepted": true,
+      "alt_doc_available": false,
+      "low_doc_available": false,
+      "notes": "Standard documentation; recent payslip plus contract accepted for base salary"
+    },
+    "property": {
+      "residential_house": true,
+      "apartment_standard": true,
+      "apartment_high_density": true,
+      "high_density_max_lvr": 0.80,
+      "studio_min_sqm": 35,
+      "serviced_apartment": false,
+      "student_accommodation": false,
+      "dual_occupancy": true,
+      "granny_flat": true,
+      "rural_residential": true,
+      "rural_max_ha": 40,
+      "commercial_residential_mixed": false,
+      "new_construction": true,
+      "off_the_plan": true,
+      "company_title": false,
+      "strata_title": true,
+      "leasehold": "acceptable"
+    },
+    "borrower": {
+      "individual": true,
+      "joint": true,
+      "company": true,
+      "company_notes": "Pty Ltd; directors require personal guarantees; annual revenue <$75m",
+      "trust_discretionary": true,
+      "trust_unit": true,
+      "trust_hybrid": false,
+      "smsf": false,
+      "non_resident": true,
+      "temporary_resident": true,
+      "foreign_national": true
+    },
+    "genuine_savings": {
+      "required": true,
+      "required_above_lvr": 0.85,
+      "min_pct_purchase": 0.05,
+      "min_hold_months": 3,
+      "gifts_accepted": true,
+      "fhog_accepted": true,
+      "equity_accepted": true,
+      "acceptable": [
+        "personal savings",
+        "term deposits (>=3 months)",
+        "shares/managed funds (>=3 months)",
+        "equity from owned property",
+        "FHOG/gift funds"
+      ],
+      "unacceptable": [
+        "borrowed funds",
+        "recent credit card advance"
+      ]
+    },
+    "credit_history": {
+      "defaults_accepted": true,
+      "default_max_amount": null,
+      "default_max_age_years": 6,
+      "bankruptcy_accepted": true,
+      "bankruptcy_discharged_years": 2,
+      "part9_accepted": true,
+      "arrears_accepted": false,
+      "min_credit_score": null,
+      "notes": "Case-by-case assessment; credit repair available"
+    },
+    "special_policies": {
+      "medico": {
+        "available": true,
+        "lmi_waiver_lvr": 0.95,
+        "max_loan_with_waiver": null,
+        "max_total_lending_with_waiver": null,
+        "eligible_professions": ["doctor", "dentist", "specialist", "vet", "optometrist"]
+      },
+      "legal_accounting": {
+        "available": true,
+        "lmi_waiver_lvr": 0.90,
+        "eligible_professions": ["lawyer", "accountant_cpa", "accountant_ca"]
+      },
+      "first_home_buyer": {
+        "lmi_waiver": false,
+        "fhog_top_up": false
+      },
+      "bridging_loan": true,
+      "construction_loan": true,
+      "investor_only_lender": false,
+      "green_loan": false,
+      "reverse_mortgage": false
+    }
+  }
+}

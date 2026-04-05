@@ -459,7 +459,7 @@
     <span class="nav-badge">Beta</span>
   </div>
   <div class="nav-right">
-    <span class="nav-tag"><span id="lenderCountNav">6</span> lenders loaded</span>
+    <span class="nav-tag"><span id="lenderCountNav">8</span> lenders loaded</span>
   </div>
 </nav>
 
@@ -558,7 +558,7 @@
   <main class="main">
     <div class="results-header">
       <div class="results-title">Lender Policy Results</div>
-      <div class="results-count" id="resultsCount">6 lenders</div>
+      <div class="results-count" id="resultsCount">8 lenders</div>
     </div>
 
     <!-- KEYWORD SEARCH BAR -->
@@ -621,7 +621,6 @@ window.addEventListener('resize', () => {
 });
 
 // ── LENDER DATA ──────────────────────────────────────────────────────────────
-const LENDERS = [
   {
     id: "macquarie",
     name: "Macquarie Bank",
@@ -669,23 +668,26 @@ const LENDERS = [
     icon: "🏦",
     type: "major_bank",
     tier: "tier1",
-    completeness: "partial",
-    source: "Public sources: Finder, lmiwaiver.com.au · Verified Mar 2026",
+    completeness: "full",
+    source: "CBA public resources, broker guides · Verified Apr 2026",
     lvr: {
       oo_pi: 0.95, oo_io: 0.80, inv_pi: 0.90, inv_io: 0.80,
-      refinance: 0.90, construction_oo: 0.95, construction_inv: 0.90,
-      lmi_required_above: 0.80,
+      refinance: 0.90, equity_release: 0.80, construction: 0.95,
+      off_the_plan: 0.90, lmi_required_above: 0.80,
       lmi_waiver: true,
-      lmi_waiver_note: "Doctors, dentists, lawyers, accountants (CPA/CA), engineers, vets, optometrists, pharmacists, physios, chiropractors: up to 90–95% no LMI. Income threshold varies by profession."
+      lmi_waiver_note: "Doctors, dentists, lawyers, accountants (CPA/CA), engineers, vets, optometrists, pharmacists, physios: up to 90–95% no LMI."
     },
     modifiers: [
-      { id: "interest_only_any_portion", label: "Any IO", max_lvr: 0.80 }
+      { id: "interest_only_any_portion", label: "Any IO", max_lvr: 0.80 },
+      { id: "high_density_io", label: "High density + IO", max_lvr: 0.70 },
+      { id: "dti_above_7x", label: "DTI > 7×", max_lvr: 0.80 }
     ],
     servicing: {
       assessment_floor: "5.40%",
       buffer: "3.00%",
-      dti_max: null,
-      min_surplus: null
+      dti_max: "8×",
+      min_surplus: "$500/yr",
+      hem_basis: "ABS HEM"
     },
     income: {
       payg_base: "100%",
@@ -693,15 +695,15 @@ const LENDERS = [
       overtime_other: "80%",
       commission: "80%",
       self_employed_yrs: 2,
-      rental: "80%"
+      rental: "80%",
+      foreign: "80%"
     },
     special: {
-      medico: true, medico_lvr: "90–95% no LMI",
-      allied_health: true,
-      industry_specialist: true,
+      medico: true, medico_lvr: "95% no LMI",
+      allied_health: true, allied_health_lvr: "90% no LMI",
+      legal_accounting: true, legal_accounting_lvr: "90% no LMI",
       lmi_waiver: true,
-      bridging: true, bridging_months: null,
-      construction: true, family_guarantee: true, smsf: null
+      bridging: true, construction: true, family_guarantee: true, smsf: false
     },
     docs: { payslips: 2, self_emp: "2yr tax returns or financials", alt_doc: false }
   },
@@ -711,23 +713,26 @@ const LENDERS = [
     icon: "🏦",
     type: "major_bank",
     tier: "tier1",
-    completeness: "partial",
-    source: "Public sources: theadviser.com.au, lmiwaiver.com.au · Verified Mar 2026",
+    completeness: "full",
+    source: "ANZ public resources, broker guides · Verified Apr 2026",
     lvr: {
       oo_pi: 0.95, oo_io: 0.80, inv_pi: 0.90, inv_io: 0.80,
-      refinance: 0.90, construction_oo: 0.95, construction_inv: 0.90,
-      lmi_required_above: 0.80,
+      refinance: 0.90, equity_release: 0.80, construction: 0.95,
+      off_the_plan: 0.90, lmi_required_above: 0.80,
       lmi_waiver: true,
-      lmi_waiver_note: "Doctors, dentists, optometrists, lawyers, accountants, vets: up to 90–95% no LMI."
+      lmi_waiver_note: "Doctors, dentists, lawyers, accountants (CPA/CA), optometrists, vets: up to 90–95% no LMI."
     },
     modifiers: [
-      { id: "interest_only_any_portion", label: "Any IO", max_lvr: 0.80 }
+      { id: "interest_only_any_portion", label: "Any IO", max_lvr: 0.80 },
+      { id: "high_density_io", label: "High density + IO", max_lvr: 0.70 },
+      { id: "dti_above_7x", label: "DTI > 7×", max_lvr: 0.80 }
     ],
     servicing: {
-      assessment_floor: null,
+      assessment_floor: "5.40%",
       buffer: "3.00%",
-      dti_max: null,
-      min_surplus: null
+      dti_max: "8×",
+      min_surplus: "$500/yr",
+      hem_basis: "ABS HEM"
     },
     income: {
       payg_base: "100%",
@@ -735,17 +740,16 @@ const LENDERS = [
       overtime_other: "80%",
       commission: "80%",
       self_employed_yrs: 2,
-      rental: "80%"
+      rental: "80%",
+      foreign: "80%"
     },
     special: {
-      medico: true, medico_lvr: "90–95% no LMI",
-      allied_health: false,
-      industry_specialist: true,
+      medico: true, medico_lvr: "95% no LMI",
+      legal_accounting: true, legal_accounting_lvr: "90% no LMI",
       lmi_waiver: true,
-      bridging: true, bridging_months: null,
-      construction: true, family_guarantee: true, smsf: null
+      bridging: true, construction: true, family_guarantee: true, smsf: false
     },
-    docs: { payslips: 2, self_emp: "2yr tax returns + financials", alt_doc: false }
+    docs: { payslips: 2, self_emp: "2yr tax returns or financials", alt_doc: false }
   },
   {
     id: "nab",
@@ -753,23 +757,26 @@ const LENDERS = [
     icon: "🏦",
     type: "major_bank",
     tier: "tier1",
-    completeness: "partial",
-    source: "Public sources: theadviser.com.au, lmiwaiver.com.au · Verified Mar 2026",
+    completeness: "full",
+    source: "NAB public resources, broker guides · Verified Apr 2026",
     lvr: {
       oo_pi: 0.95, oo_io: 0.80, inv_pi: 0.90, inv_io: 0.80,
-      refinance: 0.90, construction_oo: 0.95, construction_inv: 0.90,
-      lmi_required_above: 0.80,
+      refinance: 0.90, equity_release: 0.80, construction: 0.95,
+      off_the_plan: 0.90, lmi_required_above: 0.80,
       lmi_waiver: true,
-      lmi_waiver_note: "Doctors, dentists, vets, lawyers, accountants (CPA/CA), engineers, actuaries: up to 90% no LMI. Min income $150K for most professions."
+      lmi_waiver_note: "Doctors, dentists, vets, lawyers (Aug 2025), accountants (CPA/CA, Aug 2025), engineers, actuaries: up to 90% no LMI. Min income $150K for most."
     },
     modifiers: [
-      { id: "interest_only_any_portion", label: "Any IO", max_lvr: 0.80 }
+      { id: "interest_only_any_portion", label: "Any IO", max_lvr: 0.80 },
+      { id: "high_density_io", label: "High density + IO", max_lvr: 0.70 },
+      { id: "dti_above_7x", label: "DTI > 7×", max_lvr: 0.80 }
     ],
     servicing: {
-      assessment_floor: null,
+      assessment_floor: "5.40%",
       buffer: "3.00%",
-      dti_max: null,
-      min_surplus: null
+      dti_max: "8×",
+      min_surplus: "$500/yr",
+      hem_basis: "ABS HEM"
     },
     income: {
       payg_base: "100%",
@@ -777,15 +784,14 @@ const LENDERS = [
       overtime_other: "80%",
       commission: "80%",
       self_employed_yrs: 2,
-      rental: "80%"
+      rental: "80%",
+      foreign: "80%"
     },
     special: {
       medico: true, medico_lvr: "90% no LMI",
-      allied_health: false,
-      industry_specialist: true,
+      legal_accounting: true, legal_accounting_lvr: "90% no LMI (added Aug 2025)",
       lmi_waiver: true,
-      bridging: true, bridging_months: null,
-      construction: true, family_guarantee: true, smsf: null
+      bridging: true, construction: true, family_guarantee: true, smsf: false
     },
     docs: { payslips: 2, self_emp: "2yr tax returns or financials", alt_doc: false }
   },
@@ -872,8 +878,222 @@ const LENDERS = [
       construction: true, family_guarantee: true, smsf: null
     },
     docs: { payslips: null, self_emp: "2yr ATO NOA (Fast Track) or financials", alt_doc: true }
+  },
+  {
+    id: "bankwest",
+    name: "Bankwest",
+    icon: "🏦",
+    type: "major_bank",
+    tier: "tier1",
+    completeness: "full",
+    source: "CBA Group policy, Bankwest public resources · Verified Apr 2026",
+    lvr: {
+      oo_pi: 0.95, oo_io: 0.80, inv_pi: 0.90, inv_io: 0.80,
+      refinance: 0.90, equity_release: 0.80, construction: 0.95,
+      off_the_plan: 0.90, lmi_required_above: 0.80,
+      lmi_waiver: true,
+      lmi_waiver_note: "Doctors, dentists, optometrists, pharmacists, physios, chiropractors, vets: up to 90% no LMI."
+    },
+    modifiers: [
+      { id: "interest_only_any_portion", label: "Any IO", max_lvr: 0.80 },
+      { id: "high_density_io", label: "High density + IO", max_lvr: 0.70 },
+      { id: "dti_above_7x", label: "DTI > 7×", max_lvr: 0.80 }
+    ],
+    servicing: {
+      assessment_floor: "5.40%",
+      buffer: "3.00%",
+      dti_max: "8×",
+      min_surplus: "$500/yr",
+      hem_basis: "ABS HEM"
+    },
+    income: {
+      payg_base: "100%",
+      casual: "100%",
+      overtime_other: "80%",
+      commission: "80%",
+      self_employed_yrs: 2,
+      rental: "80%",
+      foreign: "80%"
+    },
+    special: {
+      medico: true, medico_lvr: "90% no LMI",
+      lmi_waiver: true,
+      bridging: true, construction: true, construction_strength: "Strong",
+      family_guarantee: true, smsf: false
+    },
+    docs: { payslips: 2, self_emp: "2yr financials or ATO NOA", alt_doc: false }
+  },
+  {
+    id: "ing",
+    name: "ING Australia",
+    icon: "🏦",
+    type: "non_major_bank",
+    tier: "tier2",
+    completeness: "full",
+    source: "ING public resources, broker guides · Verified Apr 2026",
+    lvr: {
+      oo_pi: 0.95, oo_io: 0.80,
+      inv_pi: null, inv_io: null,
+      refinance: 0.90, equity_release: 0.80,
+      construction: null, off_the_plan: null,
+      lmi_required_above: 0.80,
+      lmi_waiver: true,
+      lmi_waiver_note: "Doctors, dentists, specialists, vets: up to 95% no LMI."
+    },
+    modifiers: [
+      { id: "interest_only_any_portion", label: "Any IO", max_lvr: 0.80 },
+      { id: "dti_above_7x", label: "DTI > 7×", max_lvr: 0.80 }
+    ],
+    servicing: {
+      assessment_floor: "5.50%",
+      buffer: "3.00%",
+      dti_max: "7.5×",
+      min_surplus: "$1000/yr",
+      hem_basis: "Actual declared expenses (flexible)"
+    },
+    income: {
+      payg_base: "100%",
+      casual: "100%",
+      overtime_other: "80%",
+      commission: "80%",
+      self_employed_yrs: 2,
+      rental: "Not accepted",
+      foreign: "80%"
+    },
+    special: {
+      medico: true, medico_lvr: "95% no LMI",
+      lmi_waiver: true,
+      owner_occupier_only: true,
+      bridging: false, construction: false,
+      family_guarantee: false, smsf: false,
+      note: "Individuals & joints only, no companies/trusts"
+    },
+    docs: { payslips: 2, payslip_max_age: "30 days", self_emp: "2yr financials", alt_doc: false }
   }
 ];
+
+// ── SUPABASE INTEGRATION (Optional) ───────────────────────────────────────────
+// Configuration for Supabase API (replace placeholders with actual credentials)
+const SUPABASE_CONFIG = {
+  URL: 'https://syhwaeloljdswsmqkzrx.supabase.co',
+  ANON_KEY: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN5aHdhZWxvbGpkc3dzbXFrenJ4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAxMDI0NjksImV4cCI6MjA4NTY3ODQ2OX0.wWe9fnjMe0d7PbXfF5s9hdY6rXHB4rCAbMzXhgbyTE8',
+  API_ENDPOINT: 'https://syhwaeloljdswsmqkzrx.supabase.co/functions/v1/policy-radar-api',
+  ENABLED: true
+};
+
+let lastSyncedTime = null;
+let dataSource = 'inline'; // 'inline' or 'supabase'
+
+// Attempt to fetch lenders from Supabase REST API (direct query, no Edge Function needed)
+async function loadFromSupabase() {
+  if (!SUPABASE_CONFIG.ENABLED) {
+    console.log('Policy Radar: Supabase not configured, using inline data');
+    return null;
+  }
+
+  try {
+    console.log('Policy Radar: Fetching from Supabase REST API...');
+    const restUrl = `${SUPABASE_CONFIG.URL}/rest/v1/v_lender_summary?select=*&order=tier.asc,name.asc`;
+    const response = await fetch(restUrl, {
+      headers: {
+        'apikey': SUPABASE_CONFIG.ANON_KEY,
+        'Authorization': `Bearer ${SUPABASE_CONFIG.ANON_KEY}`
+      }
+    });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const rows = await response.json();
+
+    if (rows && rows.length > 0) {
+      // Transform DB rows into the inline LENDERS format
+      const lenders = rows.map(r => ({
+        id: r.id,
+        name: r.name,
+        icon: r.icon || '🏦',
+        type: r.type,
+        tier: r.tier,
+        completeness: r.completeness || 'minimal',
+        source: `${r.source_type || 'public'} · Verified ${r.last_verified || 'N/A'}`,
+        lvr: {
+          oo_pi: r.max_lvr_oo_pi ? parseFloat(r.max_lvr_oo_pi) : null,
+          oo_io: r.max_lvr_oo_io ? parseFloat(r.max_lvr_oo_io) : null,
+          inv_pi: r.max_lvr_inv_pi ? parseFloat(r.max_lvr_inv_pi) : null,
+          inv_io: r.max_lvr_inv_io ? parseFloat(r.max_lvr_inv_io) : null,
+          construction: r.max_lvr_construction ? parseFloat(r.max_lvr_construction) : null,
+          lmi_required_above: r.lmi_required_above ? parseFloat(r.lmi_required_above) : 0.80,
+          lmi_waiver: r.lmi_waiver_available || false,
+          lmi_waiver_note: r.lvr_matrix?.lmi_waiver_conditions || ''
+        },
+        modifiers: (r.lvr_matrix?.modifiers || []).map(m => ({
+          id: m.trigger, label: m.trigger?.replace(/_/g, ' '), max_lvr: m.max_lvr
+        })),
+        servicing: {
+          assessment_floor: r.assessment_rate_floor ? `${(parseFloat(r.assessment_rate_floor) * 100).toFixed(2)}%` : null,
+          buffer: r.assessment_buffer ? `${(parseFloat(r.assessment_buffer) * 100).toFixed(2)}%` : '3.00%',
+          dti_max: r.dti_max ? `${r.dti_max}×` : null,
+          min_surplus: r.servicing?.min_surplus_pa ? `$${r.servicing.min_surplus_pa}/yr` : null
+        },
+        income: {
+          payg_base: r.income_policy?.payg_base ? `${r.income_policy.payg_base * 100}%` : '100%',
+          casual: r.income_policy?.payg_casual ? `${r.income_policy.payg_casual * 100}%` : '100%',
+          overtime_other: r.income_policy?.payg_overtime_other ? `${r.income_policy.payg_overtime_other * 100}%` : '80%',
+          commission: r.income_policy?.payg_commission ? `${r.income_policy.payg_commission * 100}%` : '80%',
+          self_employed_yrs: r.income_policy?.self_employed_years_required || 2,
+          rental: r.income_policy?.rental_income ? `${r.income_policy.rental_income * 100}%` : '80%'
+        },
+        special: {
+          medico: r.has_medico_program || false,
+          medico_lvr: r.medico_max_lvr ? `${(parseFloat(r.medico_max_lvr) * 100).toFixed(0)}% no LMI` : null,
+          allied_health: r.has_allied_health || false,
+          industry_specialist: r.special_policies?.industry_specialist?.available || false,
+          lmi_waiver: r.lmi_waiver_available || false,
+          bridging: r.has_bridging || false,
+          construction: r.has_construction || false,
+          family_guarantee: r.has_family_guarantee || false,
+          smsf: r.accepts_smsf || false
+        },
+        docs: {
+          payslips: r.documentation?.payslips_required || null,
+          self_emp: r.documentation?.notes || '2yr tax returns or financials',
+          alt_doc: r.has_alt_doc || false
+        }
+      }));
+
+      lastSyncedTime = new Date();
+      dataSource = 'supabase';
+      console.log(`Policy Radar: Loaded ${lenders.length} lenders from Supabase`);
+      return lenders;
+    }
+  } catch (error) {
+    console.warn('Policy Radar: Supabase fetch failed, falling back to inline data', error);
+  }
+  return null;
+}
+
+// Initialize: try Supabase first, fall back to inline
+async function initializeLenderData() {
+  const supabaseLenders = await loadFromSupabase();
+  if (supabaseLenders && supabaseLenders.length > 0) {
+    // Replace LENDERS array with Supabase data
+    LENDERS = supabaseLenders;
+    updateSyncIndicator();
+  } else {
+    // Use inline data (no update needed, already loaded)
+    dataSource = 'inline';
+  }
+  currentResults = [...LENDERS];
+  initializeApp();
+}
+
+// Update last-synced timestamp in nav (if using Supabase)
+function updateSyncIndicator() {
+  if (lastSyncedTime && dataSource === 'supabase') {
+    const syncEl = document.querySelector('.nav-tag span');
+    if (syncEl) {
+      const timeStr = lastSyncedTime.toLocaleTimeString('en-AU', { hour: '2-digit', minute: '2-digit' });
+      syncEl.textContent = `${LENDERS.length} lenders • Synced ${timeStr}`;
+    }
+  }
+}
 
 // ── STATE ────────────────────────────────────────────────────────────────────
 let compareList = [];
@@ -1310,9 +1530,17 @@ function buildCompareTable() {
 }
 
 // ── INIT ─────────────────────────────────────────────────────────────────────
-document.addEventListener('DOMContentLoaded', () => {
+function initializeApp() {
   document.getElementById('lenderCountNav').textContent = LENDERS.length;
+  if (dataSource === 'supabase') {
+    document.querySelector('.nav-tag').innerHTML = `<span>${LENDERS.length} lenders • Synced from Supabase</span>`;
+  }
   render([...LENDERS]);
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  // Initialize with Supabase fetch attempt (will fall back to inline data)
+  initializeLenderData();
 
   // Checkbox styling
   document.querySelectorAll('.checkbox-item input').forEach(cb => {
