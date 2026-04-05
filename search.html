@@ -899,6 +899,11 @@
           <span class="toggle-switch"></span>
           Second Mortgage
         </label>
+        <label class="toggle-item" id="chk-leasehold-wrap">
+          <input type="checkbox" id="chk-leasehold">
+          <span class="toggle-switch"></span>
+          Leasehold Property
+        </label>
       </div>
     </div>
 
@@ -1030,6 +1035,11 @@
           <span class="toggle-switch"></span>
           Development Finance
         </label>
+        <label class="toggle-item" id="chk-comm-leasehold-wrap">
+          <input type="checkbox" id="chk-comm-leasehold">
+          <span class="toggle-switch"></span>
+          Leasehold Property
+        </label>
       </div>
     </div>
 
@@ -1138,7 +1148,7 @@ function updateActiveFilterCount() {
   if (document.getElementById('minLoanInput').value) count++;
   const activeTier = document.querySelector('#tierPills .pill-option.active');
   if (activeTier && activeTier.dataset.tier) count++;
-  ['chk-io','chk-dti','chk-hd','chk-casual','chk-medico','chk-bridge','chk-construction','chk-famguarantee','chk-altdoc','chk-smsf','chk-selfempl1','chk-foreignincome','chk-nogs','chk-2ndmortgage']
+  ['chk-io','chk-dti','chk-hd','chk-casual','chk-medico','chk-bridge','chk-construction','chk-famguarantee','chk-altdoc','chk-smsf','chk-selfempl1','chk-foreignincome','chk-nogs','chk-2ndmortgage','chk-leasehold']
     .forEach(id => { if (document.getElementById(id)?.checked) count++; });
   // Desktop badge
   const badge = document.getElementById('activeFilterCount');
@@ -1193,7 +1203,8 @@ let LENDERS = [
     },
     entity: { company: false, trust: false, note: "Paused all company/trust applications since Oct 2025" },
     second_mortgage: { allowed: false, note: "Not available" },
-    docs: { payslips: 2, self_emp: "2yr financials or ATO NOA", alt_doc: false }
+    docs: { payslips: 2, self_emp: "2yr financials or ATO NOA", alt_doc: false },
+    leasehold: { accepted: true, lvr_reduction: 0.10, min_remaining_lease: 30, note: "LVR reduced 10%; min 30yr remaining lease at maturity" }
   },
   {
     id: "cba",
@@ -1240,7 +1251,8 @@ let LENDERS = [
     },
     entity: { company: true, trust: true, max_lvr: 0.80, note: "Restricted — requires existing CBA lending facility 6+ months" },
     second_mortgage: { allowed: true, max_combined_lvr: 0.95, note: "Same lender only (guarantor structure)" },
-    docs: { payslips: 2, self_emp: "2yr tax returns or financials", alt_doc: false }
+    docs: { payslips: 2, self_emp: "2yr tax returns or financials", alt_doc: false },
+    leasehold: { accepted: true, lvr_reduction: 0.05, min_remaining_lease: 25, note: "Accepted — 5% LVR reduction; min 25yr remaining" }
   },
   {
     id: "anz",
@@ -1286,7 +1298,8 @@ let LENDERS = [
     },
     entity: { company: true, trust: true, max_lvr: 0.70, note: "Tightened Jan 2026 — requires 6-month existing relationship" },
     second_mortgage: { allowed: false, note: "Not generally available" },
-    docs: { payslips: 2, self_emp: "2yr tax returns or financials", alt_doc: false }
+    docs: { payslips: 2, self_emp: "2yr tax returns or financials", alt_doc: false },
+    leasehold: { accepted: true, lvr_reduction: 0.05, min_remaining_lease: 25, note: "Accepted — 5% LVR reduction; min 25yr remaining" }
   },
   {
     id: "nab",
@@ -1332,7 +1345,8 @@ let LENDERS = [
     },
     entity: { company: true, trust: true, max_lvr: 0.80, note: "Reviewing — cautious on high-risk investors" },
     second_mortgage: { allowed: false, note: "Not generally available" },
-    docs: { payslips: 2, self_emp: "2yr tax returns or financials", alt_doc: false }
+    docs: { payslips: 2, self_emp: "2yr tax returns or financials", alt_doc: false },
+    leasehold: { accepted: true, lvr_reduction: 0.05, min_remaining_lease: 25, note: "Accepted — LVR capped at 80% for leasehold; min 25yr" }
   },
   {
     id: "stgeorge",
@@ -1377,7 +1391,8 @@ let LENDERS = [
     },
     entity: { company: true, trust: true, max_lvr: 0.80, note: "Westpac Group — same policy as Westpac" },
     second_mortgage: { allowed: false, note: "Not generally available" },
-    docs: { payslips: null, self_emp: "2yr ATO NOA (Fast Track) or financials", alt_doc: true }
+    docs: { payslips: null, self_emp: "2yr ATO NOA (Fast Track) or financials", alt_doc: true },
+    leasehold: { accepted: true, lvr_reduction: 0.05, min_remaining_lease: 25, note: "Westpac Group — 5% LVR reduction; min 25yr remaining" }
   },
   {
     id: "westpac",
@@ -1420,7 +1435,8 @@ let LENDERS = [
     },
     entity: { company: false, trust: false, note: "Stopped residential channel — business banking only" },
     second_mortgage: { allowed: false, note: "Not generally available" },
-    docs: { payslips: null, self_emp: "2yr ATO NOA (Fast Track) or financials", alt_doc: true }
+    docs: { payslips: null, self_emp: "2yr ATO NOA (Fast Track) or financials", alt_doc: true },
+    leasehold: { accepted: true, lvr_reduction: 0.05, min_remaining_lease: 25, note: "Accepted — 5% LVR reduction; min 25yr remaining" }
   },
   {
     id: "bankwest",
@@ -1466,7 +1482,8 @@ let LENDERS = [
     },
     entity: { company: true, trust: true, max_lvr: 0.80, note: "CBA Group — same restrictions as CBA" },
     second_mortgage: { allowed: true, max_combined_lvr: 0.95, note: "Guarantor structure only" },
-    docs: { payslips: 2, self_emp: "2yr financials or ATO NOA", alt_doc: false }
+    docs: { payslips: 2, self_emp: "2yr financials or ATO NOA", alt_doc: false },
+    leasehold: { accepted: true, lvr_reduction: 0.05, min_remaining_lease: 25, note: "CBA Group — 5% LVR reduction; min 25yr" }
   },
   {
     id: "ing",
@@ -1515,7 +1532,8 @@ let LENDERS = [
     },
     entity: { company: false, trust: false, note: "Individuals & joints only" },
     second_mortgage: { allowed: false, note: "Not available" },
-    docs: { payslips: 2, payslip_max_age: "30 days", self_emp: "2yr financials", alt_doc: false }
+    docs: { payslips: 2, payslip_max_age: "30 days", self_emp: "2yr financials", alt_doc: false },
+    leasehold: { accepted: false, note: "ING does not accept leasehold residential properties" }
   },
   {
     id: "thinktank",
@@ -1535,7 +1553,8 @@ let LENDERS = [
     special: { medico: false, bridging: false, construction: true, family_guarantee: false, smsf: true, foreign_income: false, no_genuine_savings: false },
     entity: { company: true, trust: true, max_lvr: 0.80, note: "Commercial specialist — accepts company/trust" },
     second_mortgage: { allowed: true, max_combined_lvr: 0.75, note: "Accepted — combined LVR 75% max" },
-    docs: { payslips: null, self_emp: "1yr accountant's letter", alt_doc: true }
+    docs: { payslips: null, self_emp: "1yr accountant's letter", alt_doc: true },
+    leasehold: { accepted: true, lvr_reduction: 0.05, min_remaining_lease: 20, note: "Flexible — 5% reduction; min 20yr remaining" }
   },
   {
     id: "bluestone",
@@ -1555,7 +1574,8 @@ let LENDERS = [
     special: { medico: false, bridging: false, construction: false, family_guarantee: false, smsf: false, foreign_income: false, no_genuine_savings: true },
     entity: { company: true, trust: true, max_lvr: 0.90, note: "Accepts company/discretionary/unit/family trust — directors must guarantee" },
     second_mortgage: { allowed: true, max_combined_lvr: 0.80, note: "Accepted — combined LVR 80% max" },
-    docs: { payslips: 2, self_emp: "1yr accountant's letter or ATO", alt_doc: true }
+    docs: { payslips: 2, self_emp: "1yr accountant's letter or ATO", alt_doc: true },
+    leasehold: { accepted: true, lvr_reduction: 0.05, min_remaining_lease: 15, note: "Non-bank flexible — 5% reduction; min 15yr remaining" }
   },
   {
     id: "columbus",
@@ -1575,7 +1595,8 @@ let LENDERS = [
     special: { medico: false, bridging: false, construction: false, family_guarantee: false, smsf: false, foreign_income: false, no_genuine_savings: false },
     entity: { company: true, trust: true, max_lvr: 0.80, note: "White-label funder — accepts company/trust" },
     second_mortgage: { allowed: false, note: "Not available" },
-    docs: { payslips: 2, self_emp: "2yr tax returns", alt_doc: false }
+    docs: { payslips: 2, self_emp: "2yr tax returns", alt_doc: false },
+    leasehold: { accepted: true, lvr_reduction: 0.05, min_remaining_lease: 15, note: "Flexible — 5% reduction; min 15yr remaining" }
   },
   {
     id: "brighten",
@@ -1595,7 +1616,8 @@ let LENDERS = [
     special: { medico: false, bridging: false, construction: false, family_guarantee: false, smsf: false, foreign_income: true, no_genuine_savings: false },
     entity: { company: true, trust: true, max_lvr: 0.85, note: "Foreign income specialist — accepts company/trust" },
     second_mortgage: { allowed: false, note: "Not available" },
-    docs: { payslips: 2, self_emp: "2yr financials", alt_doc: true }
+    docs: { payslips: 2, self_emp: "2yr financials", alt_doc: true },
+    leasehold: { accepted: true, lvr_reduction: 0.05, min_remaining_lease: 20, note: "Accepted — 5% reduction; min 20yr remaining" }
   },
   {
     id: "granite",
@@ -1615,7 +1637,8 @@ let LENDERS = [
     special: { medico: false, bridging: false, construction: false, family_guarantee: false, smsf: false, foreign_income: false, no_genuine_savings: false },
     entity: { company: true, trust: true, max_lvr: 0.75, note: "White-label funder — accepts company/trust" },
     second_mortgage: { allowed: false, note: "Not available" },
-    docs: { payslips: 2, self_emp: "2yr tax returns", alt_doc: false }
+    docs: { payslips: 2, self_emp: "2yr tax returns", alt_doc: false },
+    leasehold: { accepted: false, note: "Granite does not accept leasehold properties" }
   },
   {
     id: "auswide",
@@ -1635,7 +1658,8 @@ let LENDERS = [
     special: { medico: false, bridging: true, construction: false, family_guarantee: false, smsf: false, foreign_income: false, no_genuine_savings: false },
     entity: { company: false, trust: false, note: "Individuals only — regional bank" },
     second_mortgage: { allowed: false, note: "Not available" },
-    docs: { payslips: 2, self_emp: "2yr tax returns", alt_doc: false }
+    docs: { payslips: 2, self_emp: "2yr tax returns", alt_doc: false },
+    leasehold: { accepted: false, note: "Auswide does not accept leasehold properties" }
   },
   {
     id: "heritage",
@@ -1655,7 +1679,8 @@ let LENDERS = [
     special: { medico: false, bridging: false, construction: false, family_guarantee: false, smsf: false, foreign_income: false, no_genuine_savings: false },
     entity: { company: false, trust: false, note: "Individuals only — regional bank" },
     second_mortgage: { allowed: false, note: "Not available" },
-    docs: { payslips: 2, self_emp: "2yr tax returns", alt_doc: false }
+    docs: { payslips: 2, self_emp: "2yr tax returns", alt_doc: false },
+    leasehold: { accepted: false, note: "Heritage does not accept leasehold properties" }
   },
   {
     id: "banksa",
@@ -1675,7 +1700,8 @@ let LENDERS = [
     special: { medico: true, medico_lvr: "90% no LMI", lmi_waiver: true, bridging: true, construction: true, family_guarantee: true, smsf: false, foreign_income: false, no_genuine_savings: false },
     entity: { company: true, trust: true, max_lvr: 0.80, note: "Westpac subsidiary — same policy" },
     second_mortgage: { allowed: false, note: "Not available" },
-    docs: { payslips: 2, self_emp: "2yr tax returns", alt_doc: false }
+    docs: { payslips: 2, self_emp: "2yr tax returns", alt_doc: false },
+    leasehold: { accepted: true, lvr_reduction: 0.05, min_remaining_lease: 25, note: "Westpac Group — 5% LVR reduction; min 25yr" }
   },
   {
     id: "greater",
@@ -1695,7 +1721,8 @@ let LENDERS = [
     special: { medico: false, bridging: false, construction: false, family_guarantee: false, smsf: false, foreign_income: false, no_genuine_savings: false },
     entity: { company: false, trust: false, note: "Individuals only — regional bank" },
     second_mortgage: { allowed: false, note: "Not available" },
-    docs: { payslips: 2, self_emp: "2yr tax returns", alt_doc: false }
+    docs: { payslips: 2, self_emp: "2yr tax returns", alt_doc: false },
+    leasehold: { accepted: false, note: "Greater Bank does not accept leasehold properties" }
   },
   {
     id: "racq",
@@ -1715,7 +1742,8 @@ let LENDERS = [
     special: { medico: false, bridging: false, construction: false, family_guarantee: false, smsf: false, foreign_income: false, no_genuine_savings: false },
     entity: { company: false, trust: false, note: "Individuals only — regional bank" },
     second_mortgage: { allowed: false, note: "Not available" },
-    docs: { payslips: 2, self_emp: "2yr tax returns", alt_doc: false }
+    docs: { payslips: 2, self_emp: "2yr tax returns", alt_doc: false },
+    leasehold: { accepted: false, note: "RACQ does not accept leasehold properties" }
   },
   {
     id: "86400",
@@ -1735,7 +1763,8 @@ let LENDERS = [
     special: { medico: false, bridging: false, construction: false, family_guarantee: false, smsf: false, foreign_income: false, no_genuine_savings: false },
     entity: { company: false, trust: false, note: "Individuals only — digital bank" },
     second_mortgage: { allowed: false, note: "Not available" },
-    docs: { payslips: 2, self_emp: "2yr tax returns", alt_doc: false }
+    docs: { payslips: 2, self_emp: "2yr tax returns", alt_doc: false },
+    leasehold: { accepted: false, note: "86 400 does not accept leasehold properties" }
   },
   {
     id: "athena",
@@ -1755,7 +1784,8 @@ let LENDERS = [
     special: { medico: false, bridging: false, construction: false, family_guarantee: false, smsf: false, foreign_income: false, no_genuine_savings: false },
     entity: { company: false, trust: false, note: "Individuals only — digital lender" },
     second_mortgage: { allowed: false, note: "Not available" },
-    docs: { payslips: 2, self_emp: "2yr financials", alt_doc: true }
+    docs: { payslips: 2, self_emp: "2yr financials", alt_doc: true },
+    leasehold: { accepted: false, note: "Athena does not accept leasehold properties" }
   },
   {
     id: "loans_com",
@@ -1775,7 +1805,8 @@ let LENDERS = [
     special: { medico: false, bridging: false, construction: false, family_guarantee: false, smsf: false, foreign_income: false, no_genuine_savings: false },
     entity: { company: false, trust: false, note: "Individuals only" },
     second_mortgage: { allowed: false, note: "Not available" },
-    docs: { payslips: null, self_emp: "2yr financials", alt_doc: true }
+    docs: { payslips: null, self_emp: "2yr financials", alt_doc: true },
+    leasehold: { accepted: false, note: "Loans.com.au does not accept leasehold properties" }
   },
   {
     id: "reduce",
@@ -1795,7 +1826,8 @@ let LENDERS = [
     special: { medico: false, bridging: false, construction: false, family_guarantee: false, smsf: false, foreign_income: false, no_genuine_savings: false },
     entity: { company: false, trust: false, note: "Individuals only" },
     second_mortgage: { allowed: false, note: "Not available" },
-    docs: { payslips: 2, self_emp: "2yr accountant's letter", alt_doc: false }
+    docs: { payslips: 2, self_emp: "2yr accountant's letter", alt_doc: false },
+    leasehold: { accepted: false, note: "Reduce does not accept leasehold properties" }
   }
 ];
 
@@ -2065,6 +2097,11 @@ function render(results) {
         <strong>💡 Tip:</strong> Major banks have been tightening company/trust lending since late 2025 (Macquarie paused entirely, ANZ capped at 70% LVR).
         <strong>Non-bank lenders</strong> like <span class="green">Bluestone</span> (up to 90%), <span class="green">Thinktank</span>, and <span class="green">Columbus Capital</span> still accept company/trust borrowers. Try selecting "Non-Bank" in the Lender Tier filter.
       </div>`;
+    } else if (filters.leasehold) {
+      suggestion = `<div class="empty-suggestion">
+        <strong>💡 Tip:</strong> Leasehold properties are restricted by many lenders, especially smaller banks and digital-only lenders.
+        <strong>Major banks</strong> like <span class="green">CBA</span>, <span class="green">ANZ</span>, <span class="green">NAB</span>, <span class="green">Westpac</span> typically accept leasehold with a 5% LVR reduction and minimum 25-year remaining lease. Non-banks like <span class="green">Bluestone</span> and <span class="green">Thinktank</span> are also flexible.
+      </div>`;
     } else if (filters.foreignIncome) {
       suggestion = `<div class="empty-suggestion">
         <strong>💡 Tip:</strong> Foreign income is restrictive with most banks.
@@ -2200,6 +2237,7 @@ function openDetailPanel(id) {
       <div class="policy-cell"><div class="cell-label">Company</div><div class="cell-value">${l.entity && l.entity.company ? '<span class="green">Yes</span>' + (l.entity.max_lvr ? ' ('+Math.round(l.entity.max_lvr*100)+'%)' : '') : '<span class="muted">No</span>'}</div></div>
       <div class="policy-cell"><div class="cell-label">Trust</div><div class="cell-value">${l.entity && l.entity.trust ? '<span class="green">Yes</span>' + (l.entity.max_lvr ? ' ('+Math.round(l.entity.max_lvr*100)+'%)' : '') : '<span class="muted">No</span>'}</div></div>
       <div class="policy-cell"><div class="cell-label">2nd Mortgage</div><div class="cell-value">${l.second_mortgage && l.second_mortgage.allowed ? '<span class="green">Yes</span>' + (l.second_mortgage.max_combined_lvr ? ' ('+Math.round(l.second_mortgage.max_combined_lvr*100)+'% CLVR)' : '') : '<span class="muted">No</span>'}</div></div>
+      <div class="policy-cell"><div class="cell-label">Leasehold</div><div class="cell-value">${l.leasehold && l.leasehold.accepted ? '<span class="green">Yes</span> (−'+Math.round(l.leasehold.lvr_reduction*100)+'% LVR, min '+l.leasehold.min_remaining_lease+'yr)' : '<span class="muted">No</span>'}</div></div>
     </div>
     ${activeModifiers.length ? `
     <div class="modifiers-section">
@@ -2263,6 +2301,7 @@ function getFilters() {
     foreignIncome: document.getElementById('chk-foreignincome').checked,
     noGenuineSavings: document.getElementById('chk-nogs').checked,
     secondMortgage: document.getElementById('chk-2ndmortgage').checked,
+    leasehold: document.getElementById('chk-leasehold').checked,
   };
 }
 
@@ -2305,6 +2344,11 @@ function getEffectiveLvr(lender, filters) {
   } else if (filters.hd) {
     const m = lender.modifiers.find(x => x.id === 'high_density_pi');
     if (m) effective = Math.min(effective, m.max_lvr);
+  }
+
+  // Apply leasehold LVR reduction
+  if (filters.leasehold && lender.leasehold && lender.leasehold.accepted && lender.leasehold.lvr_reduction) {
+    effective = effective - lender.leasehold.lvr_reduction;
   }
 
   return effective;
@@ -2378,6 +2422,10 @@ function runSearch() {
   if (filters.secondMortgage) {
     results = results.filter(l => l.second_mortgage && l.second_mortgage.allowed === true);
   }
+  // Filter: Leasehold property
+  if (filters.leasehold) {
+    results = results.filter(l => l.leasehold && l.leasehold.accepted === true);
+  }
   // Filter: Self-employed < 2 years
   if (filters.selfEmpl1) {
     results = results.filter(l => l.income.self_employed_yrs <= 1);
@@ -2436,6 +2484,7 @@ function updateScenarioBar(filters) {
   if (filters.foreignIncome) tags.push('Foreign Income');
   if (filters.noGenuineSavings) tags.push('No Genuine Savings');
   if (filters.secondMortgage) tags.push('Second Mortgage');
+  if (filters.leasehold) tags.push('Leasehold');
   if (tags.length > 0) {
     bar.classList.remove('hidden');
     bar.innerHTML = '<span style="color:var(--muted);font-size:12px;">Scenario:</span> ' + tags.map(t => `<span class="tag">${t}</span>`).join('');
@@ -2453,7 +2502,7 @@ function resetFilters() {
   document.querySelectorAll('#tierPills .pill-option').forEach(p => p.classList.remove('active'));
   document.querySelector('#tierPills .pill-option[data-tier=""]').classList.add('active');
   // Reset all checkboxes + toggle switches
-  ['chk-io','chk-dti','chk-hd','chk-casual','chk-medico','chk-bridge','chk-construction','chk-famguarantee','chk-altdoc','chk-smsf','chk-selfempl1','chk-foreignincome','chk-nogs','chk-2ndmortgage']
+  ['chk-io','chk-dti','chk-hd','chk-casual','chk-medico','chk-bridge','chk-construction','chk-famguarantee','chk-altdoc','chk-smsf','chk-selfempl1','chk-foreignincome','chk-nogs','chk-2ndmortgage','chk-leasehold']
     .forEach(id => {
       const el = document.getElementById(id);
       if (el) {
@@ -2624,7 +2673,8 @@ let COMM_LENDERS = [
     entity: { individual: true, company: false, trust: false, unit_trust: false, smsf: false, partnership: true, note: "Paused company/trust brokered lending Oct 2025" },
     servicing: { buffer: "3.00%", dscr_min: 1.20, rental_income: "80%", assessment_floor: "5.30%" },
     special: { medico: true, medico_note: "+10% LVR for medical practitioners with fellowship", rural: true, development: true, alt_doc: false, smsf: false },
-    docs: { full_doc: true, alt_doc: false, low_doc: false }
+    docs: { full_doc: true, alt_doc: false, low_doc: false },
+    leasehold: { accepted: true, lvr_reduction: 0.10, min_remaining_lease: 30, note: "LVR reduced 10% for leasehold; min 30yr remaining lease at loan maturity" }
   },
   {
     id: "cba_comm", name: "Commonwealth Bank (CBA)", tier: "tier1", type: "major_bank",
@@ -2636,7 +2686,8 @@ let COMM_LENDERS = [
     entity: { individual: true, company: true, trust: true, unit_trust: true, smsf: false, partnership: true, note: "Restricted — requires existing CBA relationship" },
     servicing: { buffer: "3.00%", dscr_min: 1.20, rental_income: "80%", assessment_floor: "5.40%" },
     special: { medico: true, medico_note: "Healthcare professionals up to 80% LVR", rural: false, development: true, alt_doc: false, smsf: false },
-    docs: { full_doc: true, alt_doc: false, low_doc: false }
+    docs: { full_doc: true, alt_doc: false, low_doc: false },
+    leasehold: { accepted: true, lvr_reduction: 0.10, min_remaining_lease: 25, note: "Max 65% LVR for leasehold; min 25yr remaining at maturity" }
   },
   {
     id: "anz_comm", name: "ANZ Bank", tier: "tier1", type: "major_bank",
@@ -2648,7 +2699,8 @@ let COMM_LENDERS = [
     entity: { individual: true, company: true, trust: true, unit_trust: true, smsf: false, partnership: true, note: "Tightened Jan 2026 — 70% max LVR for entities" },
     servicing: { buffer: "3.00%", dscr_min: 1.20, rental_income: "80%", assessment_floor: "5.40%" },
     special: { medico: true, medico_note: "Medical centre up to 80%", rural: false, development: false, alt_doc: false, smsf: false },
-    docs: { full_doc: true, alt_doc: false, low_doc: false }
+    docs: { full_doc: true, alt_doc: false, low_doc: false },
+    leasehold: { accepted: true, lvr_reduction: 0.10, min_remaining_lease: 25, note: "LVR reduced 10%; min 25yr remaining lease" }
   },
   {
     id: "nab_comm", name: "NAB", tier: "tier1", type: "major_bank",
@@ -2660,7 +2712,8 @@ let COMM_LENDERS = [
     entity: { individual: true, company: true, trust: true, unit_trust: true, smsf: false, partnership: true, note: "Reviewing entity risk — cautious" },
     servicing: { buffer: "3.00%", dscr_min: 1.20, rental_income: "80%", assessment_floor: "5.40%" },
     special: { medico: true, medico_note: "NAB Health specialists", rural: true, development: true, alt_doc: false, smsf: false },
-    docs: { full_doc: true, alt_doc: false, low_doc: false }
+    docs: { full_doc: true, alt_doc: false, low_doc: false },
+    leasehold: { accepted: true, lvr_reduction: 0.10, min_remaining_lease: 25, note: "LVR capped at 65% for leasehold; must have 25yr+ remaining" }
   },
   {
     id: "westpac_comm", name: "Westpac", tier: "tier1", type: "major_bank",
@@ -2672,7 +2725,8 @@ let COMM_LENDERS = [
     entity: { individual: true, company: false, trust: false, unit_trust: false, smsf: false, partnership: true, note: "Company/trust shifted to Business Banking channel" },
     servicing: { buffer: "3.00%", dscr_min: 1.15, rental_income: "80%", assessment_floor: "5.40%" },
     special: { medico: false, rural: false, development: true, alt_doc: false, smsf: false },
-    docs: { full_doc: true, alt_doc: false, low_doc: false }
+    docs: { full_doc: true, alt_doc: false, low_doc: false },
+    leasehold: { accepted: true, lvr_reduction: 0.10, min_remaining_lease: 25, note: "Westpac Group policy — 10% LVR haircut on leasehold" }
   },
   {
     id: "stgeorge_comm", name: "St.George Bank", tier: "tier1", type: "major_bank",
@@ -2684,7 +2738,8 @@ let COMM_LENDERS = [
     entity: { individual: true, company: true, trust: true, unit_trust: true, smsf: false, partnership: true, note: "Westpac Group" },
     servicing: { buffer: "3.00%", dscr_min: 1.15, rental_income: "80%", assessment_floor: "5.40%" },
     special: { medico: true, medico_note: "Industry specialist program", rural: false, development: true, alt_doc: true, smsf: false },
-    docs: { full_doc: true, alt_doc: true, low_doc: false }
+    docs: { full_doc: true, alt_doc: true, low_doc: false },
+    leasehold: { accepted: true, lvr_reduction: 0.10, min_remaining_lease: 25, note: "Same as Westpac Group; 10% LVR reduction" }
   },
   {
     id: "thinktank_comm", name: "Thinktank", tier: "tier2", type: "non_bank",
@@ -2696,7 +2751,8 @@ let COMM_LENDERS = [
     entity: { individual: true, company: true, trust: true, unit_trust: true, smsf: true, partnership: true, note: "SMSF specialist — up to 30yr terms" },
     servicing: { buffer: "3.00%", dscr_min: 1.15, rental_income: "80%", assessment_floor: null },
     special: { medico: false, rural: true, development: false, alt_doc: true, smsf: true },
-    docs: { full_doc: true, alt_doc: true, low_doc: true }
+    docs: { full_doc: true, alt_doc: true, low_doc: true },
+    leasehold: { accepted: true, lvr_reduction: 0.05, min_remaining_lease: 20, note: "Flexible on leasehold — 5% LVR reduction; min 20yr remaining" }
   },
   {
     id: "pepper_comm", name: "Pepper Money", tier: "tier2", type: "non_bank",
@@ -2708,7 +2764,8 @@ let COMM_LENDERS = [
     entity: { individual: true, company: true, trust: true, unit_trust: true, smsf: false, partnership: true, note: "Flexible — accepts most entity types" },
     servicing: { buffer: "3.00%", dscr_min: 1.15, rental_income: "80%", assessment_floor: null },
     special: { medico: false, rural: true, development: true, alt_doc: true, smsf: false },
-    docs: { full_doc: true, alt_doc: true, low_doc: true }
+    docs: { full_doc: true, alt_doc: true, low_doc: true },
+    leasehold: { accepted: true, lvr_reduction: 0.05, min_remaining_lease: 15, note: "Non-bank flexibility — 5% LVR reduction; min 15yr remaining" }
   },
   {
     id: "liberty_comm", name: "Liberty Financial", tier: "tier2", type: "non_bank",
@@ -2720,7 +2777,8 @@ let COMM_LENDERS = [
     entity: { individual: true, company: true, trust: true, unit_trust: true, smsf: true, partnership: true, note: "Flexible for SMSF and qualified borrowers" },
     servicing: { buffer: "3.00%", dscr_min: 1.15, rental_income: "80%", assessment_floor: null },
     special: { medico: false, rural: true, development: true, alt_doc: true, smsf: true },
-    docs: { full_doc: true, alt_doc: true, low_doc: true }
+    docs: { full_doc: true, alt_doc: true, low_doc: true },
+    leasehold: { accepted: true, lvr_reduction: 0.05, min_remaining_lease: 15, note: "Flexible — 5% reduction; min 15yr remaining lease" }
   },
   {
     id: "latrobe_comm", name: "La Trobe Financial", tier: "tier2", type: "non_bank",
@@ -2732,7 +2790,8 @@ let COMM_LENDERS = [
     entity: { individual: true, company: true, trust: true, unit_trust: true, smsf: true, partnership: true, note: "SMSF specialist — 15-30yr terms" },
     servicing: { buffer: "3.00%", dscr_min: 1.15, rental_income: "80%", assessment_floor: null },
     special: { medico: false, rural: true, development: true, alt_doc: true, smsf: true },
-    docs: { full_doc: true, alt_doc: true, low_doc: true }
+    docs: { full_doc: true, alt_doc: true, low_doc: true },
+    leasehold: { accepted: true, lvr_reduction: 0.05, min_remaining_lease: 20, note: "Flexible — 5% reduction; min 20yr remaining" }
   },
   {
     id: "bluestone_comm", name: "Bluestone Home Loans", tier: "tier2", type: "non_bank",
@@ -2744,7 +2803,8 @@ let COMM_LENDERS = [
     entity: { individual: true, company: true, trust: true, unit_trust: true, smsf: false, partnership: true, note: "Directors must guarantee" },
     servicing: { buffer: "3.00%", dscr_min: 1.20, rental_income: "80%", assessment_floor: null },
     special: { medico: false, rural: false, development: false, alt_doc: true, smsf: false },
-    docs: { full_doc: true, alt_doc: true, low_doc: false }
+    docs: { full_doc: true, alt_doc: true, low_doc: false },
+    leasehold: { accepted: false, note: "Bluestone does not accept leasehold commercial properties" }
   },
   {
     id: "suncorp_comm", name: "Suncorp Bank", tier: "tier2", type: "non_major_bank",
@@ -2756,7 +2816,8 @@ let COMM_LENDERS = [
     entity: { individual: true, company: true, trust: true, unit_trust: true, smsf: false, partnership: true, note: "" },
     servicing: { buffer: "3.00%", dscr_min: 1.20, rental_income: "80%", assessment_floor: "5.40%" },
     special: { medico: true, medico_note: "Healthcare lender program", rural: true, development: true, alt_doc: false, smsf: false },
-    docs: { full_doc: true, alt_doc: false, low_doc: false }
+    docs: { full_doc: true, alt_doc: false, low_doc: false },
+    leasehold: { accepted: true, lvr_reduction: 0.10, min_remaining_lease: 25, note: "10% LVR reduction; min 25yr remaining at maturity" }
   }
 ];
 
@@ -2788,13 +2849,19 @@ function getCommFilters() {
     medico: document.getElementById('chk-comm-medico').checked,
     rural: document.getElementById('chk-comm-rural').checked,
     dev: document.getElementById('chk-comm-dev').checked,
+    leasehold: document.getElementById('chk-comm-leasehold').checked,
   };
 }
 
 function getCommLvr(lender, filters) {
   const prop = filters.propertyType || 'standard';
   const lvrSet = filters.occupancy === 'investment' ? lender.lvr_inv : lender.lvr;
-  return lvrSet[prop] || lvrSet.standard || null;
+  let lvr = lvrSet[prop] || lvrSet.standard || null;
+  // Apply leasehold LVR reduction
+  if (lvr && filters.leasehold && lender.leasehold && lender.leasehold.accepted && lender.leasehold.lvr_reduction) {
+    lvr = lvr - lender.leasehold.lvr_reduction;
+  }
+  return lvr;
 }
 
 function runCommSearch() {
@@ -2835,6 +2902,10 @@ function runCommSearch() {
   if (f.medico) results = results.filter(l => l.special.medico);
   if (f.rural) results = results.filter(l => l.special.rural);
   if (f.dev) results = results.filter(l => l.special.development);
+  // Leasehold
+  if (f.leasehold) {
+    results = results.filter(l => l.leasehold && l.leasehold.accepted === true);
+  }
 
   // Sort by LVR
   if (f.lvr || f.propertyType) {
@@ -2871,6 +2942,7 @@ function updateCommScenarioBar(f) {
   if (f.medico) tags.push('Medical');
   if (f.rural) tags.push('Rural');
   if (f.dev) tags.push('Development');
+  if (f.leasehold) tags.push('Leasehold');
   if (tags.length) {
     bar.classList.remove('hidden');
     bar.innerHTML = '<span style="color:var(--muted);font-size:12px;">Scenario:</span> ' + tags.map(t => '<span class="tag">'+t+'</span>').join('');
@@ -3005,6 +3077,7 @@ function openCommDetail(id) {
       <div class="policy-cell"><div class="cell-label">Alt Doc</div><div class="cell-value">${l.docs.alt_doc ? '<span class="green">Yes</span>' : 'No'}</div></div>
       <div class="policy-cell"><div class="cell-label">Low Doc</div><div class="cell-value">${l.docs.low_doc ? '<span class="green">Yes</span>' : 'No'}</div></div>
       <div class="policy-cell"><div class="cell-label">Full Doc</div><div class="cell-value">${l.docs.full_doc ? '<span class="green">Yes</span>' : 'No'}</div></div>
+      <div class="policy-cell"><div class="cell-label">Leasehold</div><div class="cell-value">${l.leasehold && l.leasehold.accepted ? '<span class="green">Yes</span> (−'+Math.round(l.leasehold.lvr_reduction*100)+'% LVR, min '+l.leasehold.min_remaining_lease+'yr)' : '<span class="muted">No</span>'}</div></div>
     </div>
 
     ${l.entity.note ? '<div style="margin-top:10px;font-size:12px;color:var(--muted);"><em>⚠ '+l.entity.note+'</em></div>' : ''}
@@ -3041,7 +3114,7 @@ function resetCommFilters() {
   document.querySelector('#commTierPills .pill-option[data-tier=""]').classList.add('active');
   document.querySelectorAll('#commOccupancy .pill-option').forEach(p => p.classList.remove('active'));
   document.querySelector('#commOccupancy .pill-option[data-occ=""]').classList.add('active');
-  ['chk-comm-altdoc','chk-comm-smsf','chk-comm-medico','chk-comm-rural','chk-comm-dev'].forEach(id => {
+  ['chk-comm-altdoc','chk-comm-smsf','chk-comm-medico','chk-comm-rural','chk-comm-dev','chk-comm-leasehold'].forEach(id => {
     const el = document.getElementById(id);
     if (el) { el.checked = false; const w = el.closest('.toggle-item'); if (w) w.classList.remove('active'); }
   });
