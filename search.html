@@ -2050,12 +2050,114 @@ async function loadFromSupabase() {
   return null;
 }
 
+// Load commercial lenders from Supabase
+async function loadCommFromSupabase() {
+  if (!SUPABASE_CONFIG.ENABLED) return null;
+  try {
+    console.log('Policy Radar: Fetching commercial from Supabase...');
+    const restUrl = `${SUPABASE_CONFIG.URL}/rest/v1/v_commercial_summary?select=*&order=tier.asc,name.asc`;
+    const response = await fetch(restUrl, {
+      headers: {
+        'apikey': SUPABASE_CONFIG.ANON_KEY,
+        'Authorization': `Bearer ${SUPABASE_CONFIG.ANON_KEY}`
+      }
+    });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const rows = await response.json();
+
+    if (rows && rows.length > 0) {
+      const lenders = rows.map(r => ({
+        id: r.id,
+        name: r.name,
+        tier: r.tier,
+        type: r.type,
+        completeness: r.completeness || 'minimal',
+        source: r.source || 'Supabase · Verified ' + (r.last_verified || 'N/A'),
+        lvr: {
+          standard: r.lvr_standard ? parseFloat(r.lvr_standard) : null,
+          retail: r.lvr_retail ? parseFloat(r.lvr_retail) : null,
+          industrial: r.lvr_industrial ? parseFloat(r.lvr_industrial) : null,
+          office: r.lvr_office ? parseFloat(r.lvr_office) : null,
+          medical: r.lvr_medical ? parseFloat(r.lvr_medical) : null,
+          rural: r.lvr_rural ? parseFloat(r.lvr_rural) : null,
+          development: r.lvr_development ? parseFloat(r.lvr_development) : null,
+          vacant_land: r.lvr_vacant_land ? parseFloat(r.lvr_vacant_land) : null,
+          mixed_use: r.lvr_mixed_use ? parseFloat(r.lvr_mixed_use) : null
+        },
+        lvr_inv: {
+          standard: r.lvr_inv_standard ? parseFloat(r.lvr_inv_standard) : null,
+          retail: r.lvr_inv_retail ? parseFloat(r.lvr_inv_retail) : null,
+          industrial: r.lvr_inv_industrial ? parseFloat(r.lvr_inv_industrial) : null,
+          office: r.lvr_inv_office ? parseFloat(r.lvr_inv_office) : null,
+          medical: r.lvr_inv_medical ? parseFloat(r.lvr_inv_medical) : null,
+          rural: r.lvr_inv_rural ? parseFloat(r.lvr_inv_rural) : null,
+          development: r.lvr_inv_development ? parseFloat(r.lvr_inv_development) : null,
+          vacant_land: r.lvr_inv_vacant_land ? parseFloat(r.lvr_inv_vacant_land) : null,
+          mixed_use: r.lvr_inv_mixed_use ? parseFloat(r.lvr_inv_mixed_use) : null
+        },
+        loan: {
+          min: r.loan_min || 100000,
+          max: r.loan_max || 5000000,
+          max_term: r.max_term || 25,
+          max_io: r.max_io || 5
+        },
+        purpose: {
+          purchase: r.purpose_purchase || false,
+          refinance: r.purpose_refinance || false,
+          equity_release: r.purpose_equity_release || false,
+          development: r.purpose_development || false,
+          working_capital: r.purpose_working_capital || false
+        },
+        entity: {
+          individual: r.entity_individual !== false,
+          company: r.entity_company || false,
+          trust: r.entity_trust || false,
+          unit_trust: r.entity_unit_trust || false,
+          smsf: r.entity_smsf || false,
+          partnership: r.entity_partnership || false,
+          note: r.entity_note || ''
+        },
+        servicing: {
+          buffer: r.servicing_buffer || '3.00%',
+          dscr_min: r.dscr_min ? parseFloat(r.dscr_min) : 1.20,
+          rental_income: r.rental_income_pct || '80%',
+          assessment_floor: r.assessment_floor || null
+        },
+        special: {
+          medico: r.special_medico || false,
+          medico_note: r.special_medico_note || null,
+          rural: r.special_rural || false,
+          development: r.special_development || false,
+          alt_doc: r.special_alt_doc || false,
+          smsf: r.special_smsf || false
+        },
+        docs: {
+          full_doc: r.docs_full_doc !== false,
+          alt_doc: r.docs_alt_doc || false,
+          low_doc: r.docs_low_doc || false
+        },
+        leasehold: {
+          accepted: r.leasehold_accepted || false,
+          lvr_reduction: r.leasehold_lvr_reduction ? parseFloat(r.leasehold_lvr_reduction) : null,
+          min_remaining_lease: r.leasehold_min_remaining_lease || null,
+          note: r.leasehold_note || null
+        }
+      }));
+      console.log(`Policy Radar: Loaded ${lenders.length} commercial lenders from Supabase`);
+      return lenders;
+    }
+  } catch (error) {
+    console.warn('Policy Radar: Commercial Supabase fetch failed, using inline data', error);
+  }
+  return null;
+}
+
 // Initialize: try Supabase first, fall back to inline
 async function initializeLenderData() {
+  // Load residential
   const supabaseLenders = await loadFromSupabase();
   if (supabaseLenders && supabaseLenders.length > 0) {
-    // Replace LENDERS array with Supabase data
-    // Backfill fields not yet in Supabase (leasehold, etc.) from inline data
+    // Backfill fields not yet in Supabase from inline data
     const inlineMap = {};
     LENDERS.forEach(l => { inlineMap[l.id] = l; });
     supabaseLenders.forEach(sl => {
@@ -2069,9 +2171,26 @@ async function initializeLenderData() {
     LENDERS = supabaseLenders;
     updateSyncIndicator();
   } else {
-    // Use inline data (no update needed, already loaded)
     dataSource = 'inline';
   }
+
+  // Load commercial
+  const supabaseComm = await loadCommFromSupabase();
+  if (supabaseComm && supabaseComm.length > 0) {
+    // Backfill from inline commercial data
+    const inlineCommMap = {};
+    COMM_LENDERS.forEach(l => { inlineCommMap[l.id] = l; });
+    supabaseComm.forEach(sl => {
+      const il = inlineCommMap[sl.id];
+      if (il) {
+        if (!sl.leasehold?.accepted && il.leasehold) sl.leasehold = il.leasehold;
+      }
+    });
+    COMM_LENDERS = supabaseComm;
+    commResults = [...COMM_LENDERS];
+    console.log(`Policy Radar: Commercial data loaded from Supabase (${COMM_LENDERS.length} lenders)`);
+  }
+
   currentResults = [...LENDERS];
   initializeApp();
 }
