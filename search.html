@@ -2030,7 +2030,13 @@ async function loadFromSupabase() {
           payslips: r.documentation?.payslips_required || null,
           self_emp: r.documentation?.notes || '2yr tax returns or financials',
           alt_doc: r.has_alt_doc || false
-        }
+        },
+        leasehold: r.leasehold_accepted !== undefined ? {
+          accepted: r.leasehold_accepted || false,
+          lvr_reduction: r.leasehold_lvr_reduction ? parseFloat(r.leasehold_lvr_reduction) : null,
+          min_remaining_lease: r.leasehold_min_remaining_lease || null,
+          note: r.leasehold_note || null
+        } : null
       }));
 
       lastSyncedTime = new Date();
@@ -2049,6 +2055,17 @@ async function initializeLenderData() {
   const supabaseLenders = await loadFromSupabase();
   if (supabaseLenders && supabaseLenders.length > 0) {
     // Replace LENDERS array with Supabase data
+    // Backfill fields not yet in Supabase (leasehold, etc.) from inline data
+    const inlineMap = {};
+    LENDERS.forEach(l => { inlineMap[l.id] = l; });
+    supabaseLenders.forEach(sl => {
+      const il = inlineMap[sl.id];
+      if (il) {
+        if (!sl.leasehold && il.leasehold) sl.leasehold = il.leasehold;
+        if (!sl.second_mortgage?.allowed && il.second_mortgage) sl.second_mortgage = il.second_mortgage;
+        if (!sl.entity?.note && il.entity) { sl.entity.note = il.entity.note; sl.entity.max_lvr = sl.entity.max_lvr || il.entity.max_lvr; }
+      }
+    });
     LENDERS = supabaseLenders;
     updateSyncIndicator();
   } else {
