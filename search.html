@@ -69,23 +69,60 @@
 
     /* SIDEBAR */
     .sidebar {
-      width: 320px;
+      width: 300px;
       flex-shrink: 0;
       background: var(--card);
       border-right: 1px solid var(--border);
-      padding: 24px 20px;
+      padding: 0;
       overflow-y: auto;
       position: sticky;
       top: 57px;
       height: calc(100vh - 57px);
+      transition: width 0.3s cubic-bezier(0.4,0,0.2,1), padding 0.3s, opacity 0.25s;
     }
-    .sidebar-section { margin-bottom: 28px; }
+    .sidebar.collapsed {
+      width: 0; overflow: hidden; border-right: none; padding: 0;
+    }
+    .sidebar-inner { padding: 20px 18px 28px; min-width: 264px; }
+
+    /* SIDEBAR TOGGLE (desktop) */
+    .sidebar-toggle {
+      position: fixed;
+      top: 72px; left: 300px;
+      z-index: 101;
+      width: 24px; height: 48px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-left: none;
+      border-radius: 0 8px 8px 0;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      color: var(--muted);
+      font-size: 14px;
+      transition: left 0.3s cubic-bezier(0.4,0,0.2,1), background 0.2s, color 0.2s;
+    }
+    .sidebar-toggle:hover { background: var(--card2); color: var(--green); }
+    .sidebar-toggle.shifted { left: 0; }
+    .sidebar-toggle svg { width: 14px; height: 14px; transition: transform 0.3s; }
+    .sidebar-toggle.shifted svg { transform: rotate(180deg); }
+
+    /* FILTER SECTIONS */
+    .sidebar-section { margin-bottom: 20px; }
+    .sidebar-section:last-of-type { margin-bottom: 24px; }
     .sidebar-label {
-      font-size: 11px; font-weight: 600; color: var(--muted);
-      text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px;
+      font-size: 10px; font-weight: 700; color: var(--muted);
+      text-transform: uppercase; letter-spacing: 1.2px; margin-bottom: 8px;
+      display: flex; align-items: center; gap: 6px;
     }
-    .filter-group { display: flex; flex-direction: column; gap: 8px; }
-    .filter-row { display: flex; gap: 8px; }
+    .sidebar-label .label-icon { font-size: 12px; opacity: 0.7; }
+    .filter-group { display: flex; flex-direction: column; gap: 6px; }
+    .filter-row { display: flex; gap: 6px; }
+
+    /* DIVIDER */
+    .sidebar-divider {
+      height: 1px; background: var(--border); margin: 16px 0;
+      opacity: 0.5;
+    }
 
     select, input[type="number"], input[type="text"] {
       width: 100%;
@@ -93,14 +130,17 @@
       border: 1px solid var(--border);
       border-radius: 8px;
       color: var(--text);
-      font-size: 14px;
+      font-size: 13px;
       font-family: inherit;
-      padding: 10px 12px;
+      padding: 9px 11px;
       outline: none;
-      transition: border-color 0.2s;
+      transition: border-color 0.2s, box-shadow 0.2s;
       -webkit-appearance: none;
     }
-    select:focus, input:focus { border-color: var(--green); }
+    select:focus, input:focus {
+      border-color: var(--green);
+      box-shadow: 0 0 0 3px rgba(46,204,133,0.1);
+    }
     select option { background: var(--card); }
 
     .lvr-input-wrap { position: relative; }
@@ -108,41 +148,122 @@
     .lvr-input-wrap::after {
       content: '%';
       position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
-      color: var(--muted); font-size: 14px; pointer-events: none;
+      color: var(--muted); font-size: 13px; pointer-events: none;
+    }
+    .loan-input-wrap { position: relative; }
+    .loan-input-wrap input { padding-left: 20px; }
+    .loan-input-wrap::before {
+      content: '$';
+      position: absolute; left: 11px; top: 50%; transform: translateY(-50%);
+      color: var(--muted); font-size: 13px; pointer-events: none;
     }
 
-    .checkbox-group { display: flex; flex-direction: column; gap: 8px; }
+    /* CUSTOM TOGGLE SWITCH */
+    .toggle-group { display: flex; flex-direction: column; gap: 5px; }
+    .toggle-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 7px 10px;
+      background: var(--bg); border: 1px solid var(--border);
+      border-radius: 8px; cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+      font-size: 13px; color: var(--text);
+      user-select: none;
+    }
+    .toggle-item:hover { border-color: rgba(46,204,133,0.4); }
+    .toggle-item.active {
+      border-color: rgba(46,204,133,0.5);
+      background: rgba(46,204,133,0.06);
+    }
+    .toggle-item input[type="checkbox"] { display: none; }
+    .toggle-switch {
+      width: 32px; height: 18px;
+      background: var(--border);
+      border-radius: 9px;
+      position: relative;
+      flex-shrink: 0;
+      transition: background 0.25s;
+    }
+    .toggle-switch::after {
+      content: '';
+      position: absolute; top: 2px; left: 2px;
+      width: 14px; height: 14px;
+      background: var(--muted);
+      border-radius: 50%;
+      transition: transform 0.25s, background 0.25s;
+    }
+    .toggle-item.active .toggle-switch {
+      background: rgba(46,204,133,0.5);
+    }
+    .toggle-item.active .toggle-switch::after {
+      transform: translateX(14px);
+      background: var(--green);
+    }
+
+    .checkbox-group { display: flex; flex-direction: column; gap: 5px; }
     .checkbox-item {
       display: flex; align-items: center; gap: 10px;
-      padding: 8px 10px;
+      padding: 7px 10px;
       background: var(--bg); border: 1px solid var(--border);
       border-radius: 8px; cursor: pointer;
       transition: border-color 0.2s, background 0.2s;
       font-size: 13px;
     }
-    .checkbox-item:hover { border-color: var(--green); }
-    .checkbox-item input[type="checkbox"] { accent-color: var(--green); width: 15px; height: 15px; flex-shrink: 0; }
-    .checkbox-item.checked { border-color: rgba(46,204,133,0.4); background: rgba(46,204,133,0.05); }
+    .checkbox-item:hover { border-color: rgba(46,204,133,0.4); }
+    .checkbox-item input[type="checkbox"] { accent-color: var(--green); width: 14px; height: 14px; flex-shrink: 0; }
+    .checkbox-item.checked { border-color: rgba(46,204,133,0.4); background: rgba(46,204,133,0.06); }
 
+    /* PILL TOGGLE (for Tier filter) */
+    .pill-group { display: flex; gap: 4px; flex-wrap: wrap; }
+    .pill-option {
+      font-size: 12px; font-weight: 500;
+      padding: 6px 12px;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--muted);
+      cursor: pointer;
+      transition: all 0.2s;
+      user-select: none;
+    }
+    .pill-option:hover { border-color: rgba(46,204,133,0.4); color: var(--text); }
+    .pill-option.active {
+      background: rgba(46,204,133,0.12);
+      border-color: rgba(46,204,133,0.4);
+      color: var(--green);
+      font-weight: 600;
+    }
+
+    /* SEARCH + RESET */
     .search-btn {
       width: 100%;
       background: linear-gradient(135deg, var(--green), var(--green-dark));
       color: #0f1a0f;
       border: none; border-radius: 10px;
-      padding: 13px;
-      font-size: 15px; font-weight: 700;
+      padding: 12px;
+      font-size: 14px; font-weight: 700;
       cursor: pointer;
       transition: all 0.2s;
-      margin-top: 4px;
+      letter-spacing: 0.2px;
     }
     .search-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(46,204,133,0.3); }
+    .search-btn:active { transform: translateY(0); }
 
+    .sidebar-footer {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-top: 10px; gap: 12px;
+    }
     .reset-link {
-      display: block; text-align: center; margin-top: 10px;
-      font-size: 13px; color: var(--muted); cursor: pointer;
+      font-size: 12px; color: var(--muted); cursor: pointer;
       text-decoration: none; transition: color 0.2s;
+      white-space: nowrap;
     }
     .reset-link:hover { color: var(--text); }
+    .active-count {
+      font-size: 11px; color: var(--green);
+      background: rgba(46,204,133,0.1);
+      border-radius: 10px; padding: 2px 8px;
+      font-weight: 600; white-space: nowrap;
+    }
 
     /* KEYWORD SEARCH */
     .keyword-search-wrap {
@@ -401,31 +522,44 @@
 
     .mobile-filter-btn {
       display: none;
-      align-items: center; gap: 8px;
+      align-items: center; justify-content: center; gap: 8px;
       background: var(--card); border: 1px solid var(--border);
-      color: var(--text); border-radius: 8px; padding: 10px 16px;
+      color: var(--text); border-radius: 10px; padding: 11px 16px;
       font-size: 14px; font-weight: 600; cursor: pointer;
       margin-bottom: 16px; width: 100%;
+      transition: border-color 0.2s, box-shadow 0.2s;
     }
-    .mobile-filter-btn:hover { border-color: var(--green); }
+    .mobile-filter-btn:hover { border-color: var(--green); box-shadow: 0 0 0 3px rgba(46,204,133,0.1); }
+    .mobile-filter-btn .filter-count-badge {
+      background: var(--green); color: #0f1a0f;
+      font-size: 11px; font-weight: 700;
+      border-radius: 10px; padding: 1px 7px; min-width: 18px; text-align: center;
+      display: none;
+    }
+
     @media (max-width: 768px) {
       .sidebar {
         display: none;
         position: fixed; top: 0; left: 0; right: 0; bottom: 0;
         z-index: 200; overflow-y: auto;
+        width: 100% !important;
         background: var(--bg);
-        padding: 20px 16px 80px;
+        padding: 0;
       }
+      .sidebar-inner { padding: 20px 16px 100px; min-width: unset; }
       .sidebar.open { display: block; }
       .sidebar-close-btn {
         display: flex; align-items: center; justify-content: space-between;
-        margin-bottom: 20px;
+        margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--border);
       }
+      .sidebar-toggle { display: none !important; }
       .mobile-filter-btn { display: flex; }
       .main { padding: 20px 16px; }
       .compare-bar { left: 0; }
     }
-    .sidebar-close-btn { display: none; }
+    @media (min-width: 769px) {
+      .sidebar-close-btn { display: none; }
+    }
   </style>
 </head>
 <body>
@@ -464,21 +598,30 @@
 </nav>
 
 <div class="app">
+  <!-- SIDEBAR TOGGLE (Desktop) -->
+  <button class="sidebar-toggle" id="sidebarToggle" onclick="toggleSidebar()" title="Toggle filters">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+  </button>
+
   <!-- MOBILE FILTER BUTTON -->
   <div class="main" style="padding-bottom:0;display:none" id="mobileFilterRow">
     <button class="mobile-filter-btn" onclick="toggleMobileFilters()">
-      <span>⚙️</span> <span>Filters</span>
+      <span>⚙️</span> <span>Filters & Scenario</span>
+      <span class="filter-count-badge" id="mobileFilterCount"></span>
     </button>
   </div>
 
   <!-- SIDEBAR FILTERS -->
   <aside class="sidebar" id="sidebarEl">
+   <div class="sidebar-inner">
     <div class="sidebar-close-btn">
-      <span style="font-size:16px;font-weight:700;">Filters</span>
+      <span style="font-size:16px;font-weight:700;">Filters & Scenario</span>
       <button onclick="toggleMobileFilters()" style="background:none;border:none;color:var(--muted);font-size:22px;cursor:pointer;">✕</button>
     </div>
+
+    <!-- LOAN SCENARIO -->
     <div class="sidebar-section">
-      <div class="sidebar-label">Loan Type</div>
+      <div class="sidebar-label"><span class="label-icon">🏠</span> Loan Type</div>
       <div class="filter-group">
         <select id="loanType">
           <option value="">All loan types</option>
@@ -493,7 +636,7 @@
     </div>
 
     <div class="sidebar-section">
-      <div class="sidebar-label">Client LVR</div>
+      <div class="sidebar-label"><span class="label-icon">📊</span> Client LVR</div>
       <div class="filter-group">
         <div class="lvr-input-wrap">
           <input type="number" id="lvrInput" placeholder="e.g. 88" min="1" max="100" step="1">
@@ -502,7 +645,7 @@
     </div>
 
     <div class="sidebar-section">
-      <div class="sidebar-label">Borrower Type</div>
+      <div class="sidebar-label"><span class="label-icon">👤</span> Borrower Type</div>
       <div class="filter-group">
         <select id="borrowerType">
           <option value="">Any borrower</option>
@@ -514,44 +657,103 @@
       </div>
     </div>
 
+    <div class="sidebar-divider"></div>
+
+    <!-- LENDER TIER -->
     <div class="sidebar-section">
-      <div class="sidebar-label">Scenario Flags</div>
-      <div class="checkbox-group">
-        <label class="checkbox-item" id="chk-io-wrap">
-          <input type="checkbox" id="chk-io"> Interest Only portion
+      <div class="sidebar-label"><span class="label-icon">🏦</span> Lender Tier</div>
+      <div class="pill-group" id="tierPills">
+        <span class="pill-option active" data-tier="" onclick="toggleTier(this)">All</span>
+        <span class="pill-option" data-tier="tier1" onclick="toggleTier(this)">Major Bank</span>
+        <span class="pill-option" data-tier="tier2" onclick="toggleTier(this)">Non-Major</span>
+        <span class="pill-option" data-tier="non_bank" onclick="toggleTier(this)">Non-Bank</span>
+      </div>
+    </div>
+
+    <!-- MIN LOAN -->
+    <div class="sidebar-section">
+      <div class="sidebar-label"><span class="label-icon">💰</span> Min Loan Amount</div>
+      <div class="filter-group">
+        <div class="loan-input-wrap">
+          <input type="number" id="minLoanInput" placeholder="e.g. 500000" min="0" step="50000">
+        </div>
+      </div>
+    </div>
+
+    <div class="sidebar-divider"></div>
+
+    <!-- SCENARIO FLAGS -->
+    <div class="sidebar-section">
+      <div class="sidebar-label"><span class="label-icon">⚡</span> Scenario Flags</div>
+      <div class="toggle-group">
+        <label class="toggle-item" id="chk-io-wrap">
+          <input type="checkbox" id="chk-io">
+          <span class="toggle-switch"></span>
+          Interest Only portion
         </label>
-        <label class="checkbox-item" id="chk-dti-wrap">
-          <input type="checkbox" id="chk-dti"> DTI likely above 6×
+        <label class="toggle-item" id="chk-dti-wrap">
+          <input type="checkbox" id="chk-dti">
+          <span class="toggle-switch"></span>
+          DTI likely above 6×
         </label>
-        <label class="checkbox-item" id="chk-hd-wrap">
-          <input type="checkbox" id="chk-hd"> High density apartment
+        <label class="toggle-item" id="chk-hd-wrap">
+          <input type="checkbox" id="chk-hd">
+          <span class="toggle-switch"></span>
+          High density apartment
         </label>
-        <label class="checkbox-item" id="chk-casual-wrap">
-          <input type="checkbox" id="chk-casual"> Casual income
+        <label class="toggle-item" id="chk-casual-wrap">
+          <input type="checkbox" id="chk-casual">
+          <span class="toggle-switch"></span>
+          Casual income
         </label>
       </div>
     </div>
 
+    <div class="sidebar-divider"></div>
+
+    <!-- SPECIAL NEEDS -->
     <div class="sidebar-section">
-      <div class="sidebar-label">Special Needs</div>
-      <div class="checkbox-group">
-        <label class="checkbox-item" id="chk-medico-wrap">
-          <input type="checkbox" id="chk-medico"> Medico / LMI Waiver
+      <div class="sidebar-label"><span class="label-icon">✨</span> Special Needs</div>
+      <div class="toggle-group">
+        <label class="toggle-item" id="chk-medico-wrap">
+          <input type="checkbox" id="chk-medico">
+          <span class="toggle-switch"></span>
+          Medico / LMI Waiver
         </label>
-        <label class="checkbox-item" id="chk-bridge-wrap">
-          <input type="checkbox" id="chk-bridge"> Bridging Loan
+        <label class="toggle-item" id="chk-bridge-wrap">
+          <input type="checkbox" id="chk-bridge">
+          <span class="toggle-switch"></span>
+          Bridging Loan
         </label>
-        <label class="checkbox-item" id="chk-construction-wrap">
-          <input type="checkbox" id="chk-construction"> Construction Loan
+        <label class="toggle-item" id="chk-construction-wrap">
+          <input type="checkbox" id="chk-construction">
+          <span class="toggle-switch"></span>
+          Construction Loan
         </label>
-        <label class="checkbox-item" id="chk-famguarantee-wrap">
-          <input type="checkbox" id="chk-famguarantee"> Family Guarantee
+        <label class="toggle-item" id="chk-famguarantee-wrap">
+          <input type="checkbox" id="chk-famguarantee">
+          <span class="toggle-switch"></span>
+          Family Guarantee
+        </label>
+        <label class="toggle-item" id="chk-altdoc-wrap">
+          <input type="checkbox" id="chk-altdoc">
+          <span class="toggle-switch"></span>
+          Alt Doc / Low Doc
+        </label>
+        <label class="toggle-item" id="chk-smsf-wrap">
+          <input type="checkbox" id="chk-smsf">
+          <span class="toggle-switch"></span>
+          SMSF Lending
         </label>
       </div>
     </div>
 
-    <button class="search-btn" onclick="runSearch()">🔍 Search Policies</button>
-    <a class="reset-link" onclick="resetFilters()">Reset all filters</a>
+    <button class="search-btn" onclick="runSearch()">Search Policies</button>
+    <div class="sidebar-footer">
+      <a class="reset-link" onclick="resetFilters()">Reset all filters</a>
+      <span class="active-count" id="activeFilterCount" style="display:none">0 active</span>
+    </div>
+   </div>
   </aside>
 
   <!-- MAIN RESULTS -->
@@ -605,6 +807,20 @@
 </div>
 
 <script>
+// ── SIDEBAR TOGGLE (desktop collapse) ────────────────────────────────────────
+function toggleSidebar() {
+  const sidebar = document.getElementById('sidebarEl');
+  const toggle = document.getElementById('sidebarToggle');
+  const isCollapsed = sidebar.classList.toggle('collapsed');
+  toggle.classList.toggle('shifted', isCollapsed);
+  localStorage.setItem('pr_sidebar_collapsed', isCollapsed ? '1' : '');
+}
+// Restore sidebar state
+if (localStorage.getItem('pr_sidebar_collapsed') === '1' && window.innerWidth > 768) {
+  document.getElementById('sidebarEl').classList.add('collapsed');
+  document.getElementById('sidebarToggle').classList.add('shifted');
+}
+
 // ── MOBILE FILTER TOGGLE ─────────────────────────────────────────────────────
 function toggleMobileFilters() {
   const sidebar = document.getElementById('sidebarEl');
@@ -619,6 +835,42 @@ window.addEventListener('resize', () => {
   const row = document.getElementById('mobileFilterRow');
   if (row) row.style.display = window.innerWidth <= 768 ? 'block' : 'none';
 });
+
+// ── TIER PILL TOGGLE ─────────────────────────────────────────────────────────
+function toggleTier(el) {
+  document.querySelectorAll('#tierPills .pill-option').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// ── TOGGLE SWITCH BINDING ────────────────────────────────────────────────────
+function bindToggleSwitches() {
+  document.querySelectorAll('.toggle-item input[type="checkbox"]').forEach(cb => {
+    cb.addEventListener('change', () => {
+      cb.closest('.toggle-item').classList.toggle('active', cb.checked);
+    });
+  });
+}
+
+// ── ACTIVE FILTER COUNT ──────────────────────────────────────────────────────
+function updateActiveFilterCount() {
+  let count = 0;
+  if (document.getElementById('loanType').value) count++;
+  if (document.getElementById('lvrInput').value) count++;
+  if (document.getElementById('borrowerType').value) count++;
+  if (document.getElementById('minLoanInput').value) count++;
+  const activeTier = document.querySelector('#tierPills .pill-option.active');
+  if (activeTier && activeTier.dataset.tier) count++;
+  ['chk-io','chk-dti','chk-hd','chk-casual','chk-medico','chk-bridge','chk-construction','chk-famguarantee','chk-altdoc','chk-smsf']
+    .forEach(id => { if (document.getElementById(id).checked) count++; });
+  // Desktop badge
+  const badge = document.getElementById('activeFilterCount');
+  if (count > 0) { badge.style.display = ''; badge.textContent = count + ' active'; }
+  else { badge.style.display = 'none'; }
+  // Mobile badge
+  const mobileBadge = document.getElementById('mobileFilterCount');
+  if (count > 0) { mobileBadge.style.display = ''; mobileBadge.textContent = count; }
+  else { mobileBadge.style.display = 'none'; }
+}
 
 // ── LENDER DATA ──────────────────────────────────────────────────────────────
 let LENDERS = [
@@ -1168,7 +1420,7 @@ function renderCard(l) {
         <div>
           <div class="lender-name">${l.name}</div>
           <div class="lender-meta">
-            <span class="meta-tag ${l.tier}">${l.tier === 'tier1' ? 'Major Bank' : 'Non-Major'}</span>
+            <span class="meta-tag ${l.type === 'non_bank' ? 'nonbank' : l.tier}">${l.tier === 'tier1' ? 'Major Bank' : l.type === 'non_bank' ? 'Non-Bank' : 'Non-Major'}</span>
             ${l.completeness === 'partial' ? '<span class="meta-tag partial">⚠ Partial data</span>' : '<span class="meta-tag tier2">✓ Full data</span>'}
           </div>
         </div>
@@ -1243,11 +1495,14 @@ function renderCard(l) {
 
 // ── FILTERS ──────────────────────────────────────────────────────────────────
 function getFilters() {
+  const activeTier = document.querySelector('#tierPills .pill-option.active');
   return {
     keyword: (document.getElementById('keywordInput').value || '').trim().toLowerCase(),
     loanType: document.getElementById('loanType').value,
     lvr: parseFloat(document.getElementById('lvrInput').value) || null,
     borrower: document.getElementById('borrowerType').value,
+    tier: activeTier ? activeTier.dataset.tier : '',
+    minLoan: parseFloat(document.getElementById('minLoanInput').value) || null,
     io: document.getElementById('chk-io').checked,
     dti: document.getElementById('chk-dti').checked,
     hd: document.getElementById('chk-hd').checked,
@@ -1256,6 +1511,8 @@ function getFilters() {
     bridge: document.getElementById('chk-bridge').checked,
     construction: document.getElementById('chk-construction').checked,
     famguarantee: document.getElementById('chk-famguarantee').checked,
+    altdoc: document.getElementById('chk-altdoc').checked,
+    smsf: document.getElementById('chk-smsf').checked,
   };
 }
 
@@ -1363,12 +1620,29 @@ function runSearch() {
   // Filter: keyword text search
   if (filters.keyword) {
     results = results.filter(l => lenderMatchesKeyword(l, filters.keyword));
-    // Show/hide clear button
     const clr = document.getElementById('keywordClear');
     if (clr) clr.style.display = 'block';
   } else {
     const clr = document.getElementById('keywordClear');
     if (clr) clr.style.display = 'none';
+  }
+
+  // Filter: lender tier
+  if (filters.tier) {
+    if (filters.tier === 'non_bank') {
+      results = results.filter(l => l.type === 'non_bank');
+    } else {
+      results = results.filter(l => l.tier === filters.tier);
+    }
+  }
+
+  // Filter: min loan amount (compare against lender min loan if available)
+  if (filters.minLoan) {
+    results = results.filter(l => {
+      // If lender has no min loan data, keep it (don't exclude)
+      if (!l.minLoan) return true;
+      return l.minLoan <= filters.minLoan;
+    });
   }
 
   // Filter: medico required
@@ -1387,8 +1661,12 @@ function runSearch() {
   if (filters.famguarantee) {
     results = results.filter(l => l.special.family_guarantee);
   }
+  // Filter: Alt Doc
+  if (filters.altdoc) {
+    results = results.filter(l => l.docs && l.docs.alt_doc);
+  }
   // Filter: SMSF
-  if (filters.borrower === 'smsf') {
+  if (filters.smsf || filters.borrower === 'smsf') {
     results = results.filter(l => l.special.smsf !== false);
   }
 
@@ -1405,8 +1683,9 @@ function runSearch() {
     });
   }
 
-  // Update scenario bar
+  // Update scenario bar + filter count
   updateScenarioBar(filters);
+  updateActiveFilterCount();
 
   render(results);
 }
@@ -1417,11 +1696,21 @@ function updateScenarioBar(filters) {
   if (filters.loanType) tags.push(document.getElementById('loanType').options[document.getElementById('loanType').selectedIndex].text);
   if (filters.lvr) tags.push(`LVR ${filters.lvr}%`);
   if (filters.borrower) tags.push(document.getElementById('borrowerType').options[document.getElementById('borrowerType').selectedIndex].text);
+  if (filters.tier) {
+    const tierLabel = filters.tier === 'tier1' ? 'Major Bank' : filters.tier === 'tier2' ? 'Non-Major' : 'Non-Bank';
+    tags.push(tierLabel);
+  }
+  if (filters.minLoan) tags.push(`Min $${(filters.minLoan/1000).toFixed(0)}K`);
   if (filters.io) tags.push('Interest Only');
   if (filters.dti) tags.push('DTI > 6×');
   if (filters.hd) tags.push('High Density');
+  if (filters.casual) tags.push('Casual Income');
   if (filters.medico) tags.push('Medico LMI Waiver');
   if (filters.bridge) tags.push('Bridging');
+  if (filters.construction) tags.push('Construction');
+  if (filters.famguarantee) tags.push('Family Guarantee');
+  if (filters.altdoc) tags.push('Alt Doc');
+  if (filters.smsf) tags.push('SMSF');
   if (tags.length > 0) {
     bar.classList.remove('hidden');
     bar.innerHTML = '<span style="color:var(--muted);font-size:12px;">Scenario:</span> ' + tags.map(t => `<span class="tag">${t}</span>`).join('');
@@ -1443,9 +1732,20 @@ function resetFilters() {
   document.getElementById('loanType').value = '';
   document.getElementById('lvrInput').value = '';
   document.getElementById('borrowerType').value = '';
-  ['chk-io','chk-dti','chk-hd','chk-casual','chk-medico','chk-bridge','chk-construction','chk-famguarantee']
-    .forEach(id => document.getElementById(id).checked = false);
+  document.getElementById('minLoanInput').value = '';
+  // Reset tier pills
+  document.querySelectorAll('#tierPills .pill-option').forEach(p => p.classList.remove('active'));
+  document.querySelector('#tierPills .pill-option[data-tier=""]').classList.add('active');
+  // Reset all checkboxes + toggle switches
+  ['chk-io','chk-dti','chk-hd','chk-casual','chk-medico','chk-bridge','chk-construction','chk-famguarantee','chk-altdoc','chk-smsf']
+    .forEach(id => {
+      const el = document.getElementById(id);
+      el.checked = false;
+      const wrap = el.closest('.toggle-item');
+      if (wrap) wrap.classList.remove('active');
+    });
   document.getElementById('scenarioBar').classList.add('hidden');
+  updateActiveFilterCount();
   render([...LENDERS]);
 }
 
@@ -1543,7 +1843,10 @@ document.addEventListener('DOMContentLoaded', () => {
   // Initialize with Supabase fetch attempt (will fall back to inline data)
   initializeLenderData();
 
-  // Checkbox styling
+  // Bind toggle switches
+  bindToggleSwitches();
+
+  // Checkbox styling (for any remaining standard checkboxes)
   document.querySelectorAll('.checkbox-item input').forEach(cb => {
     cb.addEventListener('change', () => {
       cb.closest('.checkbox-item').classList.toggle('checked', cb.checked);
@@ -1551,7 +1854,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // Enter key on inputs triggers search
-  ['lvrInput', 'keywordInput'].forEach(id => {
+  ['lvrInput', 'keywordInput', 'minLoanInput'].forEach(id => {
     document.getElementById(id).addEventListener('keydown', e => {
       if (e.key === 'Enter') runSearch();
     });
