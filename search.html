@@ -64,8 +64,45 @@
     }
     .nav-tag span { color: var(--green); }
 
+    /* TAB BAR */
+    .tab-bar {
+      display: flex; align-items: center; gap: 0;
+      background: var(--card);
+      border-bottom: 1px solid var(--border);
+      padding: 0 32px;
+    }
+    .tab-btn {
+      position: relative;
+      padding: 12px 24px;
+      font-size: 14px; font-weight: 600;
+      color: var(--muted);
+      background: none; border: none;
+      cursor: pointer;
+      font-family: inherit;
+      transition: color 0.2s;
+      white-space: nowrap;
+    }
+    .tab-btn:hover { color: var(--text); }
+    .tab-btn.active { color: var(--green); }
+    .tab-btn.active::after {
+      content: '';
+      position: absolute; bottom: 0; left: 12px; right: 12px;
+      height: 2px;
+      background: var(--green);
+      border-radius: 2px 2px 0 0;
+    }
+    .tab-btn .tab-count {
+      font-size: 10px; font-weight: 700;
+      background: rgba(46,204,133,0.12); color: var(--green);
+      border-radius: 10px; padding: 1px 7px;
+      margin-left: 6px;
+    }
+    .tab-btn:not(.active) .tab-count {
+      background: rgba(163,163,184,0.12); color: var(--muted);
+    }
+
     /* LAYOUT */
-    .app { display: flex; min-height: calc(100vh - 57px); }
+    .app { display: flex; min-height: calc(100vh - 99px); }
 
     /* SIDEBAR */
     .sidebar {
@@ -76,8 +113,8 @@
       padding: 0;
       overflow-y: auto;
       position: sticky;
-      top: 57px;
-      height: calc(100vh - 57px);
+      top: 99px;
+      height: calc(100vh - 99px);
       transition: width 0.3s cubic-bezier(0.4,0,0.2,1), padding 0.3s, opacity 0.25s;
     }
     .sidebar.collapsed {
@@ -88,7 +125,7 @@
     /* SIDEBAR TOGGLE (desktop) */
     .sidebar-toggle {
       position: fixed;
-      top: 72px; left: 300px;
+      top: 112px; left: 300px;
       z-index: 101;
       width: 24px; height: 48px;
       background: var(--card);
@@ -671,6 +708,16 @@
   </div>
 </nav>
 
+<!-- TAB BAR -->
+<div class="tab-bar">
+  <button class="tab-btn active" id="tabResi" onclick="switchTab('residential')">
+    🏠 Residential <span class="tab-count" id="tabResiCount">22</span>
+  </button>
+  <button class="tab-btn" id="tabComm" onclick="switchTab('commercial')">
+    🏢 Commercial <span class="tab-count" id="tabCommCount">12</span>
+  </button>
+</div>
+
 <div class="app">
   <!-- SIDEBAR TOGGLE (Desktop) -->
   <button class="sidebar-toggle" id="sidebarToggle" onclick="toggleSidebar()" title="Toggle filters">
@@ -692,6 +739,9 @@
       <span style="font-size:16px;font-weight:700;">Filters & Scenario</span>
       <button onclick="toggleMobileFilters()" style="background:none;border:none;color:var(--muted);font-size:22px;cursor:pointer;">✕</button>
     </div>
+
+    <!-- ═══ RESIDENTIAL FILTERS ═══ -->
+    <div id="residentialFilters">
 
     <!-- LOAN SCENARIO -->
     <div class="sidebar-section">
@@ -852,9 +902,142 @@
       </div>
     </div>
 
-    <button class="search-btn" onclick="runSearch()">Search Policies</button>
+    </div><!-- /residentialFilters -->
+
+    <!-- ═══ COMMERCIAL FILTERS ═══ -->
+    <div id="commercialFilters" style="display:none">
+
+    <div class="sidebar-section">
+      <div class="sidebar-label"><span class="label-icon">🏢</span> Property Type</div>
+      <div class="filter-group">
+        <select id="commPropertyType">
+          <option value="">All property types</option>
+          <option value="office">Office</option>
+          <option value="retail">Retail / Shop</option>
+          <option value="industrial">Industrial / Warehouse</option>
+          <option value="mixed_use">Mixed Use</option>
+          <option value="medical">Medical / Healthcare</option>
+          <option value="childcare">Childcare</option>
+          <option value="hotel">Hotel / Hospitality</option>
+          <option value="rural">Rural / Agri</option>
+          <option value="vacant_land">Vacant Land (Commercial)</option>
+          <option value="development">Development Site</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label"><span class="label-icon">🎯</span> Loan Purpose</div>
+      <div class="filter-group">
+        <select id="commLoanPurpose">
+          <option value="">Any purpose</option>
+          <option value="purchase">Purchase</option>
+          <option value="refinance">Refinance</option>
+          <option value="equity_release">Equity Release</option>
+          <option value="development">Development / Construction</option>
+          <option value="working_capital">Working Capital</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label"><span class="label-icon">📊</span> Client LVR</div>
+      <div class="filter-group">
+        <div class="lvr-input-wrap">
+          <input type="number" id="commLvrInput" placeholder="e.g. 65" min="1" max="100" step="1">
+        </div>
+      </div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label"><span class="label-icon">💰</span> Loan Amount</div>
+      <div class="filter-group">
+        <div class="loan-input-wrap">
+          <input type="number" id="commLoanAmount" placeholder="e.g. 2000000" step="50000">
+        </div>
+      </div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label"><span class="label-icon">👤</span> Borrower Entity</div>
+      <div class="filter-group">
+        <select id="commEntityType">
+          <option value="">Any entity</option>
+          <option value="individual">Individual</option>
+          <option value="company">Company</option>
+          <option value="trust">Trust (Discretionary)</option>
+          <option value="unit_trust">Unit Trust</option>
+          <option value="smsf">SMSF</option>
+          <option value="partnership">Partnership</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label"><span class="label-icon">🏦</span> Lender Tier</div>
+      <div class="pill-group" id="commTierPills">
+        <span class="pill-option active" data-tier="" onclick="setCommTier(this)">All</span>
+        <span class="pill-option" data-tier="tier1" onclick="setCommTier(this)">Major Bank</span>
+        <span class="pill-option" data-tier="tier2" onclick="setCommTier(this)">Non-Major</span>
+        <span class="pill-option" data-tier="non_bank" onclick="setCommTier(this)">Non-Bank</span>
+      </div>
+    </div>
+
+    <div class="sidebar-divider"></div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label"><span class="label-icon">🏗️</span> Occupancy</div>
+      <div class="pill-group" id="commOccupancy">
+        <span class="pill-option active" data-occ="" onclick="setCommOcc(this)">Any</span>
+        <span class="pill-option" data-occ="owner_occ" onclick="setCommOcc(this)">Owner Occupied</span>
+        <span class="pill-option" data-occ="investment" onclick="setCommOcc(this)">Investment</span>
+      </div>
+    </div>
+
+    <div class="sidebar-divider"></div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label"><span class="label-icon">📋</span> Documentation</div>
+      <div class="toggle-group">
+        <label class="toggle-item" id="chk-comm-altdoc-wrap">
+          <input type="checkbox" id="chk-comm-altdoc">
+          <span class="toggle-switch"></span>
+          Alt Doc / Low Doc
+        </label>
+        <label class="toggle-item" id="chk-comm-smsf-wrap">
+          <input type="checkbox" id="chk-comm-smsf">
+          <span class="toggle-switch"></span>
+          SMSF Lending
+        </label>
+      </div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label"><span class="label-icon">✨</span> Special</div>
+      <div class="toggle-group">
+        <label class="toggle-item" id="chk-comm-medico-wrap">
+          <input type="checkbox" id="chk-comm-medico">
+          <span class="toggle-switch"></span>
+          Medical / Healthcare
+        </label>
+        <label class="toggle-item" id="chk-comm-rural-wrap">
+          <input type="checkbox" id="chk-comm-rural">
+          <span class="toggle-switch"></span>
+          Rural Property
+        </label>
+        <label class="toggle-item" id="chk-comm-dev-wrap">
+          <input type="checkbox" id="chk-comm-dev">
+          <span class="toggle-switch"></span>
+          Development Finance
+        </label>
+      </div>
+    </div>
+
+    </div><!-- /commercialFilters -->
+
+    <button class="search-btn" id="searchBtn" onclick="activeTab==='residential'?runSearch():runCommSearch()">Search Policies</button>
     <div class="sidebar-footer">
-      <a class="reset-link" onclick="resetFilters()">Reset all filters</a>
+      <a class="reset-link" onclick="activeTab==='residential'?resetFilters():resetCommFilters()">Reset all filters</a>
       <span class="active-count" id="activeFilterCount" style="display:none">0 active</span>
     </div>
    </div>
@@ -873,6 +1056,11 @@
     </div>
 
     <div class="lender-grid" id="lenderGrid">
+      <!-- populated by JS -->
+    </div>
+
+    <!-- COMMERCIAL RESULTS (hidden by default) -->
+    <div class="lender-grid" id="commLenderGrid" style="display:none">
       <!-- populated by JS -->
     </div>
   </main>
@@ -2394,6 +2582,476 @@ document.addEventListener('DOMContentLoaded', () => {
     if (e.target === document.getElementById('compareOverlay')) closeCompare();
   });
 });
+
+// ══════════════════════════════════════════════════════════════════════════════
+// ═══ TAB SWITCHING ══════════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════════════════════════
+let activeTab = 'residential';
+
+function switchTab(tab) {
+  activeTab = tab;
+  document.getElementById('tabResi').classList.toggle('active', tab === 'residential');
+  document.getElementById('tabComm').classList.toggle('active', tab === 'commercial');
+
+  document.getElementById('residentialFilters').style.display = tab === 'residential' ? '' : 'none';
+  document.getElementById('commercialFilters').style.display = tab === 'commercial' ? '' : 'none';
+
+  document.getElementById('lenderGrid').style.display = tab === 'residential' ? '' : 'none';
+  document.getElementById('commLenderGrid').style.display = tab === 'commercial' ? '' : 'none';
+
+  document.getElementById('scenarioBar').classList.add('hidden');
+
+  if (tab === 'residential') {
+    render([...LENDERS]);
+    document.getElementById('resultsCount').textContent = LENDERS.length + ' lenders';
+  } else {
+    renderComm([...COMM_LENDERS]);
+    document.getElementById('resultsCount').textContent = COMM_LENDERS.length + ' lenders';
+  }
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// ═══ COMMERCIAL LENDER DATA ════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════════════════════════
+let COMM_LENDERS = [
+  {
+    id: "macquarie_comm", name: "Macquarie Bank", tier: "tier2", type: "non_major_bank",
+    completeness: "full", source: "Commercial Lending Guide v13.1 · Verified Mar 2026",
+    lvr: { standard: 0.80, retail: 0.70, industrial: 0.75, office: 0.80, medical: 0.90, rural: 0.65, development: 0.70, vacant_land: 0.50, mixed_use: 0.75 },
+    lvr_inv: { standard: 0.70, retail: 0.65, industrial: 0.70, office: 0.70, medical: 0.80, rural: 0.60, development: 0.65, vacant_land: 0.45, mixed_use: 0.70 },
+    loan: { min: 500000, max: 30000000, max_term: 25, max_io: 5 },
+    purpose: { purchase: true, refinance: true, equity_release: true, development: true, working_capital: false },
+    entity: { individual: true, company: false, trust: false, unit_trust: false, smsf: false, partnership: true, note: "Paused company/trust brokered lending Oct 2025" },
+    servicing: { buffer: "3.00%", dscr_min: 1.20, rental_income: "80%", assessment_floor: "5.30%" },
+    special: { medico: true, medico_note: "+10% LVR for medical practitioners with fellowship", rural: true, development: true, alt_doc: false, smsf: false },
+    docs: { full_doc: true, alt_doc: false, low_doc: false }
+  },
+  {
+    id: "cba_comm", name: "Commonwealth Bank (CBA)", tier: "tier1", type: "major_bank",
+    completeness: "full", source: "CBA Business Lending · Verified Apr 2026",
+    lvr: { standard: 0.75, retail: 0.65, industrial: 0.70, office: 0.75, medical: 0.80, rural: 0.60, development: 0.65, vacant_land: 0.50, mixed_use: 0.70 },
+    lvr_inv: { standard: 0.70, retail: 0.60, industrial: 0.65, office: 0.70, medical: 0.75, rural: 0.55, development: 0.60, vacant_land: 0.45, mixed_use: 0.65 },
+    loan: { min: 250000, max: 50000000, max_term: 25, max_io: 5 },
+    purpose: { purchase: true, refinance: true, equity_release: true, development: true, working_capital: true },
+    entity: { individual: true, company: true, trust: true, unit_trust: true, smsf: false, partnership: true, note: "Restricted — requires existing CBA relationship" },
+    servicing: { buffer: "3.00%", dscr_min: 1.20, rental_income: "80%", assessment_floor: "5.40%" },
+    special: { medico: true, medico_note: "Healthcare professionals up to 80% LVR", rural: false, development: true, alt_doc: false, smsf: false },
+    docs: { full_doc: true, alt_doc: false, low_doc: false }
+  },
+  {
+    id: "anz_comm", name: "ANZ Bank", tier: "tier1", type: "major_bank",
+    completeness: "full", source: "ANZ Business Banking · Verified Apr 2026",
+    lvr: { standard: 0.75, retail: 0.65, industrial: 0.70, office: 0.75, medical: 0.80, rural: 0.60, development: 0.65, vacant_land: 0.50, mixed_use: 0.70 },
+    lvr_inv: { standard: 0.70, retail: 0.60, industrial: 0.65, office: 0.70, medical: 0.75, rural: 0.55, development: 0.60, vacant_land: 0.45, mixed_use: 0.65 },
+    loan: { min: 250000, max: 30000000, max_term: 25, max_io: 5 },
+    purpose: { purchase: true, refinance: true, equity_release: true, development: false, working_capital: true },
+    entity: { individual: true, company: true, trust: true, unit_trust: true, smsf: false, partnership: true, note: "Tightened Jan 2026 — 70% max LVR for entities" },
+    servicing: { buffer: "3.00%", dscr_min: 1.20, rental_income: "80%", assessment_floor: "5.40%" },
+    special: { medico: true, medico_note: "Medical centre up to 80%", rural: false, development: false, alt_doc: false, smsf: false },
+    docs: { full_doc: true, alt_doc: false, low_doc: false }
+  },
+  {
+    id: "nab_comm", name: "NAB", tier: "tier1", type: "major_bank",
+    completeness: "full", source: "NAB Business Banking · Verified Apr 2026",
+    lvr: { standard: 0.75, retail: 0.70, industrial: 0.70, office: 0.75, medical: 0.80, rural: 0.65, development: 0.65, vacant_land: 0.50, mixed_use: 0.70 },
+    lvr_inv: { standard: 0.70, retail: 0.65, industrial: 0.65, office: 0.70, medical: 0.75, rural: 0.60, development: 0.60, vacant_land: 0.45, mixed_use: 0.65 },
+    loan: { min: 250000, max: 50000000, max_term: 25, max_io: 5 },
+    purpose: { purchase: true, refinance: true, equity_release: true, development: true, working_capital: true },
+    entity: { individual: true, company: true, trust: true, unit_trust: true, smsf: false, partnership: true, note: "Reviewing entity risk — cautious" },
+    servicing: { buffer: "3.00%", dscr_min: 1.20, rental_income: "80%", assessment_floor: "5.40%" },
+    special: { medico: true, medico_note: "NAB Health specialists", rural: true, development: true, alt_doc: false, smsf: false },
+    docs: { full_doc: true, alt_doc: false, low_doc: false }
+  },
+  {
+    id: "westpac_comm", name: "Westpac", tier: "tier1", type: "major_bank",
+    completeness: "partial", source: "Westpac Business Banking · Verified Apr 2026",
+    lvr: { standard: 0.70, retail: 0.65, industrial: 0.65, office: 0.70, medical: 0.75, rural: 0.55, development: 0.65, vacant_land: 0.45, mixed_use: 0.65 },
+    lvr_inv: { standard: 0.65, retail: 0.60, industrial: 0.60, office: 0.65, medical: 0.70, rural: 0.50, development: 0.60, vacant_land: 0.40, mixed_use: 0.60 },
+    loan: { min: 250000, max: 30000000, max_term: 25, max_io: 5 },
+    purpose: { purchase: true, refinance: true, equity_release: true, development: true, working_capital: true },
+    entity: { individual: true, company: false, trust: false, unit_trust: false, smsf: false, partnership: true, note: "Company/trust shifted to Business Banking channel" },
+    servicing: { buffer: "3.00%", dscr_min: 1.15, rental_income: "80%", assessment_floor: "5.40%" },
+    special: { medico: false, rural: false, development: true, alt_doc: false, smsf: false },
+    docs: { full_doc: true, alt_doc: false, low_doc: false }
+  },
+  {
+    id: "stgeorge_comm", name: "St.George Bank", tier: "tier1", type: "major_bank",
+    completeness: "partial", source: "St.George Business Banking · Verified Apr 2026",
+    lvr: { standard: 0.70, retail: 0.65, industrial: 0.65, office: 0.70, medical: 0.75, rural: 0.55, development: 0.65, vacant_land: 0.45, mixed_use: 0.65 },
+    lvr_inv: { standard: 0.65, retail: 0.60, industrial: 0.60, office: 0.65, medical: 0.70, rural: 0.50, development: 0.60, vacant_land: 0.40, mixed_use: 0.60 },
+    loan: { min: 250000, max: 20000000, max_term: 25, max_io: 5 },
+    purpose: { purchase: true, refinance: true, equity_release: true, development: true, working_capital: false },
+    entity: { individual: true, company: true, trust: true, unit_trust: true, smsf: false, partnership: true, note: "Westpac Group" },
+    servicing: { buffer: "3.00%", dscr_min: 1.15, rental_income: "80%", assessment_floor: "5.40%" },
+    special: { medico: true, medico_note: "Industry specialist program", rural: false, development: true, alt_doc: true, smsf: false },
+    docs: { full_doc: true, alt_doc: true, low_doc: false }
+  },
+  {
+    id: "thinktank_comm", name: "Thinktank", tier: "tier2", type: "non_bank",
+    completeness: "full", source: "Thinktank Product Guide · Verified Apr 2026",
+    lvr: { standard: 0.75, retail: 0.70, industrial: 0.75, office: 0.75, medical: 0.75, rural: 0.65, development: null, vacant_land: 0.50, mixed_use: 0.70 },
+    lvr_inv: { standard: 0.70, retail: 0.65, industrial: 0.70, office: 0.70, medical: 0.70, rural: 0.60, development: null, vacant_land: 0.45, mixed_use: 0.65 },
+    loan: { min: 100000, max: 5000000, max_term: 30, max_io: 10 },
+    purpose: { purchase: true, refinance: true, equity_release: true, development: false, working_capital: false },
+    entity: { individual: true, company: true, trust: true, unit_trust: true, smsf: true, partnership: true, note: "SMSF specialist — up to 30yr terms" },
+    servicing: { buffer: "3.00%", dscr_min: 1.15, rental_income: "80%", assessment_floor: null },
+    special: { medico: false, rural: true, development: false, alt_doc: true, smsf: true },
+    docs: { full_doc: true, alt_doc: true, low_doc: true }
+  },
+  {
+    id: "pepper_comm", name: "Pepper Money", tier: "tier2", type: "non_bank",
+    completeness: "full", source: "Pepper Commercial Product Guide · Verified Apr 2026",
+    lvr: { standard: 0.75, retail: 0.70, industrial: 0.70, office: 0.75, medical: 0.75, rural: 0.60, development: 0.65, vacant_land: 0.50, mixed_use: 0.70 },
+    lvr_inv: { standard: 0.70, retail: 0.65, industrial: 0.65, office: 0.70, medical: 0.70, rural: 0.55, development: 0.60, vacant_land: 0.45, mixed_use: 0.65 },
+    loan: { min: 100000, max: 5000000, max_term: 30, max_io: 5 },
+    purpose: { purchase: true, refinance: true, equity_release: true, development: true, working_capital: true },
+    entity: { individual: true, company: true, trust: true, unit_trust: true, smsf: false, partnership: true, note: "Flexible — accepts most entity types" },
+    servicing: { buffer: "3.00%", dscr_min: 1.15, rental_income: "80%", assessment_floor: null },
+    special: { medico: false, rural: true, development: true, alt_doc: true, smsf: false },
+    docs: { full_doc: true, alt_doc: true, low_doc: true }
+  },
+  {
+    id: "liberty_comm", name: "Liberty Financial", tier: "tier2", type: "non_bank",
+    completeness: "full", source: "Liberty Commercial Solutions · Verified Apr 2026",
+    lvr: { standard: 0.80, retail: 0.70, industrial: 0.75, office: 0.80, medical: 0.80, rural: 0.65, development: 0.70, vacant_land: 0.50, mixed_use: 0.75 },
+    lvr_inv: { standard: 0.75, retail: 0.65, industrial: 0.70, office: 0.75, medical: 0.75, rural: 0.60, development: 0.65, vacant_land: 0.45, mixed_use: 0.70 },
+    loan: { min: 50000, max: 5000000, max_term: 30, max_io: 10 },
+    purpose: { purchase: true, refinance: true, equity_release: true, development: true, working_capital: true },
+    entity: { individual: true, company: true, trust: true, unit_trust: true, smsf: true, partnership: true, note: "Flexible for SMSF and qualified borrowers" },
+    servicing: { buffer: "3.00%", dscr_min: 1.15, rental_income: "80%", assessment_floor: null },
+    special: { medico: false, rural: true, development: true, alt_doc: true, smsf: true },
+    docs: { full_doc: true, alt_doc: true, low_doc: true }
+  },
+  {
+    id: "latrobe_comm", name: "La Trobe Financial", tier: "tier2", type: "non_bank",
+    completeness: "full", source: "La Trobe Commercial Solutions · Verified Apr 2026",
+    lvr: { standard: 0.75, retail: 0.65, industrial: 0.70, office: 0.75, medical: 0.75, rural: 0.60, development: 0.65, vacant_land: 0.50, mixed_use: 0.70 },
+    lvr_inv: { standard: 0.70, retail: 0.60, industrial: 0.65, office: 0.70, medical: 0.70, rural: 0.55, development: 0.60, vacant_land: 0.45, mixed_use: 0.65 },
+    loan: { min: 100000, max: 10000000, max_term: 30, max_io: 10 },
+    purpose: { purchase: true, refinance: true, equity_release: true, development: true, working_capital: false },
+    entity: { individual: true, company: true, trust: true, unit_trust: true, smsf: true, partnership: true, note: "SMSF specialist — 15-30yr terms" },
+    servicing: { buffer: "3.00%", dscr_min: 1.15, rental_income: "80%", assessment_floor: null },
+    special: { medico: false, rural: true, development: true, alt_doc: true, smsf: true },
+    docs: { full_doc: true, alt_doc: true, low_doc: true }
+  },
+  {
+    id: "bluestone_comm", name: "Bluestone Home Loans", tier: "tier2", type: "non_bank",
+    completeness: "partial", source: "Bluestone Commercial · Verified Apr 2026",
+    lvr: { standard: 0.75, retail: 0.65, industrial: 0.70, office: 0.75, medical: 0.75, rural: null, development: null, vacant_land: null, mixed_use: 0.70 },
+    lvr_inv: { standard: 0.70, retail: 0.60, industrial: 0.65, office: 0.70, medical: 0.70, rural: null, development: null, vacant_land: null, mixed_use: 0.65 },
+    loan: { min: 100000, max: 3000000, max_term: 30, max_io: 5 },
+    purpose: { purchase: true, refinance: true, equity_release: true, development: false, working_capital: false },
+    entity: { individual: true, company: true, trust: true, unit_trust: true, smsf: false, partnership: true, note: "Directors must guarantee" },
+    servicing: { buffer: "3.00%", dscr_min: 1.20, rental_income: "80%", assessment_floor: null },
+    special: { medico: false, rural: false, development: false, alt_doc: true, smsf: false },
+    docs: { full_doc: true, alt_doc: true, low_doc: false }
+  },
+  {
+    id: "suncorp_comm", name: "Suncorp Bank", tier: "tier2", type: "non_major_bank",
+    completeness: "partial", source: "Suncorp Business · Verified Apr 2026",
+    lvr: { standard: 0.70, retail: 0.65, industrial: 0.65, office: 0.70, medical: 0.75, rural: 0.55, development: 0.60, vacant_land: 0.45, mixed_use: 0.65 },
+    lvr_inv: { standard: 0.65, retail: 0.60, industrial: 0.60, office: 0.65, medical: 0.70, rural: 0.50, development: 0.55, vacant_land: 0.40, mixed_use: 0.60 },
+    loan: { min: 250000, max: 10000000, max_term: 25, max_io: 5 },
+    purpose: { purchase: true, refinance: true, equity_release: true, development: true, working_capital: true },
+    entity: { individual: true, company: true, trust: true, unit_trust: true, smsf: false, partnership: true, note: "" },
+    servicing: { buffer: "3.00%", dscr_min: 1.20, rental_income: "80%", assessment_floor: "5.40%" },
+    special: { medico: true, medico_note: "Healthcare lender program", rural: true, development: true, alt_doc: false, smsf: false },
+    docs: { full_doc: true, alt_doc: false, low_doc: false }
+  }
+];
+
+let commResults = [...COMM_LENDERS];
+
+// ── COMMERCIAL FILTERS ────────────────────────────────────────────────────
+function setCommTier(el) {
+  document.querySelectorAll('#commTierPills .pill-option').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+}
+function setCommOcc(el) {
+  document.querySelectorAll('#commOccupancy .pill-option').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+}
+
+function getCommFilters() {
+  const activeTier = document.querySelector('#commTierPills .pill-option.active');
+  const activeOcc = document.querySelector('#commOccupancy .pill-option.active');
+  return {
+    propertyType: document.getElementById('commPropertyType').value,
+    loanPurpose: document.getElementById('commLoanPurpose').value,
+    lvr: parseFloat(document.getElementById('commLvrInput').value) || null,
+    loanAmount: parseFloat(document.getElementById('commLoanAmount').value) || null,
+    entityType: document.getElementById('commEntityType').value,
+    tier: activeTier ? activeTier.dataset.tier : '',
+    occupancy: activeOcc ? activeOcc.dataset.occ : '',
+    altdoc: document.getElementById('chk-comm-altdoc').checked,
+    smsf: document.getElementById('chk-comm-smsf').checked,
+    medico: document.getElementById('chk-comm-medico').checked,
+    rural: document.getElementById('chk-comm-rural').checked,
+    dev: document.getElementById('chk-comm-dev').checked,
+  };
+}
+
+function getCommLvr(lender, filters) {
+  const prop = filters.propertyType || 'standard';
+  const lvrSet = filters.occupancy === 'investment' ? lender.lvr_inv : lender.lvr;
+  return lvrSet[prop] || lvrSet.standard || null;
+}
+
+function runCommSearch() {
+  const f = getCommFilters();
+  let results = [...COMM_LENDERS];
+
+  // Tier
+  if (f.tier) {
+    if (f.tier === 'non_bank') results = results.filter(l => l.type === 'non_bank');
+    else results = results.filter(l => l.tier === f.tier);
+  }
+  // Entity
+  if (f.entityType) {
+    results = results.filter(l => l.entity[f.entityType] === true);
+  }
+  // Purpose
+  if (f.loanPurpose) {
+    results = results.filter(l => l.purpose[f.loanPurpose] === true);
+  }
+  // Loan amount
+  if (f.loanAmount) {
+    results = results.filter(l => {
+      if (f.loanAmount < l.loan.min) return false;
+      if (f.loanAmount > l.loan.max) return false;
+      return true;
+    });
+  }
+  // LVR
+  if (f.lvr) {
+    results = results.filter(l => {
+      const maxLvr = getCommLvr(l, f);
+      return maxLvr !== null && maxLvr * 100 >= f.lvr;
+    });
+  }
+  // Special toggles
+  if (f.altdoc) results = results.filter(l => l.docs.alt_doc);
+  if (f.smsf) results = results.filter(l => l.special.smsf);
+  if (f.medico) results = results.filter(l => l.special.medico);
+  if (f.rural) results = results.filter(l => l.special.rural);
+  if (f.dev) results = results.filter(l => l.special.development);
+
+  // Sort by LVR
+  if (f.lvr || f.propertyType) {
+    results.sort((a, b) => {
+      const aL = getCommLvr(a, f) || 0;
+      const bL = getCommLvr(b, f) || 0;
+      return bL - aL;
+    });
+  }
+
+  // Update scenario bar
+  updateCommScenarioBar(f);
+  renderComm(results);
+}
+
+function updateCommScenarioBar(f) {
+  const bar = document.getElementById('scenarioBar');
+  const tags = [];
+  if (f.propertyType) {
+    const labels = {office:'Office',retail:'Retail',industrial:'Industrial',mixed_use:'Mixed Use',medical:'Medical',childcare:'Childcare',hotel:'Hotel',rural:'Rural',vacant_land:'Vacant Land',development:'Development'};
+    tags.push(labels[f.propertyType] || f.propertyType);
+  }
+  if (f.loanPurpose) {
+    const labels = {purchase:'Purchase',refinance:'Refinance',equity_release:'Equity Release',development:'Development',working_capital:'Working Capital'};
+    tags.push(labels[f.loanPurpose] || f.loanPurpose);
+  }
+  if (f.lvr) tags.push('LVR ' + f.lvr + '%');
+  if (f.loanAmount) tags.push('$' + (f.loanAmount/1000000).toFixed(1) + 'M');
+  if (f.entityType) tags.push(f.entityType.charAt(0).toUpperCase() + f.entityType.slice(1));
+  if (f.occupancy === 'owner_occ') tags.push('Owner Occupied');
+  if (f.occupancy === 'investment') tags.push('Investment');
+  if (f.altdoc) tags.push('Alt Doc');
+  if (f.smsf) tags.push('SMSF');
+  if (f.medico) tags.push('Medical');
+  if (f.rural) tags.push('Rural');
+  if (f.dev) tags.push('Development');
+  if (tags.length) {
+    bar.classList.remove('hidden');
+    bar.innerHTML = '<span style="color:var(--muted);font-size:12px;">Scenario:</span> ' + tags.map(t => '<span class="tag">'+t+'</span>').join('');
+  } else bar.classList.add('hidden');
+}
+
+// ── COMMERCIAL RENDER ───────────────────────────────────────────────────────
+function renderComm(results) {
+  commResults = results;
+  const grid = document.getElementById('commLenderGrid');
+  document.getElementById('resultsCount').textContent = results.length + ' lender' + (results.length !== 1 ? 's' : '');
+  document.getElementById('tabCommCount').textContent = COMM_LENDERS.length;
+
+  if (results.length === 0) {
+    const f = getCommFilters();
+    let suggestion = '';
+    if (f.smsf) {
+      suggestion = '<div class="empty-suggestion"><strong>💡 Tip:</strong> SMSF commercial lending is a specialist area. Consider <span class="green">Thinktank</span>, <span class="green">La Trobe Financial</span>, or <span class="green">Liberty Financial</span> — they offer SMSF terms up to 30 years.</div>';
+    } else if (f.rural) {
+      suggestion = '<div class="empty-suggestion"><strong>💡 Tip:</strong> Rural commercial property is restrictive. <span class="green">NAB</span> and <span class="green">Thinktank</span> have the strongest rural programs. <span class="green">La Trobe</span> and <span class="green">Pepper Money</span> also accept rural security.</div>';
+    } else {
+      suggestion = '<div class="empty-suggestion"><strong>💡 Tip:</strong> Try relaxing some filters. Non-bank lenders like <span class="green">Thinktank</span>, <span class="green">Pepper Money</span>, and <span class="green">Liberty</span> offer more flexibility on commercial deals. <a href="https://oneyco.com.au" target="_blank" style="color:var(--green);">Contact Oney & Co</a> for specialist advice.</div>';
+    }
+    grid.innerHTML = '<div class="empty-state"><div class="icon">🔍</div><h3>No lenders match this scenario</h3><p>Your current filter combination returned zero results.</p>' + suggestion + '</div>';
+    return;
+  }
+
+  grid.innerHTML = results.map(l => renderCommTile(l)).join('');
+}
+
+function renderCommTile(l) {
+  const f = getCommFilters();
+  const maxLvr = getCommLvr(l, f);
+  const lvrStr = maxLvr ? (maxLvr * 100).toFixed(0) + '%' : '—';
+
+  const pills = [];
+  if (l.special.medico) pills.push('Medical');
+  if (l.special.smsf) pills.push('SMSF');
+  if (l.special.rural) pills.push('Rural');
+  if (l.special.development) pills.push('Dev Finance');
+  if (l.docs.alt_doc) pills.push('Alt Doc');
+  if (l.docs.low_doc) pills.push('Low Doc');
+  const visiblePills = pills.slice(0, 2);
+  const extraCount = pills.length - 2;
+
+  const tierClass = l.type === 'non_bank' ? 'nonbank' : l.tier;
+  const tierLabel = l.tier === 'tier1' ? 'Major' : l.type === 'non_bank' ? 'Non-Bank' : 'Non-Major';
+
+  return `
+  <div class="lender-tile ${l.completeness === 'partial' ? 'partial' : ''}" id="comm-tile-${l.id}" onclick="openCommDetail('${l.id}')">
+    <div class="tile-logo">${getLenderLogo(l.id.replace('_comm',''), l.name)}</div>
+    <div class="tile-name">${l.name}</div>
+    <span class="tile-tier ${tierClass}">${tierLabel}</span>
+    <div class="tile-lvr">${lvrStr}</div>
+    ${visiblePills.length ? '<div class="tile-pills">' + visiblePills.map(p => '<span class="mini-pill">'+p+'</span>').join('') + (extraCount > 0 ? '<span class="tile-pill-count">+'+extraCount+'</span>' : '') + '</div>' : ''}
+  </div>`;
+}
+
+let commOpenPanelId = null;
+
+function openCommDetail(id) {
+  const grid = document.getElementById('commLenderGrid');
+  const existing = document.getElementById('commDetailPanel');
+  const prevTile = document.querySelector('#commLenderGrid .lender-tile.active');
+  if (prevTile) prevTile.classList.remove('active');
+  if (existing) {
+    const wasId = existing.dataset.lenderId;
+    existing.remove();
+    if (wasId === id) { commOpenPanelId = null; return; }
+  }
+
+  const l = commResults.find(x => x.id === id);
+  if (!l) return;
+  commOpenPanelId = id;
+
+  const tile = document.getElementById('comm-tile-' + id);
+  if (tile) tile.classList.add('active');
+
+  const f = getCommFilters();
+  const pills = [];
+  if (l.special.medico) pills.push('Medical');
+  if (l.special.smsf) pills.push('SMSF');
+  if (l.special.rural) pills.push('Rural');
+  if (l.special.development) pills.push('Dev Finance');
+  if (l.docs.alt_doc) pills.push('Alt Doc');
+  if (l.docs.low_doc) pills.push('Low Doc');
+
+  const tierClass = l.type === 'non_bank' ? 'nonbank' : l.tier;
+  const tierLabel = l.tier === 'tier1' ? 'Major' : l.type === 'non_bank' ? 'Non-Bank' : 'Non-Major';
+  const lvrTypes = ['standard','retail','industrial','office','medical','mixed_use','rural','development','vacant_land'];
+  const lvrLabels = {standard:'Standard',retail:'Retail',industrial:'Industrial',office:'Office',medical:'Medical',mixed_use:'Mixed Use',rural:'Rural',development:'Development',vacant_land:'Vacant Land'};
+
+  const panelHTML = `
+  <div class="detail-panel open" id="commDetailPanel" data-lender-id="${l.id}">
+    <button class="detail-panel-close" onclick="event.stopPropagation();closeCommDetail()">✕</button>
+    <div class="detail-panel-header">
+      ${getLenderLogo(l.id.replace('_comm',''), l.name)}
+      <div>
+        <div class="detail-panel-name">${l.name}</div>
+        <span class="meta-tag ${tierClass}" style="margin-top:4px;display:inline-block;">${tierLabel}</span>
+      </div>
+    </div>
+    ${pills.length ? '<div class="detail-pills">' + pills.map(p => '<span class="mini-pill">'+p+'</span>').join('') + '</div>' : ''}
+
+    <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;margin-top:4px;">Max LVR by Property Type (OO / Inv)</div>
+    <div class="policy-grid" style="grid-template-columns:repeat(3,1fr);">
+      ${lvrTypes.map(t => {
+        const oo = l.lvr[t]; const inv = l.lvr_inv[t];
+        return '<div class="policy-cell"><div class="cell-label">' + lvrLabels[t] + '</div><div class="cell-value">' +
+          (oo ? '<span class="green">'+(oo*100).toFixed(0)+'%</span>' : '<span class="muted">—</span>') +
+          ' / ' + (inv ? (inv*100).toFixed(0)+'%' : '<span class="muted">—</span>') + '</div></div>';
+      }).join('')}
+    </div>
+
+    <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;margin:14px 0 8px;">Loan & Servicing</div>
+    <div class="policy-grid">
+      <div class="policy-cell"><div class="cell-label">Min Loan</div><div class="cell-value green">$${(l.loan.min/1000).toFixed(0)}K</div></div>
+      <div class="policy-cell"><div class="cell-label">Max Loan</div><div class="cell-value green">$${l.loan.max >= 1000000 ? (l.loan.max/1000000).toFixed(0)+'M' : (l.loan.max/1000).toFixed(0)+'K'}</div></div>
+      <div class="policy-cell"><div class="cell-label">Max Term</div><div class="cell-value">${l.loan.max_term}yr</div></div>
+      <div class="policy-cell"><div class="cell-label">Max IO</div><div class="cell-value">${l.loan.max_io}yr</div></div>
+      <div class="policy-cell"><div class="cell-label">Buffer</div><div class="cell-value">${l.servicing.buffer}</div></div>
+      <div class="policy-cell"><div class="cell-label">Min DSCR</div><div class="cell-value green">${l.servicing.dscr_min}×</div></div>
+      <div class="policy-cell"><div class="cell-label">Floor Rate</div><div class="cell-value">${l.servicing.assessment_floor || '<span class="muted">—</span>'}</div></div>
+      <div class="policy-cell"><div class="cell-label">Rental Income</div><div class="cell-value">${l.servicing.rental_income}</div></div>
+    </div>
+
+    <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;margin:14px 0 8px;">Entity & Docs</div>
+    <div class="policy-grid">
+      <div class="policy-cell"><div class="cell-label">Company</div><div class="cell-value">${l.entity.company ? '<span class="green">Yes</span>' : '<span class="muted">No</span>'}</div></div>
+      <div class="policy-cell"><div class="cell-label">Trust</div><div class="cell-value">${l.entity.trust ? '<span class="green">Yes</span>' : '<span class="muted">No</span>'}</div></div>
+      <div class="policy-cell"><div class="cell-label">SMSF</div><div class="cell-value">${l.entity.smsf ? '<span class="green">Yes</span>' : '<span class="muted">No</span>'}</div></div>
+      <div class="policy-cell"><div class="cell-label">Alt Doc</div><div class="cell-value">${l.docs.alt_doc ? '<span class="green">Yes</span>' : 'No'}</div></div>
+      <div class="policy-cell"><div class="cell-label">Low Doc</div><div class="cell-value">${l.docs.low_doc ? '<span class="green">Yes</span>' : 'No'}</div></div>
+      <div class="policy-cell"><div class="cell-label">Full Doc</div><div class="cell-value">${l.docs.full_doc ? '<span class="green">Yes</span>' : 'No'}</div></div>
+    </div>
+
+    ${l.entity.note ? '<div style="margin-top:10px;font-size:12px;color:var(--muted);"><em>⚠ '+l.entity.note+'</em></div>' : ''}
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-top:12px;">
+      <div class="data-note" style="border:none;padding:0;margin:0;">
+        <span class="data-dot ${l.completeness}"></span>
+        ${l.completeness === 'full' ? 'Full data' : 'Partial data'} · Updated Apr 2026
+      </div>
+    </div>
+  </div>`;
+
+  tile.insertAdjacentHTML('afterend', panelHTML);
+  setTimeout(() => {
+    const panel = document.getElementById('commDetailPanel');
+    if (panel) panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }, 50);
+}
+
+function closeCommDetail() {
+  const panel = document.getElementById('commDetailPanel');
+  const prevTile = document.querySelector('#commLenderGrid .lender-tile.active');
+  if (prevTile) prevTile.classList.remove('active');
+  if (panel) panel.remove();
+  commOpenPanelId = null;
+}
+
+function resetCommFilters() {
+  document.getElementById('commPropertyType').value = '';
+  document.getElementById('commLoanPurpose').value = '';
+  document.getElementById('commLvrInput').value = '';
+  document.getElementById('commLoanAmount').value = '';
+  document.getElementById('commEntityType').value = '';
+  document.querySelectorAll('#commTierPills .pill-option').forEach(p => p.classList.remove('active'));
+  document.querySelector('#commTierPills .pill-option[data-tier=""]').classList.add('active');
+  document.querySelectorAll('#commOccupancy .pill-option').forEach(p => p.classList.remove('active'));
+  document.querySelector('#commOccupancy .pill-option[data-occ=""]').classList.add('active');
+  ['chk-comm-altdoc','chk-comm-smsf','chk-comm-medico','chk-comm-rural','chk-comm-dev'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) { el.checked = false; const w = el.closest('.toggle-item'); if (w) w.classList.remove('active'); }
+  });
+  document.getElementById('scenarioBar').classList.add('hidden');
+  renderComm([...COMM_LENDERS]);
+}
+
+// Update tab counts on load
+document.getElementById('tabResiCount').textContent = LENDERS.length;
+document.getElementById('tabCommCount').textContent = COMM_LENDERS.length;
 </script>
 </body>
 </html>
