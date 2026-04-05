@@ -265,38 +265,6 @@
       font-weight: 600; white-space: nowrap;
     }
 
-    /* KEYWORD SEARCH */
-    .keyword-search-wrap {
-      margin-bottom: 18px;
-    }
-    .keyword-search-inner {
-      display: flex; align-items: center; gap: 10px;
-      background: var(--card); border: 1px solid var(--border);
-      border-radius: 10px; padding: 10px 16px;
-      transition: border-color 0.2s, box-shadow 0.2s;
-    }
-    .keyword-search-inner:focus-within {
-      border-color: var(--green);
-      box-shadow: 0 0 0 3px rgba(46,204,133,0.12);
-    }
-    .keyword-icon { font-size: 16px; flex-shrink: 0; opacity: 0.6; }
-    #keywordInput {
-      flex: 1; background: none; border: none; outline: none;
-      color: var(--text); font-size: 14px; font-family: inherit;
-    }
-    #keywordInput::placeholder { color: var(--muted); }
-    .keyword-clear {
-      background: none; border: none; cursor: pointer;
-      color: var(--muted); font-size: 16px; padding: 0 2px;
-      transition: color 0.2s; line-height: 1;
-    }
-    .keyword-clear:hover { color: var(--text); }
-    .keyword-highlight {
-      background: rgba(46,204,133,0.2);
-      color: var(--green);
-      border-radius: 3px;
-      padding: 0 2px;
-    }
 
     /* MAIN */
     .main {
@@ -333,15 +301,15 @@
     }
     .scenario-bar .hidden { display: none; }
 
-    /* LENDER CARDS */
-    .lender-grid { display: flex; flex-direction: column; gap: 16px; }
+    /* LENDER CARDS — COMPACT */
+    .lender-grid { display: flex; flex-direction: column; gap: 8px; }
 
     .lender-card {
       background: var(--card);
       border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 22px 24px;
-      transition: border-color 0.2s, transform 0.2s;
+      border-radius: 12px;
+      padding: 0;
+      transition: border-color 0.2s;
       position: relative;
       overflow: hidden;
     }
@@ -353,38 +321,88 @@
       border-radius: 3px 0 0 3px;
     }
     .lender-card.partial::before { background: linear-gradient(135deg, var(--warn), #e67e22); }
-    .lender-card:hover { border-color: rgba(46,204,133,0.3); transform: translateY(-2px); }
+    .lender-card:hover { border-color: rgba(46,204,133,0.3); }
 
-    .card-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 16px; gap: 16px; }
-    .card-left { display: flex; align-items: center; gap: 14px; }
-    .lender-icon {
-      width: 44px; height: 44px;
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 18px; flex-shrink: 0;
+    /* COMPACT ROW (always visible) */
+    .card-compact {
+      display: flex; align-items: center; gap: 12px;
+      padding: 12px 16px 12px 20px;
+      cursor: pointer;
+      user-select: none;
     }
-    .lender-name { font-size: 17px; font-weight: 700; margin-bottom: 3px; }
-    .lender-meta { display: flex; gap: 6px; flex-wrap: wrap; }
+    .card-compact:hover { background: rgba(46,204,133,0.02); }
+    .card-logo { flex-shrink: 0; }
+    .card-info { flex: 1; min-width: 0; }
+    .card-info-top { display: flex; align-items: center; gap: 8px; margin-bottom: 2px; }
+    .lender-name { font-size: 15px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .lender-meta { display: flex; gap: 5px; flex-wrap: wrap; flex-shrink: 0; }
     .meta-tag {
-      font-size: 11px; font-weight: 500;
-      border-radius: 5px; padding: 2px 8px;
+      font-size: 10px; font-weight: 600;
+      border-radius: 4px; padding: 1px 6px;
+      white-space: nowrap;
     }
     .meta-tag.tier1 { background: rgba(107,76,154,0.2); color: var(--purple-light); }
     .meta-tag.tier2 { background: rgba(46,204,133,0.1); color: var(--green); }
     .meta-tag.nonbank { background: rgba(46,204,133,0.1); color: var(--green); }
     .meta-tag.partial { background: rgba(243,156,18,0.15); color: var(--warn); }
 
-    .card-badges { display: flex; gap: 8px; flex-wrap: wrap; align-items: flex-start; }
+    /* INLINE STATS (compact row) */
+    .card-stats {
+      display: flex; gap: 16px; align-items: center;
+      flex-shrink: 0;
+    }
+    .stat-item { text-align: center; }
+    .stat-label { font-size: 9px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
+    .stat-value { font-size: 14px; font-weight: 700; color: var(--green); }
+    .stat-value.muted { color: var(--muted); font-weight: 400; font-size: 12px; }
+
+    /* SPECIAL PILLS (compact) */
+    .card-pills { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 3px; }
+    .mini-pill {
+      font-size: 10px; font-weight: 500;
+      border-radius: 10px; padding: 1px 7px;
+      background: rgba(107,76,154,0.12); color: var(--purple-light);
+      border: 1px solid rgba(107,76,154,0.15);
+      white-space: nowrap;
+    }
+
+    /* EXPAND BUTTON */
+    .card-expand {
+      display: flex; align-items: center; gap: 4px;
+      background: none; border: none; cursor: pointer;
+      color: var(--muted); font-size: 12px; font-weight: 500;
+      padding: 4px 8px; border-radius: 6px;
+      transition: color 0.2s, background 0.2s;
+      flex-shrink: 0;
+    }
+    .card-expand:hover { color: var(--green); background: rgba(46,204,133,0.08); }
+    .card-expand svg { width: 14px; height: 14px; transition: transform 0.25s; }
+    .lender-card.expanded .card-expand svg { transform: rotate(180deg); }
+
+    /* BADGES (shown on LVR filter) */
+    .card-badges { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; flex-shrink: 0; }
     .badge {
-      font-size: 12px; font-weight: 600;
-      border-radius: 8px; padding: 5px 10px;
+      font-size: 11px; font-weight: 600;
+      border-radius: 6px; padding: 3px 8px;
       white-space: nowrap;
     }
     .badge.pass { background: rgba(46,204,133,0.15); color: var(--green); border: 1px solid rgba(46,204,133,0.2); }
     .badge.warn { background: rgba(243,156,18,0.15); color: var(--warn); border: 1px solid rgba(243,156,18,0.2); }
     .badge.fail { background: rgba(231,76,60,0.15); color: var(--danger); border: 1px solid rgba(231,76,60,0.2); }
+
+    /* EXPANDED DETAILS (hidden by default) */
+    .card-details {
+      display: none;
+      padding: 0 20px 16px;
+      border-top: 1px solid var(--border);
+    }
+    .lender-card.expanded .card-details { display: block; padding-top: 14px; }
+
+    @media (max-width: 768px) {
+      .card-stats { display: none; }
+      .card-compact { gap: 10px; padding: 10px 12px 10px 16px; }
+      .lender-name { font-size: 14px; }
+    }
 
     /* POLICY GRID */
     .policy-grid {
@@ -593,7 +611,7 @@
     <span class="nav-badge">Beta</span>
   </div>
   <div class="nav-right">
-    <span class="nav-tag"><span id="lenderCountNav">8</span> lenders loaded</span>
+    <span class="nav-tag" id="navTagEl"><span id="lenderCountNav">8</span> lenders</span>
   </div>
 </nav>
 
@@ -711,6 +729,30 @@
 
     <div class="sidebar-divider"></div>
 
+    <!-- INCOME & DOCS -->
+    <div class="sidebar-section">
+      <div class="sidebar-label"><span class="label-icon">📄</span> Income & Docs</div>
+      <div class="toggle-group">
+        <label class="toggle-item" id="chk-altdoc-wrap">
+          <input type="checkbox" id="chk-altdoc">
+          <span class="toggle-switch"></span>
+          Alt Doc / Low Doc
+        </label>
+        <label class="toggle-item" id="chk-selfempl1-wrap">
+          <input type="checkbox" id="chk-selfempl1">
+          <span class="toggle-switch"></span>
+          Self-Employed &lt; 2 years
+        </label>
+        <label class="toggle-item" id="chk-foreignincome-wrap">
+          <input type="checkbox" id="chk-foreignincome">
+          <span class="toggle-switch"></span>
+          Foreign Income
+        </label>
+      </div>
+    </div>
+
+    <div class="sidebar-divider"></div>
+
     <!-- SPECIAL NEEDS -->
     <div class="sidebar-section">
       <div class="sidebar-label"><span class="label-icon">✨</span> Special Needs</div>
@@ -735,10 +777,10 @@
           <span class="toggle-switch"></span>
           Family Guarantee
         </label>
-        <label class="toggle-item" id="chk-altdoc-wrap">
-          <input type="checkbox" id="chk-altdoc">
+        <label class="toggle-item" id="chk-nogs-wrap">
+          <input type="checkbox" id="chk-nogs">
           <span class="toggle-switch"></span>
-          Alt Doc / Low Doc
+          No Genuine Savings
         </label>
         <label class="toggle-item" id="chk-smsf-wrap">
           <input type="checkbox" id="chk-smsf">
@@ -763,20 +805,6 @@
       <div class="results-count" id="resultsCount">8 lenders</div>
     </div>
 
-    <!-- KEYWORD SEARCH BAR -->
-    <div class="keyword-search-wrap">
-      <div class="keyword-search-inner">
-        <span class="keyword-icon">🔍</span>
-        <input
-          type="text"
-          id="keywordInput"
-          placeholder="Search policies… e.g. &quot;casual income&quot;, &quot;bridging&quot;, &quot;95%&quot;, &quot;medico&quot;"
-          autocomplete="off"
-          oninput="runSearch()"
-        />
-        <button class="keyword-clear" id="keywordClear" onclick="clearKeyword()" style="display:none">✕</button>
-      </div>
-    </div>
 
     <div class="scenario-bar hidden" id="scenarioBar">
       <span style="color:var(--muted);font-size:12px;">Showing results for:</span>
@@ -860,8 +888,8 @@ function updateActiveFilterCount() {
   if (document.getElementById('minLoanInput').value) count++;
   const activeTier = document.querySelector('#tierPills .pill-option.active');
   if (activeTier && activeTier.dataset.tier) count++;
-  ['chk-io','chk-dti','chk-hd','chk-casual','chk-medico','chk-bridge','chk-construction','chk-famguarantee','chk-altdoc','chk-smsf']
-    .forEach(id => { if (document.getElementById(id).checked) count++; });
+  ['chk-io','chk-dti','chk-hd','chk-casual','chk-medico','chk-bridge','chk-construction','chk-famguarantee','chk-altdoc','chk-smsf','chk-selfempl1','chk-foreignincome','chk-nogs']
+    .forEach(id => { if (document.getElementById(id)?.checked) count++; });
   // Desktop badge
   const badge = document.getElementById('activeFilterCount');
   if (count > 0) { badge.style.display = ''; badge.textContent = count + ' active'; }
@@ -1222,6 +1250,258 @@ let LENDERS = [
       note: "Individuals & joints only, no companies/trusts"
     },
     docs: { payslips: 2, payslip_max_age: "30 days", self_emp: "2yr financials", alt_doc: false }
+  },
+  {
+    id: "thinktank",
+    name: "Thinktank",
+    icon: "TT",
+    type: "non_bank",
+    tier: "tier2",
+    completeness: "full",
+    source: "Public data · Commercial specialist",
+    lvr: {
+      oo_pi: 0.80, oo_io: 0.75, inv_pi: 0.80, inv_io: 0.75,
+      construction: 0.80, lmi_required_above: 0.80, lmi_waiver: false
+    },
+    modifiers: [{ id: "dti_above_6x", label: "DTI > 6×", max_lvr: 0.75 }],
+    servicing: { assessment_floor: null, buffer: "3.00%", dti_max: "7×", min_surplus: null },
+    income: { payg_base: "100%", casual: "80%", overtime_other: "80%", commission: "80%", self_employed_yrs: 1, rental: "80%" },
+    special: { medico: false, bridging: false, construction: true, family_guarantee: false, smsf: true, foreign_income: false, no_genuine_savings: false },
+    docs: { payslips: null, self_emp: "1yr accountant's letter", alt_doc: true }
+  },
+  {
+    id: "bluestone",
+    name: "Bluestone Home Loans",
+    icon: "BST",
+    type: "non_bank",
+    tier: "tier2",
+    completeness: "full",
+    source: "Public data · Near-prime specialist",
+    lvr: {
+      oo_pi: 0.90, oo_io: 0.80, inv_pi: 0.85, inv_io: 0.75,
+      construction: null, lmi_required_above: 0.80, lmi_waiver: false
+    },
+    modifiers: [{ id: "dti_above_6x", label: "DTI > 6×", max_lvr: 0.80 }],
+    servicing: { assessment_floor: null, buffer: "3.00%", dti_max: "7.5×", min_surplus: null },
+    income: { payg_base: "100%", casual: "100%", overtime_other: "80%", commission: "80%", self_employed_yrs: 1, rental: "80%" },
+    special: { medico: false, bridging: false, construction: false, family_guarantee: false, smsf: false, foreign_income: false, no_genuine_savings: true },
+    docs: { payslips: 2, self_emp: "1yr accountant's letter or ATO", alt_doc: true }
+  },
+  {
+    id: "columbus",
+    name: "Columbus Capital",
+    icon: "CMB",
+    type: "non_bank",
+    tier: "tier2",
+    completeness: "partial",
+    source: "Public data · White-label funder",
+    lvr: {
+      oo_pi: 0.85, oo_io: 0.75, inv_pi: 0.80, inv_io: 0.70,
+      construction: null, lmi_required_above: 0.80, lmi_waiver: false
+    },
+    modifiers: [],
+    servicing: { assessment_floor: null, buffer: "3.00%", dti_max: null, min_surplus: null },
+    income: { payg_base: "100%", casual: "80%", overtime_other: "80%", commission: "70%", self_employed_yrs: 2, rental: "75%" },
+    special: { medico: false, bridging: false, construction: false, family_guarantee: false, smsf: false, foreign_income: false, no_genuine_savings: false },
+    docs: { payslips: 2, self_emp: "2yr tax returns", alt_doc: false }
+  },
+  {
+    id: "brighten",
+    name: "Brighten Home Loans",
+    icon: "BRT",
+    type: "non_bank",
+    tier: "tier2",
+    completeness: "full",
+    source: "Public data · Foreign income specialist",
+    lvr: {
+      oo_pi: 0.90, oo_io: 0.80, inv_pi: 0.85, inv_io: 0.75,
+      construction: null, lmi_required_above: 0.80, lmi_waiver: false
+    },
+    modifiers: [{ id: "dti_above_6x", label: "DTI > 6×", max_lvr: 0.80 }],
+    servicing: { assessment_floor: null, buffer: "3.00%", dti_max: "7×", min_surplus: null },
+    income: { payg_base: "100%", casual: "100%", overtime_other: "80%", commission: "80%", self_employed_yrs: 2, rental: "80%", foreign: "100%" },
+    special: { medico: false, bridging: false, construction: false, family_guarantee: false, smsf: false, foreign_income: true, no_genuine_savings: false },
+    docs: { payslips: 2, self_emp: "2yr financials", alt_doc: true }
+  },
+  {
+    id: "granite",
+    name: "Granite Home Loans",
+    icon: "GRN",
+    type: "non_bank",
+    tier: "tier2",
+    completeness: "partial",
+    source: "Public data · White-label funder",
+    lvr: {
+      oo_pi: 0.85, oo_io: 0.75, inv_pi: 0.80, inv_io: 0.70,
+      construction: null, lmi_required_above: 0.80, lmi_waiver: false
+    },
+    modifiers: [],
+    servicing: { assessment_floor: null, buffer: "3.00%", dti_max: null, min_surplus: null },
+    income: { payg_base: "100%", casual: "80%", overtime_other: "80%", commission: "70%", self_employed_yrs: 2, rental: "75%" },
+    special: { medico: false, bridging: false, construction: false, family_guarantee: false, smsf: false, foreign_income: false, no_genuine_savings: false },
+    docs: { payslips: 2, self_emp: "2yr tax returns", alt_doc: false }
+  },
+  {
+    id: "auswide",
+    name: "Auswide Bank",
+    icon: "AWB",
+    type: "non_major_bank",
+    tier: "tier2",
+    completeness: "full",
+    source: "Public data · Regional bank",
+    lvr: {
+      oo_pi: 0.90, oo_io: 0.80, inv_pi: 0.85, inv_io: 0.75,
+      construction: null, lmi_required_above: 0.80, lmi_waiver: false
+    },
+    modifiers: [{ id: "dti_above_6x", label: "DTI > 6×", max_lvr: 0.80 }],
+    servicing: { assessment_floor: "5.40%", buffer: "3.00%", dti_max: "8×", min_surplus: null },
+    income: { payg_base: "100%", casual: "100%", overtime_other: "80%", commission: "80%", self_employed_yrs: 2, rental: "80%" },
+    special: { medico: false, bridging: true, construction: false, family_guarantee: false, smsf: false, foreign_income: false, no_genuine_savings: false },
+    docs: { payslips: 2, self_emp: "2yr tax returns", alt_doc: false }
+  },
+  {
+    id: "heritage",
+    name: "Heritage Bank",
+    icon: "HBK",
+    type: "non_major_bank",
+    tier: "tier2",
+    completeness: "full",
+    source: "Public data · Regional bank",
+    lvr: {
+      oo_pi: 0.90, oo_io: 0.80, inv_pi: 0.85, inv_io: 0.75,
+      construction: null, lmi_required_above: 0.80, lmi_waiver: false
+    },
+    modifiers: [{ id: "dti_above_6x", label: "DTI > 6×", max_lvr: 0.80 }],
+    servicing: { assessment_floor: "5.40%", buffer: "3.00%", dti_max: "8×", min_surplus: null },
+    income: { payg_base: "100%", casual: "100%", overtime_other: "80%", commission: "80%", self_employed_yrs: 2, rental: "80%" },
+    special: { medico: false, bridging: false, construction: false, family_guarantee: false, smsf: false, foreign_income: false, no_genuine_savings: false },
+    docs: { payslips: 2, self_emp: "2yr tax returns", alt_doc: false }
+  },
+  {
+    id: "banksa",
+    name: "BankSA",
+    icon: "BSA",
+    type: "major_bank",
+    tier: "tier1",
+    completeness: "full",
+    source: "Public data · Major bank (Westpac subsidiary)",
+    lvr: {
+      oo_pi: 0.95, oo_io: 0.80, inv_pi: 0.90, inv_io: 0.80,
+      construction: 0.95, lmi_required_above: 0.80, lmi_waiver: true
+    },
+    modifiers: [{ id: "interest_only_any_portion", label: "Any IO", max_lvr: 0.80 }],
+    servicing: { assessment_floor: "5.40%", buffer: "3.00%", dti_max: "8×", min_surplus: "$500/yr" },
+    income: { payg_base: "100%", casual: "100%", overtime_other: "80%", commission: "80%", self_employed_yrs: 2, rental: "80%" },
+    special: { medico: true, medico_lvr: "90% no LMI", lmi_waiver: true, bridging: true, construction: true, family_guarantee: true, smsf: false, foreign_income: false, no_genuine_savings: false },
+    docs: { payslips: 2, self_emp: "2yr tax returns", alt_doc: false }
+  },
+  {
+    id: "greater",
+    name: "Greater Bank",
+    icon: "GRB",
+    type: "non_major_bank",
+    tier: "tier2",
+    completeness: "full",
+    source: "Public data · Regional bank",
+    lvr: {
+      oo_pi: 0.90, oo_io: 0.80, inv_pi: 0.85, inv_io: 0.75,
+      construction: null, lmi_required_above: 0.80, lmi_waiver: false
+    },
+    modifiers: [{ id: "dti_above_6x", label: "DTI > 6×", max_lvr: 0.80 }],
+    servicing: { assessment_floor: "5.40%", buffer: "3.00%", dti_max: "8×", min_surplus: null },
+    income: { payg_base: "100%", casual: "100%", overtime_other: "80%", commission: "80%", self_employed_yrs: 2, rental: "80%" },
+    special: { medico: false, bridging: false, construction: false, family_guarantee: false, smsf: false, foreign_income: false, no_genuine_savings: false },
+    docs: { payslips: 2, self_emp: "2yr tax returns", alt_doc: false }
+  },
+  {
+    id: "racq",
+    name: "RACQ Bank",
+    icon: "RCQ",
+    type: "non_major_bank",
+    tier: "tier2",
+    completeness: "full",
+    source: "Public data · Regional bank (RACQ subsidiary)",
+    lvr: {
+      oo_pi: 0.90, oo_io: 0.80, inv_pi: 0.85, inv_io: 0.75,
+      construction: null, lmi_required_above: 0.80, lmi_waiver: false
+    },
+    modifiers: [{ id: "dti_above_6x", label: "DTI > 6×", max_lvr: 0.80 }],
+    servicing: { assessment_floor: "5.40%", buffer: "3.00%", dti_max: "8×", min_surplus: null },
+    income: { payg_base: "100%", casual: "100%", overtime_other: "80%", commission: "80%", self_employed_yrs: 2, rental: "80%" },
+    special: { medico: false, bridging: false, construction: false, family_guarantee: false, smsf: false, foreign_income: false, no_genuine_savings: false },
+    docs: { payslips: 2, self_emp: "2yr tax returns", alt_doc: false }
+  },
+  {
+    id: "86400",
+    name: "86 400 (Ubank)",
+    icon: "86K",
+    type: "non_major_bank",
+    tier: "tier2",
+    completeness: "partial",
+    source: "Public data · Digital bank",
+    lvr: {
+      oo_pi: 0.80, oo_io: 0.70, inv_pi: 0.80, inv_io: 0.70,
+      construction: null, lmi_required_above: 0.80, lmi_waiver: false
+    },
+    modifiers: [],
+    servicing: { assessment_floor: null, buffer: "3.00%", dti_max: null, min_surplus: null },
+    income: { payg_base: "100%", casual: "80%", overtime_other: "80%", commission: "70%", self_employed_yrs: 2, rental: "75%" },
+    special: { medico: false, bridging: false, construction: false, family_guarantee: false, smsf: false, foreign_income: false, no_genuine_savings: false },
+    docs: { payslips: 2, self_emp: "2yr tax returns", alt_doc: false }
+  },
+  {
+    id: "athena",
+    name: "Athena Home Loans",
+    icon: "ATH",
+    type: "non_bank",
+    tier: "tier2",
+    completeness: "full",
+    source: "Public data · Digital lender",
+    lvr: {
+      oo_pi: 0.80, oo_io: 0.70, inv_pi: 0.75, inv_io: 0.65,
+      construction: null, lmi_required_above: 0.80, lmi_waiver: false
+    },
+    modifiers: [{ id: "dti_above_6x", label: "DTI > 6×", max_lvr: 0.75 }],
+    servicing: { assessment_floor: null, buffer: "3.00%", dti_max: "7×", min_surplus: null },
+    income: { payg_base: "100%", casual: "80%", overtime_other: "80%", commission: "75%", self_employed_yrs: 2, rental: "75%" },
+    special: { medico: false, bridging: false, construction: false, family_guarantee: false, smsf: false, foreign_income: false, no_genuine_savings: false },
+    docs: { payslips: 2, self_emp: "2yr financials", alt_doc: true }
+  },
+  {
+    id: "loans_com",
+    name: "Loans.com.au",
+    icon: "LCM",
+    type: "non_bank",
+    tier: "tier2",
+    completeness: "partial",
+    source: "Public data · Broker aggregator",
+    lvr: {
+      oo_pi: 0.85, oo_io: 0.75, inv_pi: 0.80, inv_io: 0.70,
+      construction: null, lmi_required_above: 0.80, lmi_waiver: false
+    },
+    modifiers: [],
+    servicing: { assessment_floor: null, buffer: "3.00%", dti_max: null, min_surplus: null },
+    income: { payg_base: "100%", casual: "80%", overtime_other: "80%", commission: "75%", self_employed_yrs: 2, rental: "75%" },
+    special: { medico: false, bridging: false, construction: false, family_guarantee: false, smsf: false, foreign_income: false, no_genuine_savings: false },
+    docs: { payslips: null, self_emp: "2yr financials", alt_doc: true }
+  },
+  {
+    id: "reduce",
+    name: "Reduce Home Loans",
+    icon: "RDC",
+    type: "non_bank",
+    tier: "tier2",
+    completeness: "partial",
+    source: "Public data · Online lender",
+    lvr: {
+      oo_pi: 0.80, oo_io: 0.70, inv_pi: 0.75, inv_io: 0.65,
+      construction: null, lmi_required_above: 0.80, lmi_waiver: false
+    },
+    modifiers: [],
+    servicing: { assessment_floor: null, buffer: "3.00%", dti_max: null, min_surplus: null },
+    income: { payg_base: "100%", casual: "80%", overtime_other: "80%", commission: "75%", self_employed_yrs: 2, rental: "75%" },
+    special: { medico: false, bridging: false, construction: false, family_guarantee: false, smsf: false, foreign_income: false, no_genuine_savings: false },
+    docs: { payslips: 2, self_emp: "2yr accountant's letter", alt_doc: false }
   }
 ];
 
@@ -1235,6 +1515,103 @@ const SUPABASE_CONFIG = {
 };
 
 let lastSyncedTime = null;
+
+function getLenderLogo(id, name) {
+  let bgColor = '#1a3c6e';
+  let textColor = '#fff';
+  let initials = name.split(' ').map(w => w[0]).join('').toUpperCase().substring(0, 3);
+
+  // Specific brand colors
+  if (id === 'cba') {
+    bgColor = '#ffd200';
+    textColor = '#000';
+    initials = 'CBA';
+  } else if (id === 'anz') {
+    bgColor = '#003366';
+    initials = 'ANZ';
+  } else if (id === 'nab') {
+    bgColor = '#c8102e';
+    initials = 'NAB';
+  } else if (id === 'westpac') {
+    bgColor = '#d5002b';
+    initials = 'WBC';
+  } else if (id === 'bankwest') {
+    bgColor = '#e35205';
+    initials = 'BWA';
+  } else if (id === 'stgeorge') {
+    bgColor = '#00573f';
+    initials = 'SGB';
+  } else if (id === 'macquarie') {
+    bgColor = '#000000';
+    initials = 'MQG';
+  } else if (id === 'ing') {
+    bgColor = '#ff6900';
+    initials = 'ING';
+  } else if (id === 'pepper') {
+    bgColor = '#6d2077';
+    initials = 'PML';
+  } else if (id === 'liberty') {
+    bgColor = '#003366';
+    initials = 'LFS';
+  } else if (id === 'latrobe') {
+    bgColor = '#002f6c';
+    initials = 'LTU';
+  } else if (id === 'bluestone') {
+    bgColor = '#004b87';
+    initials = 'BST';
+  } else if (id === 'thinktank') {
+    bgColor = '#6d2077';
+    initials = 'TT';
+  } else if (id === 'columbus') {
+    bgColor = '#1a3c6e';
+    initials = 'CMB';
+  } else if (id === 'brighten') {
+    bgColor = '#00a3e0';
+    initials = 'BRT';
+  } else if (id === 'granite') {
+    bgColor = '#004b87';
+    initials = 'GRN';
+  } else if (id === 'auswide') {
+    bgColor = '#003087';
+    initials = 'AWB';
+  } else if (id === 'heritage') {
+    bgColor = '#e4002b';
+    initials = 'HBK';
+  } else if (id === 'banksa') {
+    bgColor = '#c8102e';
+    initials = 'BSA';
+  } else if (id === 'greater') {
+    bgColor = '#003366';
+    initials = 'GRB';
+  } else if (id === 'racq') {
+    bgColor = '#ffd200';
+    textColor = '#000';
+    initials = 'RCQ';
+  } else if (id === '86400') {
+    bgColor = '#003366';
+    initials = '86K';
+  } else if (id === 'athena') {
+    bgColor = '#6d2077';
+    initials = 'ATH';
+  } else if (id === 'loans_com') {
+    bgColor = '#78be20';
+    textColor = '#000';
+    initials = 'LCM';
+  } else if (id === 'reduce') {
+    bgColor = '#009cde';
+    initials = 'RDC';
+  } else {
+    // Hash-based color for unknown lenders
+    let hash = 0;
+    for (let i = 0; i < id.length; i++) {
+      hash = ((hash << 5) - hash) + id.charCodeAt(i);
+    }
+    bgColor = LOGO_PALETTE[Math.abs(hash) % LOGO_PALETTE.length];
+  }
+
+  return `<div style="background:${bgColor};color:${textColor};width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;border:1px solid rgba(255,255,255,0.1);">${initials}</div>`;
+}
+
 let dataSource = 'inline'; // 'inline' or 'supabase'
 
 // Attempt to fetch lenders from Supabase REST API (direct query, no Edge Function needed)
@@ -1302,7 +1679,9 @@ async function loadFromSupabase() {
           bridging: r.has_bridging || false,
           construction: r.has_construction || false,
           family_guarantee: r.has_family_guarantee || false,
-          smsf: r.accepts_smsf || false
+          smsf: r.accepts_smsf || false,
+          foreign_income: r.accepts_foreign_income || false,
+          no_genuine_savings: r.no_genuine_savings_required || false
         },
         docs: {
           payslips: r.documentation?.payslips_required || null,
@@ -1337,14 +1716,11 @@ async function initializeLenderData() {
   initializeApp();
 }
 
-// Update last-synced timestamp in nav (if using Supabase)
+// Update lender count in nav
 function updateSyncIndicator() {
-  if (lastSyncedTime && dataSource === 'supabase') {
-    const syncEl = document.querySelector('.nav-tag span');
-    if (syncEl) {
-      const timeStr = lastSyncedTime.toLocaleTimeString('en-AU', { hour: '2-digit', minute: '2-digit' });
-      syncEl.textContent = `${LENDERS.length} lenders • Synced ${timeStr}`;
-    }
+  const navTag = document.getElementById('navTagEl');
+  if (navTag) {
+    navTag.innerHTML = `<span id="lenderCountNav">${LENDERS.length}</span> lenders`;
   }
 }
 
@@ -1385,119 +1761,106 @@ function renderCard(l) {
   const lvrPass = filters.lvr ? (effectiveLvr !== null && effectiveLvr * 100 >= filters.lvr) : true;
   const lvrBadge = filters.lvr
     ? (lvrPass
-        ? `<span class="badge pass">✓ LVR ${filters.lvr}% OK → max ${(effectiveLvr*100).toFixed(0)}%</span>`
-        : `<span class="badge fail">✗ LVR ${filters.lvr}% exceeds max ${effectiveLvr !== null ? (effectiveLvr*100).toFixed(0)+'%' : 'N/A'}</span>`)
+        ? `<span class="badge pass">✓ ${filters.lvr}% OK</span>`
+        : `<span class="badge fail">✗ ${filters.lvr}% over</span>`)
     : '';
 
-  const medicoBadge = filters.medico && l.special.medico
-    ? `<span class="badge pass">✓ Medico LMI Waiver</span>` : '';
-  const bridgeBadge = filters.bridge && l.special.bridging
-    ? `<span class="badge pass">✓ Bridging Loan</span>` : '';
-  const famBadge = filters.famguarantee && l.special.family_guarantee
-    ? `<span class="badge pass">✓ Family Guarantee</span>` : '';
-  const smsf = filters.borrower === 'smsf'
-    ? (l.special.smsf === true ? `<span class="badge pass">✓ SMSF</span>` : l.special.smsf === false ? `<span class="badge fail">✗ No SMSF</span>` : `<span class="badge warn">? SMSF — check portal</span>`)
-    : '';
+  // Mini pills for compact view
+  const pills = [];
+  if (l.special.medico) pills.push('Medico');
+  if (l.special.lmi_waiver) pills.push('LMI waiver');
+  if (l.special.allied_health) pills.push('Allied Health');
+  if (l.special.bridging) pills.push('Bridging');
+  if (l.special.construction) pills.push('Construction');
+  if (l.special.family_guarantee) pills.push('Fam. Guarantee');
+  if (l.special.smsf) pills.push('SMSF');
+  if (l.special.foreign_income) pills.push('Foreign Income');
+  if (l.docs && l.docs.alt_doc) pills.push('Alt Doc');
+  if (l.special.no_genuine_savings) pills.push('No GS');
 
   const activeModifiers = getActiveModifiers(l, filters);
-
-  const specialPills = [];
-  if (l.special.medico) specialPills.push(`<span class="special-pill">Medico waiver</span>`);
-  if (l.special.lmi_waiver) specialPills.push(`<span class="special-pill">LMI waiver</span>`);
-  if (l.special.allied_health) specialPills.push(`<span class="special-pill">Allied Health</span>`);
-  if (l.special.industry_specialist) specialPills.push(`<span class="special-pill">Accountant/Lawyer waiver</span>`);
-  if (l.special.bridging) specialPills.push(`<span class="special-pill">Bridging</span>`);
-  if (l.special.construction) specialPills.push(`<span class="special-pill">Construction</span>`);
-  if (l.special.family_guarantee) specialPills.push(`<span class="special-pill">Family Guarantee</span>`);
-
   const isCompared = compareList.includes(l.id);
 
   return `
   <div class="lender-card ${l.completeness === 'partial' ? 'partial' : ''}" id="card-${l.id}">
-    <div class="card-top">
-      <div class="card-left">
-        <div class="lender-icon">${l.icon}</div>
-        <div>
-          <div class="lender-name">${l.name}</div>
-          <div class="lender-meta">
-            <span class="meta-tag ${l.type === 'non_bank' ? 'nonbank' : l.tier}">${l.tier === 'tier1' ? 'Major Bank' : l.type === 'non_bank' ? 'Non-Bank' : 'Non-Major'}</span>
-            ${l.completeness === 'partial' ? '<span class="meta-tag partial">⚠ Partial data</span>' : '<span class="meta-tag tier2">✓ Full data</span>'}
-          </div>
+    <div class="card-compact" onclick="toggleCardDetails('${l.id}')">
+      <div class="card-logo">${getLenderLogo(l.id, l.name)}</div>
+      <div class="card-info">
+        <div class="card-info-top">
+          <span class="lender-name">${l.name}</span>
+          <span class="lender-meta">
+            <span class="meta-tag ${l.type === 'non_bank' ? 'nonbank' : l.tier}">${l.tier === 'tier1' ? 'Major' : l.type === 'non_bank' ? 'Non-Bank' : 'Non-Major'}</span>
+          </span>
+          ${lvrBadge}
+        </div>
+        ${pills.length ? `<div class="card-pills">${pills.map(p => '<span class="mini-pill">'+p+'</span>').join('')}</div>` : ''}
+      </div>
+      <div class="card-stats">
+        <div class="stat-item">
+          <div class="stat-label">OO LVR</div>
+          <div class="stat-value">${l.lvr.oo_pi ? (l.lvr.oo_pi*100).toFixed(0)+'%' : '—'}</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-label">INV LVR</div>
+          <div class="stat-value">${l.lvr.inv_pi ? (l.lvr.inv_pi*100).toFixed(0)+'%' : '—'}</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-label">Buffer</div>
+          <div class="stat-value${!l.servicing.buffer ? ' muted' : ''}">${l.servicing.buffer || '—'}</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-label">DTI</div>
+          <div class="stat-value${!l.servicing.dti_max ? ' muted' : ''}">${l.servicing.dti_max || '—'}</div>
         </div>
       </div>
-      <div class="card-badges">
-        ${lvrBadge}${medicoBadge}${bridgeBadge}${famBadge}${smsf}
-      </div>
+      <button class="card-expand" onclick="event.stopPropagation();toggleCardDetails('${l.id}')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+      </button>
     </div>
 
-    <div class="policy-grid">
-      <div class="policy-cell">
-        <div class="cell-label">OO P&I Max LVR</div>
-        <div class="cell-value green">${l.lvr.oo_pi ? (l.lvr.oo_pi*100).toFixed(0)+'%' : '—'}</div>
+    <div class="card-details">
+      <div class="policy-grid">
+        <div class="policy-cell"><div class="cell-label">OO P&I Max LVR</div><div class="cell-value green">${l.lvr.oo_pi ? (l.lvr.oo_pi*100).toFixed(0)+'%' : '—'}</div></div>
+        <div class="policy-cell"><div class="cell-label">Investor P&I Max LVR</div><div class="cell-value green">${l.lvr.inv_pi ? (l.lvr.inv_pi*100).toFixed(0)+'%' : '—'}</div></div>
+        <div class="policy-cell"><div class="cell-label">IO Max LVR</div><div class="cell-value">${l.lvr.oo_io ? (l.lvr.oo_io*100).toFixed(0)+'%' : '—'}</div></div>
+        <div class="policy-cell"><div class="cell-label">Assessment Buffer</div><div class="cell-value">${l.servicing.buffer || '—'}</div></div>
+        <div class="policy-cell"><div class="cell-label">Assessment Floor</div><div class="cell-value">${l.servicing.assessment_floor || '<span class="muted">—</span>'}</div></div>
+        <div class="policy-cell"><div class="cell-label">Max DTI</div><div class="cell-value">${l.servicing.dti_max || '<span class="muted">—</span>'}</div></div>
+        <div class="policy-cell"><div class="cell-label">Commission</div><div class="cell-value">${l.income.commission || '—'}</div></div>
+        <div class="policy-cell"><div class="cell-label">Self-Employed</div><div class="cell-value">${l.income.self_employed_yrs} yr${l.income.self_employed_yrs > 1 ? 's' : ''}</div></div>
       </div>
-      <div class="policy-cell">
-        <div class="cell-label">Investor P&I Max LVR</div>
-        <div class="cell-value green">${l.lvr.inv_pi ? (l.lvr.inv_pi*100).toFixed(0)+'%' : '—'}</div>
-      </div>
-      <div class="policy-cell">
-        <div class="cell-label">IO Max LVR</div>
-        <div class="cell-value">${l.lvr.oo_io ? (l.lvr.oo_io*100).toFixed(0)+'%' : '—'}</div>
-      </div>
-      <div class="policy-cell">
-        <div class="cell-label">Assessment Buffer</div>
-        <div class="cell-value">${l.servicing.buffer || '—'}</div>
-      </div>
-      <div class="policy-cell">
-        <div class="cell-label">Assessment Floor</div>
-        <div class="cell-value">${l.servicing.assessment_floor || '<span class="muted">See portal</span>'}</div>
-      </div>
-      <div class="policy-cell">
-        <div class="cell-label">Max DTI</div>
-        <div class="cell-value">${l.servicing.dti_max || '<span class="muted">See portal</span>'}</div>
-      </div>
-      <div class="policy-cell">
-        <div class="cell-label">Commission Income</div>
-        <div class="cell-value">${l.income.commission || '—'}</div>
-      </div>
-      <div class="policy-cell">
-        <div class="cell-label">Self-Employed</div>
-        <div class="cell-value">${l.income.self_employed_yrs} yr${l.income.self_employed_yrs > 1 ? 's' : ''}</div>
-      </div>
-    </div>
-
-    ${activeModifiers.length ? `
-    <div class="modifiers-section">
-      <div class="modifiers-title">LVR Modifiers</div>
-      <div class="modifier-tags">
-        ${l.modifiers.map(m => {
+      ${activeModifiers.length ? `
+      <div class="modifiers-section">
+        <div class="modifiers-title">LVR Modifiers</div>
+        <div class="modifier-tags">${l.modifiers.map(m => {
           const active = activeModifiers.includes(m.id);
-          return `<span class="modifier-tag ${active ? 'active' : 'inactive'}">${active ? '⚠ ' : ''}${m.label}: max ${(m.max_lvr*100).toFixed(0)}%</span>`;
-        }).join('')}
+          return '<span class="modifier-tag '+(active ? 'active' : 'inactive')+'">'+(active ? '⚠ ' : '')+m.label+': max '+(m.max_lvr*100).toFixed(0)+'%</span>';
+        }).join('')}</div>
+      </div>` : ''}
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-top:10px;">
+        <div class="data-note" style="border:none;padding:0;margin:0;">
+          <span class="data-dot ${l.completeness}"></span>
+          ${l.completeness === 'full' ? 'Full data' : 'Partial data'} · Updated Apr 2026
+        </div>
+        <label class="compare-checkbox-wrap" style="margin:0;border:none;padding:0;" onclick="event.stopPropagation()">
+          <input type="checkbox" id="compare-${l.id}" ${isCompared ? 'checked' : ''}>
+          Compare
+        </label>
       </div>
-    </div>` : ''}
-
-    ${specialPills.length ? `
-    <div class="specials" style="margin-bottom:12px">
-      ${specialPills.join('')}
-    </div>` : ''}
-
-    <div class="data-note">
-      <span class="data-dot ${l.completeness}"></span>
-      ${l.completeness === 'full' ? 'Complete data' : 'Partial data — specialist segments only'} · ${l.source}
     </div>
-
-    <label class="compare-checkbox-wrap">
-      <input type="checkbox" id="compare-${l.id}" ${isCompared ? 'checked' : ''}>
-      Add to comparison
-    </label>
   </div>`;
+}
+
+// ── CARD EXPAND/COLLAPSE ────────────────────────────────────────────────────
+function toggleCardDetails(id) {
+  const card = document.getElementById('card-' + id);
+  if (card) card.classList.toggle('expanded');
 }
 
 // ── FILTERS ──────────────────────────────────────────────────────────────────
 function getFilters() {
   const activeTier = document.querySelector('#tierPills .pill-option.active');
   return {
-    keyword: (document.getElementById('keywordInput').value || '').trim().toLowerCase(),
     loanType: document.getElementById('loanType').value,
     lvr: parseFloat(document.getElementById('lvrInput').value) || null,
     borrower: document.getElementById('borrowerType').value,
@@ -1513,6 +1876,9 @@ function getFilters() {
     famguarantee: document.getElementById('chk-famguarantee').checked,
     altdoc: document.getElementById('chk-altdoc').checked,
     smsf: document.getElementById('chk-smsf').checked,
+    selfEmpl1: document.getElementById('chk-selfempl1').checked,
+    foreignIncome: document.getElementById('chk-foreignincome').checked,
+    noGenuineSavings: document.getElementById('chk-nogs').checked,
   };
 }
 
@@ -1561,71 +1927,10 @@ function getActiveModifiers(lender, filters) {
   return active;
 }
 
-// ── KEYWORD MATCH ─────────────────────────────────────────────────────────────
-function lenderMatchesKeyword(l, kw) {
-  if (!kw) return true;
-  // Build a searchable text blob from all relevant fields
-  const parts = [
-    l.name,
-    l.id,
-    l.type,
-    l.tier === 'tier1' ? 'major bank' : 'non-major bank',
-    l.source,
-    // LVR numbers
-    l.lvr.oo_pi ? `${(l.lvr.oo_pi*100).toFixed(0)}% oo pi owner occupied` : '',
-    l.lvr.oo_io ? `${(l.lvr.oo_io*100).toFixed(0)}% io interest only` : '',
-    l.lvr.inv_pi ? `${(l.lvr.inv_pi*100).toFixed(0)}% investor investment` : '',
-    l.lvr.inv_io ? `${(l.lvr.inv_io*100).toFixed(0)}% investor io` : '',
-    l.lvr.lmi_waiver ? 'lmi waiver no lmi' : '',
-    l.lvr.lmi_waiver_note || '',
-    // Servicing
-    l.servicing.assessment_floor ? `floor ${l.servicing.assessment_floor}` : '',
-    l.servicing.buffer ? `buffer ${l.servicing.buffer} serviceability` : '',
-    l.servicing.dti_max ? `dti debt income ${l.servicing.dti_max}` : '',
-    // Income — include "income" as a generic keyword so "casual income" matches
-    'income policy shading',
-    l.income.casual ? `casual income ${l.income.casual}` : '',
-    l.income.commission ? `commission income ${l.income.commission}` : '',
-    l.income.overtime_other ? `overtime income other ${l.income.overtime_other}` : '',
-    l.income.rental ? `rental income ${l.income.rental}` : '',
-    l.income.payg_base ? `payg base salary income ${l.income.payg_base}` : '',
-    l.income.self_employed_yrs ? `self employed self-employed income ${l.income.self_employed_yrs} year` : '',
-    l.income.self_emp_fast_track || '',
-    // Special
-    l.special.medico ? 'medico doctor gp dentist specialist lmi waiver' : '',
-    l.special.allied_health ? 'allied health nurse physio' : '',
-    l.special.industry_specialist ? 'accountant lawyer solicitor' : '',
-    l.special.bridging ? `bridging loan ${l.special.bridging_months ? l.special.bridging_months+'mo' : ''}` : '',
-    l.special.construction ? 'construction loan build' : '',
-    l.special.family_guarantee ? 'family guarantee guarantor' : '',
-    l.special.smsf ? 'smsf self managed super' : '',
-    // Docs
-    l.docs.alt_doc ? 'alt doc low doc alternative documentation' : '',
-    l.docs.self_emp || '',
-    // Modifiers
-    l.modifiers.map(m => m.label).join(' '),
-  ];
-  const blob = parts.join(' ').toLowerCase();
-
-  // Support multi-word: all words must match
-  const words = kw.split(/\s+/).filter(Boolean);
-  return words.every(w => blob.includes(w));
-}
-
 // ── SEARCH ───────────────────────────────────────────────────────────────────
 function runSearch() {
   const filters = getFilters();
   let results = [...LENDERS];
-
-  // Filter: keyword text search
-  if (filters.keyword) {
-    results = results.filter(l => lenderMatchesKeyword(l, filters.keyword));
-    const clr = document.getElementById('keywordClear');
-    if (clr) clr.style.display = 'block';
-  } else {
-    const clr = document.getElementById('keywordClear');
-    if (clr) clr.style.display = 'none';
-  }
 
   // Filter: lender tier
   if (filters.tier) {
@@ -1669,6 +1974,18 @@ function runSearch() {
   if (filters.smsf || filters.borrower === 'smsf') {
     results = results.filter(l => l.special.smsf !== false);
   }
+  // Filter: Self-employed < 2 years
+  if (filters.selfEmpl1) {
+    results = results.filter(l => l.income.self_employed_yrs <= 1);
+  }
+  // Filter: Foreign income
+  if (filters.foreignIncome) {
+    results = results.filter(l => l.special.foreign_income === true);
+  }
+  // Filter: No genuine savings required
+  if (filters.noGenuineSavings) {
+    results = results.filter(l => l.special.no_genuine_savings === true);
+  }
 
   // Sort: pass LVR check first
   if (filters.lvr) {
@@ -1711,6 +2028,9 @@ function updateScenarioBar(filters) {
   if (filters.famguarantee) tags.push('Family Guarantee');
   if (filters.altdoc) tags.push('Alt Doc');
   if (filters.smsf) tags.push('SMSF');
+  if (filters.selfEmpl1) tags.push('Self-Employed <2yr');
+  if (filters.foreignIncome) tags.push('Foreign Income');
+  if (filters.noGenuineSavings) tags.push('No Genuine Savings');
   if (tags.length > 0) {
     bar.classList.remove('hidden');
     bar.innerHTML = '<span style="color:var(--muted);font-size:12px;">Scenario:</span> ' + tags.map(t => `<span class="tag">${t}</span>`).join('');
@@ -1719,16 +2039,7 @@ function updateScenarioBar(filters) {
   }
 }
 
-function clearKeyword() {
-  document.getElementById('keywordInput').value = '';
-  document.getElementById('keywordClear').style.display = 'none';
-  runSearch();
-}
-
 function resetFilters() {
-  document.getElementById('keywordInput').value = '';
-  const clr = document.getElementById('keywordClear');
-  if (clr) clr.style.display = 'none';
   document.getElementById('loanType').value = '';
   document.getElementById('lvrInput').value = '';
   document.getElementById('borrowerType').value = '';
@@ -1737,12 +2048,14 @@ function resetFilters() {
   document.querySelectorAll('#tierPills .pill-option').forEach(p => p.classList.remove('active'));
   document.querySelector('#tierPills .pill-option[data-tier=""]').classList.add('active');
   // Reset all checkboxes + toggle switches
-  ['chk-io','chk-dti','chk-hd','chk-casual','chk-medico','chk-bridge','chk-construction','chk-famguarantee','chk-altdoc','chk-smsf']
+  ['chk-io','chk-dti','chk-hd','chk-casual','chk-medico','chk-bridge','chk-construction','chk-famguarantee','chk-altdoc','chk-smsf','chk-selfempl1','chk-foreignincome','chk-nogs']
     .forEach(id => {
       const el = document.getElementById(id);
-      el.checked = false;
-      const wrap = el.closest('.toggle-item');
-      if (wrap) wrap.classList.remove('active');
+      if (el) {
+        el.checked = false;
+        const wrap = el.closest('.toggle-item');
+        if (wrap) wrap.classList.remove('active');
+      }
     });
   document.getElementById('scenarioBar').classList.add('hidden');
   updateActiveFilterCount();
@@ -1833,9 +2146,7 @@ function buildCompareTable() {
 // ── INIT ─────────────────────────────────────────────────────────────────────
 function initializeApp() {
   document.getElementById('lenderCountNav').textContent = LENDERS.length;
-  if (dataSource === 'supabase') {
-    document.querySelector('.nav-tag').innerHTML = `<span>${LENDERS.length} lenders • Synced from Supabase</span>`;
-  }
+  updateSyncIndicator();
   render([...LENDERS]);
 }
 
@@ -1854,8 +2165,9 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // Enter key on inputs triggers search
-  ['lvrInput', 'keywordInput', 'minLoanInput'].forEach(id => {
-    document.getElementById(id).addEventListener('keydown', e => {
+  ['lvrInput', 'minLoanInput'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('keydown', e => {
       if (e.key === 'Enter') runSearch();
     });
   });
