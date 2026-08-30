@@ -6,7 +6,7 @@
     "effective_date": null,
     "last_verified": "2026-03-23",
     "confidence": "high",
-    "notes": "Publicly available broker credit guidelines from Macquarie website"
+    "notes": "Publicly available broker credit guidelines from Macquarie website. Company/trust borrower treatment should be confirmed through current broker-channel policy before relying on Macquarie as first pathway."
   },
   "lender": {
     "id": "macquarie",
@@ -44,29 +44,68 @@
     },
     "lvr": {
       "oo_pi": 0.95,
-      "oo_io": 0.80,
-      "inv_pi": 0.90,
-      "inv_io": 0.80,
-      "refinance": 0.90,
-      "equity_release": 0.80,
-      "construction": 0.90,
-      "off_the_plan": 0.90,
-      "lmi_required_above": 0.80,
+      "oo_io": 0.8,
+      "inv_pi": 0.9,
+      "inv_io": 0.8,
+      "refinance": 0.9,
+      "equity_release": 0.8,
+      "construction": 0.9,
+      "off_the_plan": 0.9,
+      "lmi_required_above": 0.8,
       "lmi_waiver_available": false,
       "lmi_waiver_conditions": null,
       "modifiers": [
-        { "trigger": "dti_above_6x", "max_lvr": 0.80, "notes": "DTI > 6× gross income caps LVR at 80%" },
-        { "trigger": "interest_only_any_portion", "max_lvr": 0.80 },
-        { "trigger": "high_density_apartment_pi", "max_lvr": 0.80 },
-        { "trigger": "high_density_apartment_io", "max_lvr": 0.70 },
-        { "trigger": "high_risk_postcode", "max_lvr": 0.80 },
-        { "trigger": "valuation_red_flag", "max_lvr": 0.75, "notes": "Market Segment Conditions Risk Rating 4/5 or selling period >6mo" },
-        { "trigger": "multiple_security", "max_lvr": 0.80 },
-        { "trigger": "stratum_title_vic", "max_lvr": 0.85 },
-        { "trigger": "land_4_to_10ha", "max_lvr": 0.80 },
-        { "trigger": "land_10_to_20ha", "max_lvr": 0.70 },
-        { "trigger": "land_20_to_40ha", "max_lvr": 0.60 },
-        { "trigger": "land_over_40ha", "max_lvr": 0, "notes": "Unacceptable" }
+        {
+          "trigger": "dti_above_6x",
+          "max_lvr": 0.8,
+          "notes": "DTI > 6× gross income caps LVR at 80%"
+        },
+        {
+          "trigger": "interest_only_any_portion",
+          "max_lvr": 0.8
+        },
+        {
+          "trigger": "high_density_apartment_pi",
+          "max_lvr": 0.8
+        },
+        {
+          "trigger": "high_density_apartment_io",
+          "max_lvr": 0.7
+        },
+        {
+          "trigger": "high_risk_postcode",
+          "max_lvr": 0.8
+        },
+        {
+          "trigger": "valuation_red_flag",
+          "max_lvr": 0.75,
+          "notes": "Market Segment Conditions Risk Rating 4/5 or selling period >6mo"
+        },
+        {
+          "trigger": "multiple_security",
+          "max_lvr": 0.8
+        },
+        {
+          "trigger": "stratum_title_vic",
+          "max_lvr": 0.85
+        },
+        {
+          "trigger": "land_4_to_10ha",
+          "max_lvr": 0.8
+        },
+        {
+          "trigger": "land_10_to_20ha",
+          "max_lvr": 0.7
+        },
+        {
+          "trigger": "land_20_to_40ha",
+          "max_lvr": 0.6
+        },
+        {
+          "trigger": "land_over_40ha",
+          "max_lvr": 0,
+          "notes": "Unacceptable"
+        }
       ]
     },
     "interest_only": {
@@ -87,7 +126,7 @@
       "dti_max": 8,
       "dti_trigger_lower_lvr": 6,
       "min_surplus_pa": 500,
-      "nsr_min": 1.00,
+      "nsr_min": 1.0,
       "hem_basis": "ABS_HEM",
       "living_expenses": "Higher of declared expenses or HEM; if declared ≥ 120% HEM or savings ≥ $10k, min surplus requirement waived (NSR 1.00 applies instead)"
     },
@@ -133,7 +172,7 @@
       "residential_house": true,
       "apartment_standard": true,
       "apartment_high_density": true,
-      "high_density_max_lvr": 0.80,
+      "high_density_max_lvr": 0.8,
       "studio_min_sqm": null,
       "serviced_apartment": false,
       "student_accommodation": false,
@@ -151,15 +190,16 @@
     "borrower": {
       "individual": true,
       "joint": true,
-      "company": true,
-      "company_notes": "Australian domiciled Pty Ltd only; directors must provide joint & several guarantees; turnover < $75m; own < 5 properties",
-      "trust_discretionary": true,
-      "trust_unit": true,
+      "company": false,
+      "company_notes": "Company borrower scenarios require current Macquarie broker-channel confirmation and should not be treated as Macquarie-first based on public Policy Radar data.",
+      "trust_discretionary": false,
+      "trust_unit": false,
       "trust_hybrid": false,
       "smsf": false,
       "non_resident": null,
       "temporary_resident": null,
-      "foreign_national": null
+      "foreign_national": null,
+      "trust_notes": "Trust borrower scenarios require current Macquarie broker-channel confirmation and should not be treated as Macquarie-first based on public Policy Radar data."
     },
     "genuine_savings": {
       "required": true,
@@ -199,7 +239,12 @@
         "lmi_waiver_lvr": null,
         "max_loan_with_waiver": 5000000,
         "max_total_lending_with_waiver": 7500000,
-        "eligible_professions": ["doctor", "dentist", "specialist", "vet"]
+        "eligible_professions": [
+          "doctor",
+          "dentist",
+          "specialist",
+          "vet"
+        ]
       },
       "first_home_buyer": {
         "lmi_waiver": false,
