@@ -4,9 +4,18 @@
     "sources": ["CBA Group policy", "Bankwest public resources", "broker guides"],
     "source_version": "2026-Q1",
     "effective_date": null,
-    "last_verified": "2026-04-05",
+    "last_verified": "2026-09-30",
     "confidence": "high",
-    "notes": "Bankwest is a CBA subsidiary. Shares many policies with CBA but with own medico program. Assessment floor similar to CBA 5.40%. Known for construction lending strength."
+    "notes": "Bankwest is a CBA subsidiary. Shares many policies with CBA but with own medico program. Assessment floor similar to CBA 5.40%. Known for construction lending strength.",
+    "public_product_evidence": {
+      "owner_occupied_pi": {
+        "max_lvr_including_lmi": 0.98,
+        "status": "public_product_evidence_only",
+        "credit_policy_ceiling_verified": false,
+        "verified": "2026-09-30",
+        "note": "Bankwest public home-loan pages show owner-occupier P&I product/rate tiers up to 98% LVR including LMI. Other lending criteria apply. Treat 98% as public product evidence, not a verified unconditional credit-policy ceiling."
+      }
+    }
   },
   "lender": {
     "id": "bankwest",
