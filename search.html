@@ -1445,7 +1445,13 @@ let LENDERS = [
     type: "major_bank",
     tier: "tier1",
     completeness: "full",
-    source: "CBA Group policy, Bankwest public resources · Verified Apr 2026",
+    source: "CBA Group policy, Bankwest public resources · Policy dataset verified Apr 2026",
+    public_product_evidence: {
+      oo_pi_max_lvr: 0.98,
+      label: "Up to 98% incl. LMI",
+      status: "Public product evidence · verified 30 Sep 2026",
+      note: "Bankwest public product/rate pages show owner-occupier P&I tiers up to 98% LVR including LMI. Other lending criteria apply. Credit-policy ceiling pending broker-policy verification."
+    },
     lvr: {
       oo_pi: 0.95, oo_io: 0.80, inv_pi: 0.90, inv_io: 0.80,
       refinance: 0.90, equity_release: 0.80, construction: 0.95,
@@ -2272,7 +2278,7 @@ function render(results) {
 function renderTile(l) {
   const filters = getFilters();
   const effectiveLvr = getEffectiveLvr(l, filters);
-  const maxLvr = l.lvr.oo_pi ? (l.lvr.oo_pi*100).toFixed(0)+'%' : '—';
+  const maxLvr = l.public_product_evidence ? l.public_product_evidence.label + '*' : (l.lvr.oo_pi ? (l.lvr.oo_pi*100).toFixed(0)+'%' : '—');
 
   // Top 2 pills for tile preview
   const pills = [];
@@ -2358,7 +2364,7 @@ function openDetailPanel(id) {
     </div>
     ${pills.length ? `<div class="detail-pills">${pills.map(p => '<span class="mini-pill">'+p+'</span>').join('')}</div>` : ''}
     <div class="detail-panel-stats">
-      <div class="detail-stat"><div class="detail-stat-label">OO P&I LVR</div><div class="detail-stat-value">${l.lvr.oo_pi ? (l.lvr.oo_pi*100).toFixed(0)+'%' : '—'}</div></div>
+      <div class="detail-stat"><div class="detail-stat-label">OO P&I Policy LVR</div><div class="detail-stat-value">${l.lvr.oo_pi ? (l.lvr.oo_pi*100).toFixed(0)+'%' : '—'}</div></div>
       <div class="detail-stat"><div class="detail-stat-label">INV P&I LVR</div><div class="detail-stat-value">${l.lvr.inv_pi ? (l.lvr.inv_pi*100).toFixed(0)+'%' : '—'}</div></div>
       <div class="detail-stat"><div class="detail-stat-label">IO Max LVR</div><div class="detail-stat-value">${l.lvr.oo_io ? (l.lvr.oo_io*100).toFixed(0)+'%' : '—'}</div></div>
       <div class="detail-stat"><div class="detail-stat-label">Buffer</div><div class="detail-stat-value${!l.servicing.buffer ? ' muted' : ''}">${l.servicing.buffer || '—'}</div></div>
@@ -2375,6 +2381,7 @@ function openDetailPanel(id) {
       <div class="policy-cell"><div class="cell-label">2nd Mortgage</div><div class="cell-value">${l.second_mortgage && l.second_mortgage.allowed ? '<span class="green">Yes</span>' + (l.second_mortgage.max_combined_lvr ? ' ('+Math.round(l.second_mortgage.max_combined_lvr*100)+'% CLVR)' : '') : '<span class="muted">No</span>'}</div></div>
       <div class="policy-cell"><div class="cell-label">Leasehold</div><div class="cell-value">${l.leasehold && l.leasehold.accepted ? '<span class="green">Yes</span> (−'+Math.round(l.leasehold.lvr_reduction*100)+'% LVR, min '+l.leasehold.min_remaining_lease+'yr)' : '<span class="muted">No</span>'}</div></div>
     </div>
+    ${l.public_product_evidence ? `<div class="data-note" style="margin:14px 0 0;"><strong>Public product evidence:</strong> ${l.public_product_evidence.label}. ${l.public_product_evidence.note}</div>` : ''}
     ${activeModifiers.length ? `
     <div class="modifiers-section">
       <div class="modifiers-title">LVR Modifiers</div>
